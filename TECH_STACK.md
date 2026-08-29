@@ -1,40 +1,74 @@
 # TECH_STACK.md
 
-## Principle
-Every choice below optimizes for "buildable and demoable in 11 days by a student team," not "production-grade at scale." Don't let anyone on the team gold-plate this.
+## Final stack
+| Layer | Choice | Setup notes |
+|---|---|---|
+| Frontend | React + Vite + Tailwind CSS | `npm create vite@latest` with react template, add Tailwind per its own Vite guide |
+| Backend | FastAPI (Python) **or** Express (Node) — pick ONE based on team strength, do not mix | expose 3 endpoints: `/recommend`, `/calculate-emi`, `/nearest-partners` |
+| Data store | Google Sheets (via n8n) for Leads + Partners; static JSON files (`schemes.json`, `partners.json`) checked into the repo as the backend's own source of truth | keep backend's `partners.json` and n8n's "Partners" Sheet in sync manually before demo — do not try to make the backend read live from Sheets, that's an extra integration you don't need |
+| Maps | Leaflet.js + OpenStreetMap tiles | no API key needed, `react-leaflet` package for React |
+| i18n | `react-i18next` or a plain JSON dictionary + context toggle | English + Hindi only |
+| Automation | n8n (cloud, n8n.io free tier) | see N8N_WORKFLOWS.md |
+| Hosting — frontend | Vercel | connect GitHub repo, auto-deploy on push |
+| Hosting — backend | Render or Railway | free tier, watch for cold-start delay before demo (hit the URL a few times beforehand to warm it up) |
+| Version control | GitHub, one shared repo | branch per person, merge to `main` frequently — do not let 4 people work unmerged for 12+ hours |
 
-## Mobile App
-- **React Native (Expo)** — cross-platform box ticked, fastest iteration, huge community, works with Claude Code / Antigravity / Cursor well since it's just JS/TS.
-- Do NOT use Flutter unless someone on the team is already fluent in it. Learning a new framework mid-hackathon is how you lose.
-- UI: Expo + NativeWind (Tailwind for RN) for fast, clean, minimalist styling. Use a component library (e.g. React Native Paper or Tamagui) so you don't hand-roll every button — you have 11 days, not 11 weeks.
-- Voice recording: `expo-av`.
-- Camera: `expo-camera` / `expo-image-picker`.
+## Why not other options (so nobody re-litigates this at hour 10)
+- **No database (Postgres/Mongo/etc.)**: adds hosting, migrations, and connection-string debugging for a dataset of ~50 records that fits fine in a JSON file. Not worth it at this scale/timeframe.
+- **No native mobile app**: a responsive web app covers the "digital platform or mobile application" requirement in the problem statement and is far faster to build and to demo (no app store, no device pairing).
+- **No custom-trained ML model**: see PRD.md — eligibility must be deterministic and auditable, not a black box, and there's no training data available anyway.
+- **No self-hosted n8n**: cloud free tier removes a server you'd otherwise have to babysit during the exact hours you should be coding the app.
+- **No microservices**: one backend service, one frontend, done. Splitting further is organizational overhead your team size doesn't need.
 
-## Backend
-- **Node.js + Express** (or Fastify) — keeps the whole stack in JS/TS, one language for AI agents to reason about, faster for Claude Code to scaffold consistently.
-- **Supabase** (Postgres + Auth + Storage) — self-hosted or managed cloud, your call. Managed cloud free tier is faster to set up under time pressure; use that unless you have a strong reason to self-host.
-  - Storage: product images (raw + enhanced).
-  - DB: artisans, products, listings, price_suggestions tables.
-  - Auth: simple phone-number OTP or even just a basic PIN for the demo — don't over-engineer auth for a hackathon judge.
+## Environment setup checklist (do this first, hour 0-1)
+- [ ] GitHub repo created, all 4 tech members added as collaborators
+- [ ] Vite + React + Tailwind scaffolded, pushed to repo
+- [ ] Backend skeleton (FastAPI or Express) scaffolded, pushed to repo
+- [ ] Vercel connected to repo (frontend auto-deploy tested with placeholder page)
+- [ ] Render/Railway connected to repo (backend auto-deploy tested with a `/health` endpoint)
+- [ ] n8n cloud account created, Google Sheets + Gmail OAuth credentials authorized
+- [ ] Two Google Sheets created: "Leads" (headers only), "Partners" (pre-filled, matches `partners.json`)
+- [ ] `schemes.json` and `partners.json` committed to repo with at least placeholder data
 
-## AI / ML Services (use APIs, don't train anything)
-- **Background removal**: `rembg` (open-source, self-hostable via a small Python microservice) OR remove.bg API as a fallback if rembg quality/speed is a problem on demo day. Recommend standing up rembg as a tiny FastAPI microservice — free, no API key dependency risk during the live demo.
-- **Speech-to-text (regional language)**: Bhashini API (Govt of India — strong pitch synergy) as primary; OpenAI Whisper API as a reliable fallback if Bhashini integration friction eats too much time.
-- **Translation + description generation**: Claude API or GPT-4o API. One well-crafted prompt does translation + SEO description generation + bilingual output in a single call — don't build 3 separate calls when 1 structured prompt works.
-- **Pricing assistant**: no external AI service needed — this is your own heuristic logic (Node function) possibly calling the LLM once for category classification from the image (vision-capable model) plus a hardcoded benchmark table.
+## API contract (backend endpoints — lock this early so frontend/backend don't block each other)
 
-## Orchestration — n8n (self-hosted, confirmed on your laptop)
-See `N8N_WORKFLOWS.md` for the actual workflows. Use n8n where it saves you glue code, not everywhere:
-- Good fit: the "process new product" pipeline (image → rembg → store; voice → STT → translate → LLM → store) as an async job, and a scheduled "refresh benchmark prices" workflow.
-- Bad fit: don't route your core request/response mobile-app API calls through n8n webhooks if it adds latency you can't afford live on stage. Keep the synchronous, judge-facing calls direct from backend to AI service. Use n8n for the behind-the-scenes / batch / scheduled stuff.
+### `POST /recommend`
+Request:
+```json
+{ "income": 400000, "project_type": "small_business", "project_cost": 120000, "education_need": false }
+```
+Response:
+```json
+{
+  "recommended_scheme": "Micro Finance Scheme",
+  "reason": "Your project cost is within the ₹1.40 Lakh limit and your income qualifies for concessional lending.",
+  "alternates": ["Term Loan Scheme"],
+  "eligible": true
+}
+```
 
-## Dev Tooling / AI Coding Agents
-- Recommend **Claude Code** as primary — give it `INSTRUCTIONS.md` + `PHASES.md` + `PRD.md` as context files at repo root, work phase by phase, commit after each phase.
-- Antigravity / other agentic IDEs: same doc set works, they just read markdown context files the same way.
-- Keep docs in repo root (`/docs` folder) so every agent session re-reads current state instead of hallucinating scope.
+### `POST /calculate-emi`
+Request:
+```json
+{ "scheme": "Micro Finance Scheme", "project_cost": 120000, "tenure_months": 36 }
+```
+Response:
+```json
+{ "loan_amount": 108000, "applicant_contribution": 12000, "interest_rate": 7.0, "emi": 3340, "moratorium_months": 3, "total_interest": 12240 }
+```
 
-## Environment / Keys You Need to Set Up NOW (today, not day 9)
-- Supabase project
-- Anthropic or OpenAI API key
-- Bhashini API access (register early — govt API access can take a few days to approve, this is your biggest schedule risk)
-- remove.bg API key as rembg fallback (optional, free tier)
+### `POST /nearest-partners`
+Request:
+```json
+{ "lat": 28.61, "lng": 77.21, "scheme": "Micro Finance Scheme", "limit": 3 }
+```
+Response:
+```json
+{
+  "partners": [
+    { "id": "P014", "name": "XYZ RRB Branch", "type": "RRB", "distance_km": 3.2, "risk_score": 22, "simulated": true, "contact_email": "branch@xyzrrb.in" }
+  ]
+}
+```
+
+Also POST the same lead payload (name, phone, email, income, scheme_recommended, project_cost, emi, nearest_partner_id/name/email) to the n8n Webhook URL from the frontend once a user completes the flow — this triggers Workflow 1 from N8N_WORKFLOWS.md.
