@@ -1,42 +1,84 @@
-# N8N_WORKFLOWS.md — Self-Hosted n8n on Your Laptop
+# N8N_WORKFLOWS.md — Automation layer
 
-## Honest scoping note
-n8n is genuinely useful here for 2 workflows. Don't force it into places where a direct backend function call is simpler and faster — extra hops through n8n add latency and another point of failure during a live demo. Use it for async/batch work, not the synchronous judge-facing request path if you can avoid it.
+## Why n8n is even in this project
+It maps directly to the problem statement's stated impact goal: "Improve transparency and efficiency in the channel finance ecosystem, ensuring faster disbursements and better fund utilization." It is NOT for your eligibility logic — that stays in your backend (see INSTRUCTIONS.md). n8n automates what happens *after* a recommendation is made.
 
-## Critical infra issue you must solve BEFORE demo day
-Your n8n is self-hosted **on your laptop**. On demo day:
-- If your backend also runs locally/on the same laptop and calls n8n via `localhost`, fine — no issue.
-- If judges' network is different from where you developed, or if the backend is deployed elsewhere (e.g. Supabase edge functions, a cloud VM) and needs to reach your laptop's n8n, you need a stable tunnel: **ngrok** or **Cloudflare Tunnel**, set up and tested at least a day before, with the URL hardcoded/configured in your backend `.env`. Free ngrok URLs rotate on restart — either pay for a static domain or re-configure the env var right before the demo starts. Test this exact failure mode in Phase 6.
-- Simplest safe option: run backend AND n8n on the same laptop, same local network, demo entirely from that laptop's hotspot. Removes the tunnel dependency entirely. Recommend this unless you have a specific reason not to.
+Build exactly 2 workflows. Do not add more — a 3rd workflow is polish you don't have time for.
 
-## Workflow 1: "Process New Product Submission" (async pipeline)
-**Trigger:** Webhook, called by backend when a new product image + voice note are uploaded.
+---
 
-**Steps:**
-1. Webhook node receives `{ product_id, image_url, audio_url }`.
-2. HTTP Request node → calls rembg microservice with `image_url` → gets back enhanced image.
-3. Upload enhanced image to Supabase Storage (HTTP Request node with Supabase Storage API, or use n8n's Supabase node if available).
-4. HTTP Request node → Bhashini/Whisper STT with `audio_url` → transcript text.
-5. HTTP Request node → Claude/GPT API with structured prompt (transcript + product category context) → returns JSON `{title_en, description_en, title_hi, description_hi, tags}`.
-6. HTTP Request/Postgres node → write results back to Supabase `products`/`listings` table, update `status = 'ready'`.
-7. (Optional) Webhook/HTTP callback to notify backend/app that processing is done, so the app can poll or receive a push update instead of blocking the UI thread.
+## Workflow 1: Lead Capture + Notification
+**Trigger**: your app backend calls a Webhook node when a user completes the intake form and gets a recommendation.
 
-**Why async matters for the demo:** processing (image + STT + LLM) may take 5-15 seconds combined. Don't make the mobile app hang on a single blocking request — trigger this workflow, show a progress state in the app, poll a status endpoint every 2 seconds.
+**Nodes (in order)**:
+1. **Webhook** — receives POST with: `{name, phone, email, income, scheme_recommended, project_cost, emi, nearest_partner_id, nearest_partner_name, nearest_partner_email}`
+2. **Set/Edit Fields** — normalize/format the payload (e.g., format currency, timestamp the lead)
+3. **Google Sheets (Append Row)** — log the lead to a "Leads" sheet — this is your live, judge-visible proof of "transparency and tracking" in the ecosystem
+4. **IF node** — branch on `scheme_recommended` (Micro Finance / Term Loan / Education Loan) — mainly to prove branching logic works live, even if the downstream action is similar
+5. **Gmail/Email node** — send the applicant a confirmation email: scheme name, EMI summary, nearest partner contact — this is the "faster disbursement, less confusion" payoff, made visible
+6. **Gmail/Email node (2nd branch)** — notify the matched channel partner that a new eligible lead has been routed to them — this is literally solving "misrouted applications" from the problem statement, show it
+7. **Respond to Webhook** — return success/failure to your app so the frontend can show "lead sent to partner X" confirmation
 
-## Workflow 2: "Refresh Pricing Benchmark Data" (scheduled)
-**Trigger:** Schedule node (e.g. once, run manually before demo day — don't rely on live scraping working during the actual demo).
+**Demo moment**: submit a form live, then show the Google Sheet row appear + the email land, in real time. This is a strong, visual, honest demo — no simulated data needed here.
 
-**Steps:**
-1. Schedule/manual trigger.
-2. HTTP Request nodes to pull reference pricing (curated research sources — GeM public listings if accessible, or manually compiled data; be honest in the pitch that this is curated, not live-scraped in the MVP).
-3. Transform/Set node to normalize into `{category, min_price, max_price, avg_price}`.
-4. Postgres/Supabase node → upsert into a `price_benchmarks` table.
+---
 
-**This workflow's real value is narrative, not runtime function**: in your pitch, show this workflow diagram to prove the architecture supports "live" data refresh even though the MVP demo uses a table populated by this workflow run ahead of time, not live during the 5-minute demo slot.
+## Workflow 2: Partner Risk Score Refresh (simulation, disclosed)
+**Trigger**: Manual trigger button (click "Run" live during demo) or Schedule trigger (e.g., every 10 min) — manual is better for demo control.
 
-## Export requirement
-Before demo day, export both workflows as `.json` from n8n (Download button) and commit them to `/n8n-workflows/` in the repo. If your laptop crashes or n8n data resets, you can reimport in under a minute instead of rebuilding live.
+**Nodes**:
+1. **Manual Trigger** (or Schedule Trigger)
+2. **Google Sheets (Read) — "Partners" sheet** — pulls current partner list + existing risk scores
+3. **Function/Code node** — apply a simple simulated formula (e.g., randomize ±5 within bounds, or cycle based on a "days since last audit" column) — clearly comment in the node that this simulates what would be a real NPA/fund-utilization feed from NBCFDC/SCA MIS in production
+4. **Google Sheets (Update)** — write updated risk scores back
+5. **Slack or Email node (optional)** — notify an "admin" channel that partner risk data was refreshed, showing the transparency/monitoring angle
 
-## What NOT to build in n8n
-- Do not put the pricing logic itself in n8n if it needs to respond in real time as the user types/adjusts material cost in the app — that's a direct backend function, not a workflow hop.
-- Do not use n8n for auth or anything security-sensitive; keep that in your Express backend with proper handling.
+**Demo moment**: click the trigger live, show the Sheet values update, and say out loud: "In production this node pulls from NBCFDC's MIS; today it's simulated — here's the exact integration point." This turns your weakest technical gap into a moment of credibility, not a caught-out lie.
+
+---
+
+## Node summary checklist (build order)
+- [ ] Webhook (Workflow 1 entry)
+- [ ] Set node
+- [ ] Google Sheets Append (Leads)
+- [ ] IF node
+- [ ] Email node ×2 (applicant + partner)
+- [ ] Respond to Webhook
+- [ ] Manual Trigger (Workflow 2 entry)
+- [ ] Google Sheets Read (Partners)
+- [ ] Function/Code node (simulate risk)
+- [ ] Google Sheets Update
+- [ ] (optional) Slack/Email admin notify
+
+## Credentials needed before you start
+- Google account with Sheets API access authorized in n8n (do this FIRST, OAuth setup wastes time if left until hour 20)
+- Gmail (or any SMTP) credential authorized in n8n
+- Two Google Sheets created ahead of time: "Leads" (empty, headers only) and "Partners" (pre-filled with your ~30-50 static partner records from `data/partners.json` — keep this the same source of truth as your backend's locator, or you'll get inconsistent demo numbers)
+
+---
+
+## Direct prompt for n8n's built-in AI Workflow Builder
+Paste this into n8n's AI workflow assistant (or into Claude/ChatGPT if generating workflow JSON manually to import):
+
+```
+Build an n8n workflow for a loan-scheme recommendation app. 
+
+Workflow 1 - "Lead Notification":
+1. A Webhook node (POST) that receives JSON: name, phone, email, income, scheme_recommended, project_cost, emi, nearest_partner_id, nearest_partner_name, nearest_partner_email.
+2. A Set node that formats project_cost and emi as currency strings and adds a timestamp field.
+3. A Google Sheets node that appends this data as a new row to a sheet named "Leads".
+4. An IF node that branches on scheme_recommended (three possible values: "Micro Finance", "Term Loan", "Education Loan") - all branches proceed to the same next steps, this is just for visible branching logic.
+5. A Gmail node that sends an email to the "email" field: subject "Your Loan Scheme Recommendation", body including scheme_recommended, emi, and nearest_partner_name with contact info.
+6. A second Gmail node that sends an email to "nearest_partner_email": subject "New Lead Routed to You", body including applicant name, phone, scheme_recommended, and project_cost.
+7. A Respond to Webhook node returning {"status": "success", "partner_notified": true}.
+
+Workflow 2 - "Partner Risk Refresh":
+1. A Manual Trigger node.
+2. A Google Sheets node that reads all rows from a sheet named "Partners" (columns: partner_id, name, type, lat, lng, contact_email, risk_score).
+3. A Code node (JavaScript) that takes each row and adjusts risk_score by a random value between -5 and +5, clamped between 0 and 100, and adds a "last_updated" timestamp. Add a code comment explaining this simulates a production feed from a real fund-utilization/NPA data source.
+4. A Google Sheets node that updates the "Partners" sheet with the new risk_score and last_updated values, matching by partner_id.
+
+Use Google Sheets nodes with OAuth2 credential type. Use Gmail nodes with OAuth2 credential type. Keep node names descriptive and add sticky notes explaining each workflow's purpose for a hackathon demo.
+```
+
+If the AI builder can't generate directly from this prompt, build the nodes manually one at a time in this order — it's ~25 minutes of clicking, not a big lift, don't over-invest trying to get one perfect auto-generated JSON.
