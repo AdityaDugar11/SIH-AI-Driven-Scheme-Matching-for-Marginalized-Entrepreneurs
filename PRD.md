@@ -1,53 +1,61 @@
-# PRD.md — AI-Driven Market Linkage & Smart Cataloging App for Marginalized Artisans
+# PRD — AI-Driven Scheme Matching for Marginalized Entrepreneurs
+**SIH Problem Statement Track | 36-hour build**
 
-## 0. Reality Check (read this before building anything)
-- Hackathon window: Sep 4–5. You have ~11 days including this one. That is not enough time to build 3 real AI systems from scratch. You will **integrate existing models/APIs**, not train your own, except maybe a trivial pricing heuristic.
-- Judges do not care that you trained a model. They care that: (a) the demo works live, (b) the architecture is defensible when questioned, (c) the problem is actually solved for the stated user (low digital literacy, regional language, no tech skill).
-- Cut scope aggressively. A flawless 3-feature demo beats a broken 6-feature demo every time.
-- Pricing "ML algorithm based on market trends" — there is no public dataset of artisan handicraft transaction prices. Do not pretend you trained a regression model on real market data. Build an **LLM + rule-based estimator** (raw material cost input + category benchmark + margin logic) and call it what it is: an AI-assisted pricing assistant. If a judge asks "what data was this trained on," you need a true answer, not a made-up one.
+## 1. Problem (as given)
+SC-category citizens (income ≤ ₹5L/yr) are eligible for concessional loans (Micro Finance ≤₹1.4L, Term Loan ≤₹50L, Education Loan) routed through 100+ Channel Partners (SCA/PSB/RRB/NBFC-MFI). Citizens don't know which scheme fits them or which partner to approach. Result: misrouted applications, delayed disbursement.
 
-## 1. Problem Statement (as given)
-AI-Driven Market Linkage and Smart Cataloging mobile application for Marginalized Artisans. Full official text preserved separately in `PROBLEM_STATEMENT.md` if you want it — not duplicated here to keep this file lean.
+## 2. Reality check (read this before building anything)
+This section exists so the team doesn't waste hours chasing something unbuildable in 2 days.
 
-## 2. Target User
-- Artisan/weaver/micro-entrepreneur, low digital literacy, regional language speaker (assume Hindi + 1 more, e.g. Bhojpuri/Marathi/Bengali depending on team's regional focus — pick ONE for the demo, don't try to support 10 languages).
-- Has a basic Android smartphone. Likely mid-range/low-end. No iPhone assumption needed — **Android-first**, cross-platform framing is fine but don't burn time on iOS testing.
-- Not comfortable typing long text. Voice-first input is core, not a nice-to-have.
+| Component | Real or Mocked in this build | Why |
+|---|---|---|
+| Scheme eligibility logic | **Real** | Deterministic rules from income/cost/purpose — fully buildable, no external data needed |
+| EMI / financial calculator | **Real** | Pure math, no external dependency |
+| Channel partner directory (names, type, location) | **Real (static dataset we curate)** | We hand-build a JSON/CSV of ~30–50 real or realistic partner branches (enough for demo), not scraped live from 100+ orgs |
+| Geo-distance / nearest partner | **Real** | Haversine distance or Maps API against our static dataset |
+| Partner NPA / overdue / fund utilization status | **MOCKED, and we say so on stage** | No public API exposes this. We simulate a "risk score" field per partner in our static dataset and clearly label it "simulated — production version would pull from NBCFDC/SCA MIS" |
+| Multi-lingual UI | **Real, scoped** | i18n on 2–3 languages (English + Hindi minimum) using a translation library, not a chatbot |
+| "AI" scheme recommender | **Rule engine, optionally +NLP chat layer if time allows** | Core logic is a decision tree. If time permits, add a thin LLM layer on top for conversational input parsing. Do not build an ML classifier — no training data exists and it adds risk for zero benefit |
 
-## 3. MVP Scope (what you ACTUALLY build for Sep 4-5)
+**Do not present mocked data as live in the demo without disclosing it.** State it upfront in one slide: "Partner risk/NPA data is simulated for demo; production integration point identified."
 
-### In scope — 3 core features, cut down to demo-able versions:
+## 3. MVP scope (what must work end-to-end by demo time)
+One critical path, fully working:
+1. User answers a short form (income, project type, cost estimate, education need, location).
+2. System recommends 1 best-fit scheme + 1–2 alternates, with plain-language explanation of *why*.
+3. User sees EMI table (principal, tenure, interest rate per scheme rules, moratorium).
+4. User sees nearest 3 eligible channel partners on a map, sorted by distance + simulated risk score, with contact info.
+5. UI available in English + Hindi toggle.
 
-**F1. AI Image Enhancer & Studio**
-- Camera/gallery upload → background removal → auto brightness/contrast correction → clean product photo output.
-- Use an existing background-removal model/API (rembg self-hosted, or remove.bg API for a demo-safe fallback). Do NOT build your own segmentation model.
-- "Format to e-commerce standards" = crop to square/standard aspect ratio + white/neutral background + consistent resolution. That's it. Don't over-scope this into a full photo studio.
+Everything else (accounts, application submission, admin dashboard, real chatbot, SMS notifications) is a "future scope" slide, not a build target.
 
-**F2. Multilingual Auto-Cataloger**
-- Artisan records a voice note in regional language describing the product.
-- Pipeline: Speech-to-text (regional lang) → translate to English → LLM generates SEO-friendly product title + description in English AND Hindi.
-- Use existing STT (Whisper API, or Google Cloud Speech-to-Text / Bhashini API if you want extra "government relevance" points — Bhashini is a govt of India initiative, mentioning it in the pitch is a strong move) + an LLM (Claude/GPT API) for description generation.
+## 4. Explicit non-goals (do not build these — team will burn time otherwise)
+- No user authentication/login system — not needed for demo, adds hours for zero judging value.
+- No real backend integration with any bank/NBFC/government system.
+- No actual loan application submission workflow — this is a *recommender*, not a transaction system.
+- No ML model training. No dataset scraping of real citizens or real bank NPA figures.
+- No native mobile app — a responsive web app is sufficient and far faster to build/demo.
 
-**F3. Dynamic Pricing Assistant (heuristic, not ML-trained)**
-- Inputs: product category, raw material cost (artisan enters manually — this is honest and realistic), rough size/dimensions, image (for category detection via LLM vision).
-- Logic: category benchmark price range (hardcode a lookup table for demo — e.g. scraped/researched reference prices for 8-10 handicraft categories) + material cost + margin % → suggested price range, not a single fake-precise number.
-- Be upfront in the pitch: "future version integrates live GeM/marketplace price feeds via scheduled scraping — MVP uses curated benchmark data."
+## 5. Users
+- Primary: SC-category individual or family seeking a loan for a small business or education, low financial literacy, may not know English well.
+- Secondary (for future scope, not this build): channel partner staff verifying incoming leads.
 
-### Explicitly OUT of scope for the hackathon (say this out loud to your team now):
-- Real B2B buyer matching / negotiation engine
-- Actual integration with GeM (Government e-Marketplace) — you can show a mock "push to GeM" button, not real API integration (GeM doesn't hand out API access easily/quickly)
-- Payment gateway, order management, logistics
-- Training any custom ML model
-- Supporting more than 1-2 regional languages in the live demo
-- Offline mode (mention as future work only)
+## 6. Scheme rules (source of truth for the engine)
+Use these as your initial rule table — verify against actual NBCFDC/NSFDC scheme documents if time allows, but for hackathon purposes this structure is sufficient:
 
-## 4. Success Criteria for the Demo
-1. Live: artisan uploads a raw messy product photo → app returns clean e-commerce-ready image, in under ~10 seconds.
-2. Live: artisan speaks a 15-20 second voice note in Hindi → app shows generated English + Hindi listing text.
-3. Live: given the image + description + entered material cost → app suggests a price range with one line of reasoning.
-4. App doesn't crash. Judges will try to break it — have a rehearsed happy-path device ready as backup.
+| Scheme | Eligibility | Max Amount | Interest Rate | Moratorium |
+|---|---|---|---|---|
+| Micro Finance Scheme | Income ≤ ₹5L, small project/micro-enterprise | ≤ ₹1.40 Lakh | ~6.5%–8% | 3–6 months |
+| Term Loan Scheme | Income ≤ ₹5L, larger project (manufacturing/trade/service) | ≤ ₹50.00 Lakh | ~8%–10% (scale with amount) | 6–12 months |
+| Education Loan Scheme | Income ≤ ₹5L, admission to recognized course (India/abroad) | Course-cost dependent, typically higher cap | ~6.5%–8% (lower for girls in some schemes) | Course duration + 6–12 months |
 
-## 5. Impact Story for Pitch (use their own language back at them)
-- Year-round digital channel instead of dependency on periodic melas.
-- Removes 3 concrete skill barriers: photography, copywriting, pricing.
-- Tie to financial inclusion / income increase — but don't claim a % number you can't justify. Say "reduces time-to-listing from days to minutes" — that's a claim you can actually defend.
+Loan covers up to 90% of project/course cost — remaining 10% is applicant contribution; the calculator must reflect this, not just show full project cost as loan amount.
+
+## 7. Success metrics for the demo
+- Time from form submission to recommendation: <2 seconds (rule engine, no excuse for latency).
+- Recommendation correctness against the rule table: 100% on test cases (this is graded by common sense, verify manually).
+- Judges should be able to complete the full flow themselves in under 90 seconds without your help.
+
+## 8. Risks
+- Team over-scoping the geo/NPA module and running out of time for the core recommender — mitigate by building recommender + calculator FIRST (see PHASES.md), locator last.
+- Presenting mocked NPA data as real — will look dishonest in Q&A if a judge asks "where does this come from." Have the honest answer ready.
