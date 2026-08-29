@@ -1,31 +1,56 @@
-# INSTRUCTIONS.md — For AI Coding Agents (Claude Code / Antigravity / Cursor)
+# INSTRUCTIONS.md — For coding agents (Claude Code, Cursor, Antigravity, etc.)
 
-Read `PRD.md` and `PHASES.md` in this same folder before writing any code. Do not re-scope the project — the scope has already been deliberately cut for an 11-day hackathon timeline. If you think a feature should be bigger, don't — flag it in a comment instead and move on.
+Read `PRD.md` and `PHASES.md` before writing any code. Follow phases in order — do not skip ahead to the geo/locator module before the recommender and calculator are working and tested.
 
-## Working rules
-1. **Work one phase at a time**, in the order defined in `PHASES.md`. Do not jump ahead to Phase 4 pricing logic while Phase 2 image pipeline is unfinished.
-2. **Commit after every phase**, with a message referencing the phase number (e.g. `Phase 2: image enhancer pipeline working end-to-end`). This gives the team a rollback point if a later phase breaks something.
-3. **Never fabricate API responses or mock data as if real** in a way that could survive into the demo unnoticed. If you stub something (e.g. GeM push button), label it clearly in code AND in UI as "Preview / Coming Soon" — a judge clicking a fake-working button that does nothing is worse than an honest "future feature" label.
-4. **Keep secrets out of the repo.** Use `.env` files, add to `.gitignore` immediately in Phase 0.
-5. **Every AI/external API call must have a fallback or graceful error path.** Venue wifi will be unreliable. A crash on a failed API call is not acceptable — show a retry button or cached result instead.
-6. **Don't build for scale.** No need for caching layers, queues, load balancers, microservice sprawl beyond the one rembg service. This is a demo for 2 days, not a production system serving thousands of artisans (yet).
+## Ground rules
+1. **No fake real-time data pretending to be real.** The channel partner "risk score" is simulated — hardcode it in the static dataset with a `simulated: true` field. Never build a live "risk API" that just returns random numbers dressed up as an API call.
+2. **No auth system.** No login, no signup, no session management. If a feature seems to need "the user's account," it's out of scope — cut it.
+3. **No ML training.** The recommender is a deterministic rules engine (if/else or a small decision table), not a trained model. If asked to "make it AI," add an LLM call only for: (a) parsing free-text user input into structured fields, or (b) generating the plain-language explanation of why a scheme was recommended. Never use an LLM to *decide* eligibility — that must stay deterministic and auditable.
+4. **Keep it a single deployable unit if possible.** Prefer one repo, one frontend, a thin backend (or serverless functions) — do not build microservices for a 2-day hackathon.
+5. **Every commit should leave the app in a demoable state.** If you're mid-refactor when time runs out, you have nothing to show. Small, working increments over big-bang rewrites.
+6. **Write the "we mocked X" disclosure into the UI itself** (a small info icon/tooltip near the partner risk score), not just into your pitch deck — judges dig into UIs.
 
-## File/folder structure to scaffold in Phase 0
+## Tech stack (recommended, not mandatory)
+- Frontend: React + Tailwind (fast to build, works well with Claude Code/Cursor scaffolding)
+- Backend: Node/Express or Python/FastAPI — either is fine, pick whichever the team knows better; do not learn a new stack under deadline
+- Data: static JSON/CSV files checked into the repo for schemes + channel partners. No database needed for a hackathon demo — a database adds setup risk for zero benefit at this scale.
+- Maps: Leaflet + OpenStreetMap (free, no API key friction) or Google Maps JS API if a key is already available
+- i18n: `react-i18next` or a simple JSON dictionary + language toggle — do not integrate a live translation API unless there's spare time in Phase 5
+- Deployment: Vercel/Netlify for frontend, Render/Railway for backend if separate — pick whatever the team can deploy in <15 minutes
+
+## File/module structure to scaffold
 ```
-/app                 (Expo React Native app)
-/backend             (Node/Express API)
-/services/rembg      (Python FastAPI microservice for background removal)
-/n8n-workflows       (exported .json workflow files, see N8N_WORKFLOWS.md)
-/docs                (this file, PRD.md, PHASES.md, TECH_STACK.md, N8N_WORKFLOWS.md)
+/data
+  schemes.json          # scheme rules table from PRD.md section 6
+  partners.json         # ~30-50 static partner records: name, type, lat/lng, contact, simulated_risk_score
+/backend (or /api)
+  recommend.*           # rules engine: inputs -> ranked scheme list + reasons
+  calculator.*          # EMI math given scheme + amount + tenure
+  locator.*             # haversine distance + filter by risk threshold
+/frontend
+  /components
+    IntakeForm
+    RecommendationResult
+    EmiCalculator
+    PartnerMap
+    LanguageToggle
+  /i18n
+    en.json
+    hi.json
+/docs
+  PRD.md, INSTRUCTIONS.md, PHASES.md (this set)
 ```
 
-## Coding conventions
-- TypeScript everywhere in `/app` and `/backend` — not because it's "best practice" in the abstract, but because it catches integration bugs between mobile and backend faster than a runtime error during a live demo will.
-- Keep API contracts documented as you build them — add request/response shape as comments above each Express route handler. The team member writing the pitch deck needs to know what actually works, not what was planned.
-- Every screen in `/app` should handle: loading state, error state, empty state. This is not optional polish — it's what stops the app looking broken when a judge pokes at it in an unexpected order.
+## Definition of done for each module
+- **Recommender**: given a documented set of test inputs (see PHASES.md Phase 2), always returns the scheme(s) matching PRD section 6 rules, with a 1-2 sentence human-readable reason.
+- **Calculator**: EMI formula correctly applies principal (90% of cost, capped by scheme max), rate, tenure, moratorium; shows amortization summary (not necessarily full schedule table — total interest + EMI amount is enough for demo).
+- **Locator**: returns nearest N partners by distance, excludes/deprioritizes those below a configurable risk threshold, renders on map with markers + info popup.
+- **i18n**: every user-facing string comes from the dictionary, not hardcoded, for at least English + Hindi.
 
-## When starting a session with a coding agent, always paste this priming instruction:
-"We are building the MVP defined in /docs/PRD.md, following /docs/PHASES.md phase by phase. Current phase: [X]. Do not expand scope beyond what phase [X] defines. Ask before installing any new major dependency."
-
-## Definition of done for each phase
-A phase is NOT done when the code compiles. It's done when a team member who didn't write the code can use the feature on a real device without being told how.
+## What to do if you're behind schedule
+Cut in this order (last item cut first, i.e. protect the top of this list hardest):
+1. Recommender + reason text (never cut)
+2. EMI calculator (never cut)
+3. Partner locator with map (cut the map, keep it as a list, if desperate)
+4. Hindi translation (cut to English-only, mention as future work)
+5. Any animation/polish/extra scheme types beyond the 3 core ones
