@@ -1,0 +1,86 @@
+{
+  "schemes": [
+    {
+      "id": "micro_finance",
+      "name": "Micro Finance Scheme",
+      "description": "Concessional micro finance loans for small projects and micro-enterprises.",
+      "max_income": 500000,
+      "max_project_cost": 140000,
+      "max_loan_amount": 140000,
+      "loan_coverage_pct": 90.0,
+      "applicant_contribution_pct": 10.0,
+      "interest_rate_min": 6.5,
+      "interest_rate_max": 8.0,
+      "interest_rate_default": 7.0,
+      "moratorium_months_min": 3,
+      "moratorium_months_max": 6,
+      "moratorium_months_default": 3,
+      "eligible_project_types": [
+        "small_business",
+        "micro_enterprise",
+        "retail",
+        "artisan",
+        "small_project",
+        "services"
+      ],
+      "requires_education": false
+    },
+    {
+      "id": "term_loan",
+      "name": "Term Loan Scheme",
+      "description": "Medium to long-term concessional loans for larger manufacturing, trade, and service enterprises.",
+      "max_income": 500000,
+      "max_project_cost": 5000000,
+      "max_loan_amount": 5000000,
+      "loan_coverage_pct": 90.0,
+      "applicant_contribution_pct": 10.0,
+      "interest_rate_min": 8.0,
+      "interest_rate_max": 10.0,
+      "interest_rate_default": 8.0,
+      "interest_tiers": [
+        { "up_to_amount": 500000, "rate": 8.0 },
+        { "up_to_amount": 2500000, "rate": 9.0 },
+        { "up_to_amount": 5000000, "rate": 10.0 }
+      ],
+      "moratorium_months_min": 6,
+      "moratorium_months_max": 12,
+      "moratorium_months_default": 6,
+      "eligible_project_types": [
+        "manufacturing",
+        "trade",
+        "service",
+        "large_project",
+        "small_business",
+        "micro_enterprise"
+      ],
+      "requires_education": false
+    },
+    {
+      "id": "education_loan",
+      "name": "Education Loan Scheme",
+      "description": "Concessional loans for admission to recognized higher education and professional courses in India or abroad.",
+      "max_income": 500000,
+      "max_project_cost": 5000000,
+      "max_loan_amount": 5000000,
+      "loan_coverage_pct": 90.0,
+      "applicant_contribution_pct": 10.0,
+      "interest_rate_min": 6.5,
+      "interest_rate_max": 8.0,
+      "interest_rate_default": 7.0,
+      "interest_rate_women_concession": 0.5,
+      "moratorium_months_min": 6,
+      "moratorium_months_max": 12,
+      "moratorium_months_default": 6,
+      "eligible_project_types": [
+        "education",
+        "course",
+        "engineering",
+        "medical",
+        "higher_education",
+        "vocational",
+        "study"
+      ],
+      "requires_education": true
+    }
+  ]
+}
