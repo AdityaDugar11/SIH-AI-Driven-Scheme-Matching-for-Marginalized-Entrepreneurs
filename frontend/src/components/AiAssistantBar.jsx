@@ -1,31 +1,50 @@
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Bot, MessageSquare, Lightbulb, Check } from 'lucide-react';
+import { Sparkles, ArrowRight, Bot, Lightbulb, Check } from 'lucide-react';
 import { parseAiQuery } from '../services/api';
-
-const EXAMPLE_QUERIES = [
-  {
-    label: '🏪 Micro Tailoring (₹1.2L in Lucknow)',
-    query: 'I earn 2.5 Lakh annually and want a loan for my tailoring shop in Lucknow costing 1.2 Lakh',
-  },
-  {
-    label: '🏭 Fabrication Unit (₹18L in Jaipur)',
-    query: 'We have 3.5L family income and need 18 Lakhs for our metal fabrication workshop in Jaipur',
-  },
-  {
-    label: '🎓 B.Tech College (₹8L in Bengaluru)',
-    query: 'My daughter got admission for engineering in Bengaluru fees 8 Lakhs, family income 2 Lakhs',
-  },
-  {
-    label: '⚙️ Auto Repair (₹1.4L in Delhi)',
-    query: 'Annual income 3 Lakh and need 1.4 Lakh for auto repair tools in Delhi',
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEvaluating }) {
+  const { t, language } = useLanguage();
   const [inputText, setInputText] = useState('');
   const [isParsing, setIsParsing] = useState(false);
   const [parseSuccess, setParseSuccess] = useState(false);
   const [error, setError] = useState(null);
+
+  const EXAMPLE_QUERIES = language === 'hi' ? [
+    {
+      label: '🏪 दर्जी दुकान (₹1.2L लखनऊ)',
+      query: 'मेरी वार्षिक आय 2.5 लाख है और मुझे लखनऊ में दर्जी की दुकान हेतु 1.2 लाख का ऋण चाहिए',
+    },
+    {
+      label: '🏭 धातु कार्यशाला (₹18L जयपुर)',
+      query: 'हमारी पारिवारिक आय 3.5 लाख है और जयपुर में वर्कशॉप हेतु 18 लाख ऋण चाहिए',
+    },
+    {
+      label: '🎓 बी.टेक इंजीनियरिंग (₹8L बेंगलुरु)',
+      query: 'मेरी बेटी को बेंगलुरु में इंजीनियरिंग कॉलेज में प्रवेश मिला है फीस 8 लाख है आय 2 लाख',
+    },
+    {
+      label: '⚙️ ऑटो मरम्मत (₹1.4L दिल्ली)',
+      query: 'वार्षिक आय 3 लाख और दिल्ली में ऑटो रिपेयर टूल्स हेतु 1.4 लाख चाहिए',
+    },
+  ] : [
+    {
+      label: '🏪 Micro Tailoring (₹1.2L in Lucknow)',
+      query: 'I earn 2.5 Lakh annually and want a loan for my tailoring shop in Lucknow costing 1.2 Lakh',
+    },
+    {
+      label: '🏭 Fabrication Unit (₹18L in Jaipur)',
+      query: 'We have 3.5L family income and need 18 Lakhs for our metal fabrication workshop in Jaipur',
+    },
+    {
+      label: '🎓 B.Tech College (₹8L in Bengaluru)',
+      query: 'My daughter got admission for engineering in Bengaluru fees 8 Lakhs, family income 2 Lakhs',
+    },
+    {
+      label: '⚙️ Auto Repair (₹1.4L in Delhi)',
+      query: 'Annual income 3 Lakh and need 1.4 Lakh for auto repair tools in Delhi',
+    },
+  ];
 
   const handleParseAndApply = async (queryText) => {
     const textToProcess = queryText || inputText;
@@ -47,7 +66,7 @@ export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEval
       }
     } catch (err) {
       console.error('AI parse error:', err);
-      setError('Could not parse sentence. Please try one of the prompt chips below.');
+      setError(language === 'hi' ? 'वाक्य को पार्स नहीं किया जा सका। कृपया नीचे दिए गए उदाहरणों में से प्रयास करें।' : 'Could not parse sentence. Please try one of the prompt chips below.');
     } finally {
       setIsParsing(false);
     }
@@ -71,14 +90,14 @@ export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEval
           <div>
             <div className="flex items-center space-x-2">
               <h2 className="text-sm sm:text-base font-bold text-white flex items-center space-x-1.5">
-                <span>AI Conversational Intake Assistant</span>
+                <span>{t('ai_bar_title')}</span>
               </h2>
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                NLP Powered
+                {t('ai_bar_nlp')}
               </span>
             </div>
             <p className="text-xs text-slate-300">
-              Type in natural English/Hindi transcript — AI will automatically extract parameters & evaluate eligibility
+              {t('ai_bar_desc')}
             </p>
           </div>
         </div>
@@ -86,7 +105,7 @@ export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEval
         {parseSuccess && (
           <span className="self-start md:self-auto inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-semibold animate-fadeIn">
             <Check className="w-3.5 h-3.5" />
-            <span>Parameters Extracted & Evaluated!</span>
+            <span>{t('ai_bar_success')}</span>
           </span>
         )}
       </div>
@@ -106,7 +125,7 @@ export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEval
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="e.g., 'I make ₹3 Lakh annually and need ₹1.2 Lakh loan for my tailoring shop in Lucknow'"
+          placeholder={t('ai_bar_placeholder')}
           className="w-full pl-10 pr-32 py-3 bg-slate-950/80 border border-slate-700/80 rounded-xl text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition shadow-inner font-medium"
         />
         <button
@@ -118,7 +137,7 @@ export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEval
             <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
             <>
-              <span>Ask AI</span>
+              <span>{t('ai_bar_button')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </>
           )}
@@ -135,14 +154,14 @@ export default function AiAssistantBar({ onApplyParsedData, onCityChange, isEval
       <div className="flex flex-wrap items-center gap-1.5 text-xs">
         <span className="text-slate-400 flex items-center space-x-1 text-[11px] font-medium mr-1">
           <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
-          <span>Try Prompts:</span>
+          <span>{t('ai_bar_try_prompts')}</span>
         </span>
         {EXAMPLE_QUERIES.map((item, idx) => (
           <button
             key={idx}
             type="button"
             onClick={() => handleChipClick(item.query)}
-            className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-emerald-950/80 text-slate-300 hover:text-emerald-300 border border-slate-800 hover:border-emerald-500/50 transition flex items-center space-x-1"
+            className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-emerald-950/80 text-slate-300 hover:text-emerald-300 border border-slate-800 hover:border-emerald-500/50 transition flex items-center space-x-1 cursor-pointer"
           >
             <span>{item.label}</span>
           </button>

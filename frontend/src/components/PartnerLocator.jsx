@@ -15,6 +15,7 @@ import {
   Send
 } from 'lucide-react';
 import { INDIAN_CITIES, fetchNearestPartners } from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 const PARTNER_TYPE_COLORS = {
   SCA: {
@@ -51,8 +52,10 @@ export default function PartnerLocator({
   selectedCity, 
   onCityChange, 
   recommendedScheme, 
-  isEligible 
+  isEligible,
+  onRouteLeadToPartner
 }) {
+  const { t } = useLanguage();
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
@@ -158,7 +161,7 @@ export default function PartnerLocator({
 
     const userMarker = L.marker([userLocation.lat, userLocation.lng], { icon: userMarkerIcon })
       .addTo(map)
-      .bindPopup(`<strong style="color: #0f172a;">📍 Applicant Location: ${userLocation.cityName}</strong>`);
+      .bindPopup(`<strong style="color: #0f172a;">📍 ${userLocation.cityName}</strong>`);
     
     markersRef.current.push(userMarker);
 
@@ -185,7 +188,7 @@ export default function PartnerLocator({
             <strong style="font-size: 13px; display: block; margin-top: 2px;">${partner.name}</strong>
             <div style="font-size: 11px; color: #475569; margin: 4px 0;">${partner.branch_name || partner.address || partner.city}</div>
             <div style="font-size: 11px; font-weight: bold; color: #059669;">📍 ${partner.distance_km} km away</div>
-            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Simulated Health Score: <strong>${partner.simulated_risk_score}/100</strong></div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Health Score: <strong>${partner.simulated_risk_score}/100</strong></div>
           </div>
         `);
 
@@ -200,7 +203,11 @@ export default function PartnerLocator({
 
   const handleRouteApplication = (partner) => {
     setRoutedSuccess(partner.id);
-    setTimeout(() => setRoutedSuccess(null), 4000);
+    if (onRouteLeadToPartner) {
+      setTimeout(() => {
+        onRouteLeadToPartner(partner);
+      }, 700);
+    }
   };
 
   const handleUseMyLocation = () => {
@@ -243,14 +250,14 @@ export default function PartnerLocator({
           <div>
             <div className="flex items-center space-x-2">
               <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
-                Nearest Channel Partners & Branch Map
+                {t('partner_title')}
               </h2>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
                 Geo-Distance Engine
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Locating approved SCAs, PSBs, RRBs, and NBFC-MFIs matching {recommendedScheme || 'concessional schemes'}
+              {t('partner_subtitle')}
             </p>
           </div>
         </div>
@@ -272,11 +279,11 @@ export default function PartnerLocator({
           <button
             type="button"
             onClick={handleUseMyLocation}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 text-xs font-semibold border border-slate-700 transition"
+            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 text-xs font-semibold border border-slate-700 transition cursor-pointer"
             title="Use browser GPS geolocation"
           >
             <Navigation className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">My GPS</span>
+            <span className="hidden sm:inline">{t('partner_use_gps')}</span>
           </button>
         </div>
       </div>
@@ -285,7 +292,7 @@ export default function PartnerLocator({
       <div className="mb-5 p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-xs flex items-start space-x-2.5">
         <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
         <div className="text-slate-300 text-[11px] leading-relaxed">
-          <span className="font-bold text-amber-300">Hackathon Prototype Notice:</span> Partner locations and institutional types (SCA/PSB/RRB/MFI) represent authentic lending channels. The <strong>Health/Risk Score (0–100)</strong> is simulated for demonstration; in production, it connects to NBCFDC/SCA MIS live audit feeds.
+          {t('partner_simulated_notice')}
         </div>
       </div>
 
@@ -318,8 +325,8 @@ export default function PartnerLocator({
           </div>
 
           <div className="text-[11px] text-slate-400 flex items-center justify-between px-1">
-            <span>Showing top {partners.length} closest branches to {userLocation.cityName}</span>
-            <span>Click any marker to view contact details</span>
+            <span>{t('partner_showing_closest')} {userLocation.cityName}</span>
+            <span>{t('partner_click_marker')}</span>
           </div>
         </div>
 
@@ -377,47 +384,49 @@ export default function PartnerLocator({
                   <div className="mt-2.5 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-300">
                     <div className="flex items-center space-x-1 text-slate-400">
                       <Clock className="w-3 h-3 text-teal-400" />
-                      <span>~{partner.disbursement_speed_days || 12} days sanction</span>
+                      <span>~{partner.disbursement_speed_days || 12} {t('partner_days_sanction')}</span>
                     </div>
 
                     <div className="flex items-center space-x-1" title="Simulated health & compliance score">
-                      <span className="text-slate-400">Health:</span>
+                      <span className="text-slate-400">{t('partner_health_score')}</span>
                       <span className="font-bold text-emerald-400">{partner.simulated_risk_score}/100</span>
                     </div>
                   </div>
 
-                  {/* Expanded actions on active card */}
+                  {/* Expanded CTA actions on active card */}
                   {isSelected && (
                     <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex flex-col sm:flex-row gap-2">
                       <a
                         href={`tel:${partner.contact_phone}`}
-                        className="flex-1 py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold flex items-center justify-center space-x-1.5 border border-slate-700 transition"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 py-2 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center space-x-1.5 border border-slate-700 transition"
                       >
-                        <Phone className="w-3 h-3 text-emerald-400" />
-                        <span>Call Branch</span>
+                        <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{t('partner_call_branch')}</span>
                       </a>
 
+                      {/* Screen 4 CTA Requirement: "Send My Details to This Partner" */}
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleRouteApplication(partner);
                         }}
-                        className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center space-x-1.5 transition ${
+                        className={`flex-[1.5] py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center space-x-1.5 transition cursor-pointer shadow-md ${
                           isRouted
                             ? 'bg-emerald-600 text-white'
-                            : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-sm'
+                            : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-600/20'
                         }`}
                       >
                         {isRouted ? (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>Routed via n8n!</span>
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>{t('partner_routed_badge')}</span>
                           </>
                         ) : (
                           <>
-                            <Send className="w-3 h-3" />
-                            <span>Route Lead</span>
+                            <Send className="w-3.5 h-3.5" />
+                            <span>{t('partner_send_details')}</span>
                           </>
                         )}
                       </button>

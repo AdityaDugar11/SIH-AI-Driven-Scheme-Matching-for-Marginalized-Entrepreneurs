@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
+import StepHeader from './components/StepHeader';
 import AiAssistantBar from './components/AiAssistantBar';
 import IntakeForm from './components/IntakeForm';
 import RecommendationResult from './components/RecommendationResult';
 import EmiBreakdown from './components/EmiBreakdown';
 import PartnerLocator from './components/PartnerLocator';
+import Confirmation from './components/Confirmation';
 import Disclosures from './components/Disclosures';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { 
   checkBackendHealth, 
   fetchSchemeRecommendation, 
   fetchEmiCalculation 
 } from './services/api';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw, ArrowLeft, ArrowRight } from 'lucide-react';
 
 const DEFAULT_FORM_STATE = {
   income: 400000,
@@ -22,11 +25,18 @@ const DEFAULT_FORM_STATE = {
   gender: 'male',
 };
 
-export default function App() {
+function MainApp() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState(DEFAULT_FORM_STATE);
   const [selectedCity, setSelectedCity] = useState('delhi');
   const [recommendation, setRecommendation] = useState(null);
   const [emiData, setEmiData] = useState(null);
+  const [selectedPartner, setSelectedPartner] = useState(null);
+  
+  // Step Navigation State (1 to 5)
+  const [currentStep, setCurrentStep] = useState(1);
+  const [maxStepReached, setMaxStepReached] = useState(1);
+
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isConnected, setIsConnected] = useState(true);
@@ -38,7 +48,7 @@ export default function App() {
     return online;
   }, []);
 
-  const handleEvaluate = async (customData) => {
+  const handleEvaluate = async (customData, targetStep = 2) => {
     const dataToSubmit = customData || formData;
     setIsLoading(true);
     setErrorMessage(null);
@@ -65,8 +75,12 @@ export default function App() {
           gender: dataToSubmit.gender,
         });
         setEmiData(emiResult);
+        setCurrentStep(targetStep);
+        setMaxStepReached((prev) => Math.max(prev, targetStep, 3));
       } else {
         setEmiData(null);
+        setCurrentStep(2);
+        setMaxStepReached((prev) => Math.max(prev, 2));
       }
     } catch (err) {
       console.error('Error evaluating scheme:', err);
@@ -91,18 +105,27 @@ export default function App() {
     if (parsedData.city) {
       setSelectedCity(parsedData.city);
     }
-    handleEvaluate(updatedForm);
+    handleEvaluate(updatedForm, 2);
   };
 
   useEffect(() => {
     checkHealth();
-    handleEvaluate(DEFAULT_FORM_STATE);
+    handleEvaluate(DEFAULT_FORM_STATE, 1);
   }, []);
 
   const handleReset = () => {
     setFormData(DEFAULT_FORM_STATE);
     setSelectedCity('delhi');
-    handleEvaluate(DEFAULT_FORM_STATE);
+    setCurrentStep(1);
+    setMaxStepReached(1);
+    setSelectedPartner(null);
+    handleEvaluate(DEFAULT_FORM_STATE, 1);
+  };
+
+  const handleRouteLead = (partner) => {
+    setSelectedPartner(partner);
+    setCurrentStep(5);
+    setMaxStepReached(5);
   };
 
   return (
@@ -113,14 +136,14 @@ export default function App() {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Banner / Title Area */}
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                AI Concessional Scheme Matching & Partner Locator
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
+                {t('hero_title')}
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
-                Deterministic matching engine delivering instant concessional loan eligibility, 90% loan calculation, AI audit trail, and nearest channel partner routing.
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                {t('hero_subtitle')}
               </p>
             </div>
             {!isConnected && (
@@ -151,48 +174,76 @@ export default function App() {
           )}
         </div>
 
-        {/* Phase 3 AI Conversational Intake Assistant Bar */}
-        <AiAssistantBar
-          onApplyParsedData={handleApplyParsedAiData}
-          onCityChange={setSelectedCity}
-          isEvaluating={isLoading}
+        {/* Phase 4 Step Header Navigation */}
+        <StepHeader 
+          currentStep={currentStep} 
+          onStepClick={(stepId) => setCurrentStep(stepId)} 
+          maxStepReached={maxStepReached} 
         />
 
-        {/* 2-Column Responsive Layout: Left (Form) & Right (Results + EMI) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          {/* Left Column: Intake Form (5 cols on large screens) */}
-          <div className="lg:col-span-5">
-            <IntakeForm
-              formData={formData}
-              setFormData={setFormData}
-              onSubmit={() => handleEvaluate(formData)}
-              isLoading={isLoading}
-              onReset={handleReset}
-            />
-          </div>
-
-          {/* Right Column: Recommendation & EMI Dashboard (7 cols on large screens) */}
-          <div className="lg:col-span-7 space-y-6">
-            <RecommendationResult
-              recommendation={recommendation}
-              isLoading={isLoading}
+        {/* Screen 5: Confirmation View */}
+        {currentStep === 5 ? (
+          <Confirmation
+            formData={formData}
+            recommendation={recommendation}
+            emiData={emiData}
+            partner={selectedPartner}
+            onStartOver={handleReset}
+          />
+        ) : (
+          <>
+            {/* AI Assistant Bar (always available on steps 1-4) */}
+            <AiAssistantBar
+              onApplyParsedData={handleApplyParsedAiData}
+              onCityChange={setSelectedCity}
+              isEvaluating={isLoading}
             />
 
-            <EmiBreakdown
-              emiData={emiData}
-              isEligible={recommendation?.eligible}
-              isLoading={isLoading}
-            />
-          </div>
-        </div>
+            {/* Screen 1, 2, 3 Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+              {/* Left Column: Intake Form (Step 1 Focus) */}
+              <div className={`lg:col-span-5 ${currentStep > 1 ? 'opacity-95' : ''}`}>
+                <IntakeForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  onSubmit={() => handleEvaluate(formData, 2)}
+                  isLoading={isLoading}
+                  onReset={handleReset}
+                />
+              </div>
 
-        {/* Phase 3: Interactive Channel Partner Map & Nearest Branches */}
-        <PartnerLocator
-          selectedCity={selectedCity}
-          onCityChange={setSelectedCity}
-          recommendedScheme={recommendation?.recommended_scheme}
-          isEligible={recommendation?.eligible}
-        />
+              {/* Right Column: Recommendation (Step 2) & EMI Breakdown (Step 3) */}
+              <div className="lg:col-span-7 space-y-6">
+                <RecommendationResult
+                  recommendation={recommendation}
+                  isLoading={isLoading}
+                  onProceedToEmi={() => setCurrentStep(3)}
+                />
+
+                <EmiBreakdown
+                  emiData={emiData}
+                  isEligible={recommendation?.eligible}
+                  isLoading={isLoading}
+                  onProceedToPartners={() => {
+                    setCurrentStep(4);
+                    setMaxStepReached((prev) => Math.max(prev, 4));
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Screen 4: Partner Locator (Interactive Map & Nearest Channel Branches) */}
+            <div id="partner-locator-section">
+              <PartnerLocator
+                selectedCity={selectedCity}
+                onCityChange={setSelectedCity}
+                recommendedScheme={recommendation?.recommended_scheme}
+                isEligible={recommendation?.eligible}
+                onRouteLeadToPartner={handleRouteLead}
+              />
+            </div>
+          </>
+        )}
 
         {/* SIH Governance & Phase Disclosures Footer */}
         <Disclosures />
@@ -200,10 +251,16 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500">
-        <p>
-          SIH Prototype — AI-Driven Concessional Loan Scheme Matching & Channel Partner Routing System | Phase 3
-        </p>
+        <p>{t('footer_text')}</p>
       </footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <MainApp />
+    </LanguageProvider>
   );
 }

@@ -10,10 +10,13 @@ import {
   AlertTriangle,
   FileCheck2,
   Lightbulb,
-  Check
+  Check,
+  ArrowRight
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
-export default function RecommendationResult({ recommendation, isLoading }) {
+export default function RecommendationResult({ recommendation, isLoading, onProceedToEmi }) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('summary'); // 'summary' | 'audit'
 
   if (isLoading) {
@@ -51,8 +54,8 @@ export default function RecommendationResult({ recommendation, isLoading }) {
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">Scheme Recommendation</h2>
-            <p className="text-xs text-slate-400">Rule-driven deterministic matching + AI explainability</p>
+            <h2 className="text-lg font-bold text-white">{t('rec_title')}</h2>
+            <p className="text-xs text-slate-400">{t('rec_subtitle')}</p>
           </div>
         </div>
 
@@ -60,12 +63,12 @@ export default function RecommendationResult({ recommendation, isLoading }) {
           {eligible ? (
             <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Eligible for Concession</span>
+              <span>{t('rec_eligible_badge')}</span>
             </span>
           ) : (
             <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
               <XCircle className="w-3.5 h-3.5 text-rose-400" />
-              <span>Ineligible</span>
+              <span>{t('rec_ineligible_badge')}</span>
             </span>
           )}
         </div>
@@ -79,7 +82,7 @@ export default function RecommendationResult({ recommendation, isLoading }) {
             
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
-                Primary Recommended Scheme
+                {t('rec_primary_badge')}
               </span>
               
               {/* Tab Selector: Summary vs AI Audit */}
@@ -87,25 +90,25 @@ export default function RecommendationResult({ recommendation, isLoading }) {
                 <button
                   type="button"
                   onClick={() => setActiveTab('summary')}
-                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition ${
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition cursor-pointer ${
                     activeTab === 'summary'
                       ? 'bg-emerald-600 text-white shadow-sm'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  Overview
+                  {t('rec_tab_overview')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab('audit')}
-                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition flex items-center space-x-1 ${
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition flex items-center space-x-1 cursor-pointer ${
                     activeTab === 'audit'
                       ? 'bg-emerald-600 text-white shadow-sm'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   <FileCheck2 className="w-3 h-3" />
-                  <span>AI Audit Trail</span>
+                  <span>{t('rec_tab_audit')}</span>
                 </button>
               </div>
             </div>
@@ -123,7 +126,7 @@ export default function RecommendationResult({ recommendation, isLoading }) {
                   {ai_explanation?.financial_tip && (
                     <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center space-x-1.5 text-xs text-amber-300">
                       <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span><strong>Key Tip:</strong> {ai_explanation.financial_tip}</span>
+                      <span><strong>{t('rec_tip_label')}</strong> {ai_explanation.financial_tip}</span>
                     </div>
                   )}
                 </div>
@@ -134,7 +137,7 @@ export default function RecommendationResult({ recommendation, isLoading }) {
             {activeTab === 'audit' && (
               <div className="mt-3 space-y-2 bg-slate-950/80 p-3.5 rounded-lg border border-slate-800 text-xs">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-2">
-                  5-Point Financial & Statutory Verification Trace:
+                  {t('rec_audit_trace_title')}
                 </div>
                 {ai_explanation?.audit_checklist?.map((item, idx) => (
                   <div key={idx} className="flex items-start space-x-2 py-1 border-b border-slate-900 last:border-0">
@@ -156,7 +159,7 @@ export default function RecommendationResult({ recommendation, isLoading }) {
             <div className="p-3.5 rounded-xl bg-slate-950/50 border border-slate-800">
               <div className="flex items-center space-x-1.5 text-xs font-semibold text-slate-300 mb-2">
                 <Layers className="w-3.5 h-3.5 text-teal-400" />
-                <span>Alternative Eligible Concessional Scheme(s):</span>
+                <span>{t('rec_alternates_title')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {alternates.map((alt, i) => (
@@ -171,6 +174,20 @@ export default function RecommendationResult({ recommendation, isLoading }) {
               </div>
             </div>
           )}
+
+          {/* Screen 2 Primary CTA: See EMI Breakdown */}
+          {onProceedToEmi && (
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={onProceedToEmi}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-500/30 hover:border-emerald-500/60 transition flex items-center justify-center space-x-1.5 cursor-pointer"
+              >
+                <span>{t('rec_btn_see_emi')}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         /* Ineligible State */
@@ -178,12 +195,12 @@ export default function RecommendationResult({ recommendation, isLoading }) {
           <div className="flex items-start space-x-3">
             <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-bold text-rose-200">Not Eligible for Concessional Lending</h4>
+              <h4 className="text-sm font-bold text-rose-200">{t('rec_ineligible_title')}</h4>
               <p className="text-xs text-rose-300/90 mt-1 leading-relaxed">{reason}</p>
             </div>
           </div>
           <div className="text-[11px] text-slate-400 bg-slate-950/70 p-3 rounded-lg border border-slate-800">
-            <strong>Next Steps:</strong> Verify your annual family income certification or consider standard commercial SME lending channels through Public Sector Banks (PSBs) and Mudra Yojana loans.
+            {t('rec_ineligible_next')}
           </div>
         </div>
       )}

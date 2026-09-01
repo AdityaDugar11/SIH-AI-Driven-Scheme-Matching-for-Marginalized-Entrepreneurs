@@ -6,20 +6,11 @@ import {
   Clock, 
   Sliders, 
   UserCheck, 
-  CheckCircle2, 
   ArrowRight, 
   RotateCcw,
   Zap
 } from 'lucide-react';
-
-const PROJECT_TYPE_OPTIONS = [
-  { value: 'small_business', label: 'Small Business / Retail Shop', icon: '🏪' },
-  { value: 'micro_enterprise', label: 'Micro Enterprise / Local Workshop', icon: '⚙️' },
-  { value: 'manufacturing', label: 'Manufacturing & Processing Unit', icon: '🏭' },
-  { value: 'services', label: 'Services, Logistics & Trade', icon: '🚚' },
-  { value: 'artisan', label: 'Artisan & Traditional Crafts', icon: '🎨' },
-  { value: 'education', label: 'Higher Education / Engineering / Medical', icon: '🎓' },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 const PRESETS = [
   {
@@ -84,11 +75,6 @@ const PRESETS = [
   },
 ];
 
-function formatInr(num) {
-  if (isNaN(num) || num === null || num === undefined) return '0';
-  return Number(num).toLocaleString('en-IN');
-}
-
 function formatLakhs(num) {
   const val = Number(num);
   if (isNaN(val) || val <= 0) return '';
@@ -99,6 +85,17 @@ function formatLakhs(num) {
 }
 
 export default function IntakeForm({ formData, setFormData, onSubmit, isLoading, onReset }) {
+  const { t } = useLanguage();
+
+  const PROJECT_TYPE_OPTIONS = [
+    { value: 'small_business', label: t('cat_small_business'), icon: '🏪' },
+    { value: 'micro_enterprise', label: t('cat_micro_enterprise'), icon: '⚙️' },
+    { value: 'manufacturing', label: t('cat_manufacturing'), icon: '🏭' },
+    { value: 'services', label: t('cat_services'), icon: '🚚' },
+    { value: 'artisan', label: t('cat_artisan'), icon: '🎨' },
+    { value: 'education', label: t('cat_education'), icon: '🎓' },
+  ];
+
   const handleChange = (field, value) => {
     setFormData((prev) => {
       const updated = { ...prev, [field]: value };
@@ -136,19 +133,19 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
               <Sliders className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">Applicant Intake Form</h2>
-              <p className="text-xs text-slate-400">Enter applicant financial & project details</p>
+              <h2 className="text-lg font-bold text-white">{t('intake_title')}</h2>
+              <p className="text-xs text-slate-400">{t('intake_subtitle')}</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onReset}
-            className="flex items-center space-x-1 text-xs text-slate-400 hover:text-slate-200 px-2.5 py-1.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+            className="flex items-center space-x-1 text-xs text-slate-400 hover:text-slate-200 px-2.5 py-1.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors cursor-pointer"
             title="Reset form to default values"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset</span>
+            <span>{t('intake_reset')}</span>
           </button>
         </div>
 
@@ -156,7 +153,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
         <div className="mt-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
           <div className="flex items-center space-x-1.5 mb-2 text-xs font-semibold text-emerald-400">
             <Zap className="w-3.5 h-3.5" />
-            <span>1-Click Test Scenarios (SIH Judges Demo):</span>
+            <span>{t('intake_presets')}</span>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {PRESETS.map((preset, idx) => (
@@ -164,7 +161,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
                 key={idx}
                 type="button"
                 onClick={() => handleApplyPreset(preset.data)}
-                className="text-xs px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-emerald-600/20 text-slate-300 hover:text-emerald-300 border border-slate-700 hover:border-emerald-500/40 transition-all text-left flex items-center space-x-1.5"
+                className="text-xs px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-emerald-600/20 text-slate-300 hover:text-emerald-300 border border-slate-700 hover:border-emerald-500/40 transition-all text-left flex items-center space-x-1.5 cursor-pointer"
               >
                 <span>{preset.name}</span>
                 <span className="text-[10px] text-slate-400 bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-700/50">
@@ -182,7 +179,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
           <div className="flex justify-between items-center mb-1.5">
             <label className="text-sm font-semibold text-slate-200 flex items-center space-x-1.5">
               <IndianRupee className="w-4 h-4 text-emerald-400" />
-              <span>Annual Family Income</span>
+              <span>{t('intake_income_label')}</span>
             </label>
             <span className="text-xs text-slate-400">
               {formatLakhs(formData.income)}
@@ -205,14 +202,14 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
             />
           </div>
           <div className="flex items-center justify-between mt-1.5 text-[11px] text-slate-400">
-            <span>Eligibility limit: ₹5.00 Lakh/year</span>
+            <span>{t('intake_income_limit')}</span>
             <div className="space-x-1">
               {[150000, 300000, 450000, 600000].map((amt) => (
                 <button
                   key={amt}
                   type="button"
                   onClick={() => handleChange('income', amt)}
-                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50"
+                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 cursor-pointer"
                 >
                   ₹{amt / 100000}L
                 </button>
@@ -225,7 +222,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
         <div>
           <label className="block text-sm font-semibold text-slate-200 mb-1.5 flex items-center space-x-1.5">
             <Briefcase className="w-4 h-4 text-emerald-400" />
-            <span>Project / Venture Category</span>
+            <span>{t('intake_category_label')}</span>
           </label>
           <div className="relative">
             <select
@@ -251,7 +248,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
           <div className="flex justify-between items-center mb-1.5">
             <label className="text-sm font-semibold text-slate-200 flex items-center space-x-1.5">
               <IndianRupee className="w-4 h-4 text-teal-400" />
-              <span>Total Estimated Project / Course Cost</span>
+              <span>{t('intake_cost_label')}</span>
             </label>
             <span className="text-xs text-slate-400">
               {formatLakhs(formData.project_cost)}
@@ -275,7 +272,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
           </div>
           <div className="flex items-center justify-between mt-1.5 text-[11px] text-slate-400">
             <span className="text-emerald-400/90 font-medium">
-              Micro cap: ≤₹1.40L | Term cap: ≤₹50L
+              {t('intake_caps')}
             </span>
             <div className="space-x-1">
               {[120000, 140000, 800000, 2000000].map((amt) => (
@@ -283,7 +280,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
                   key={amt}
                   type="button"
                   onClick={() => handleChange('project_cost', amt)}
-                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50"
+                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 cursor-pointer"
                 >
                   ₹{amt >= 100000 ? `${amt / 100000}L` : `${amt / 1000}k`}
                 </button>
@@ -299,8 +296,8 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
               <GraduationCap className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-200">Higher Education / Course Loan</p>
-              <p className="text-xs text-slate-400">For engineering, medical, vocational or overseas degrees</p>
+              <p className="text-sm font-medium text-slate-200">{t('intake_education_title')}</p>
+              <p className="text-xs text-slate-400">{t('intake_education_desc')}</p>
             </div>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
@@ -320,7 +317,7 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
           <div className="flex justify-between items-center mb-1.5">
             <label className="text-sm font-semibold text-slate-200 flex items-center space-x-1.5">
               <Clock className="w-4 h-4 text-emerald-400" />
-              <span>Desired Loan Tenure</span>
+              <span>{t('intake_tenure_label')}</span>
             </label>
             <span className="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-800/50">
               {formData.tenure_months} Months ({(formData.tenure_months / 12).toFixed(1)} Years)
@@ -348,19 +345,19 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
         <div>
           <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center space-x-1.5">
             <UserCheck className="w-3.5 h-3.5 text-slate-400" />
-            <span>Applicant Gender (Special 0.5% Concession for Women)</span>
+            <span>{t('intake_gender_label')}</span>
           </label>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { id: 'male', label: 'Male' },
-              { id: 'female', label: 'Female (-0.5% p.a.)' },
-              { id: 'other', label: 'Other' },
+              { id: 'male', label: t('intake_gender_male') },
+              { id: 'female', label: t('intake_gender_female') },
+              { id: 'other', label: t('intake_gender_other') },
             ].map((g) => (
               <button
                 key={g.id}
                 type="button"
                 onClick={() => handleChange('gender', g.id)}
-                className={`py-2 px-2.5 rounded-xl text-xs font-medium border transition-all text-center ${
+                className={`py-2 px-2.5 rounded-xl text-xs font-medium border transition-all text-center cursor-pointer ${
                   formData.gender === g.id
                     ? 'bg-emerald-600/20 text-emerald-300 border-emerald-500/60 font-semibold'
                     : 'bg-slate-950/50 text-slate-400 border-slate-800 hover:border-slate-700'
@@ -382,11 +379,11 @@ export default function IntakeForm({ formData, setFormData, onSubmit, isLoading,
           {isLoading ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Evaluating Scheme Match & EMI...</span>
+              <span>{t('intake_evaluating')}</span>
             </>
           ) : (
             <>
-              <span>Match Scheme & Calculate EMI</span>
+              <span>{t('intake_submit_btn')}</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}
