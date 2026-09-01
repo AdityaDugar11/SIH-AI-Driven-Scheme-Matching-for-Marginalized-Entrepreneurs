@@ -1,24 +1,30 @@
 """
 main.py
-FastAPI application exposing /recommend and /calculate-emi endpoints
-for AI-Driven Scheme Matching for Marginalized Entrepreneurs.
+FastAPI application exposing:
+- /recommend : Deterministic scheme recommendation + AI explanation audit trail
+- /calculate-emi : Accurate EMI, 90% loan coverage, and amortization values
+- /nearest-partners : Haversine geo-distance & risk-filtered channel partner matching
+- /partners : Full partner directory for interactive map visualization
+- /ai/parse-query : Conversational NLP free-text parsing into structured intake form values
 """
 
-from typing import List, Optional
-from fastapi import FastAPI, HTTPException
+from typing import Any, Dict, List, Optional
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from recommend import recommend_scheme
 from calculator import calculate_emi
+from locator import find_nearest_partners, load_partners, get_city_coordinates
+from ai_explainer import parse_natural_language_query, generate_ai_explanation
 
 app = FastAPI(
-    title="Concessional Scheme Matching & EMI API",
-    description="API for recommending concessional loan schemes to SC-category entrepreneurs and calculating EMIs.",
-    version="1.0.0",
+    title="Concessional Scheme Matching, Locator & AI Engine API",
+    description="Deterministic Scheme Recommendation, Financial EMI Engine, Partner Locator, and NLP Assistant for marginalized entrepreneurs.",
+    version="2.0.0",
 )
 
-# Enable CORS for local development and web frontends
+# Enable CORS for web frontends
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -50,6 +56,9 @@ class RecommendResponse(BaseModel):
     reason: str = Field(..., description="Plain-language reason for the recommendation")
     alternates: List[str] = Field(default_factory=list, description="Alternative eligible schemes")
     eligible: bool = Field(..., description="True if eligible for any concessional scheme")
+    ai_explanation: Optional[Dict[str, Any]] = Field(
+        default=None, description="Detailed AI audit checklist and plain-language reasoning"
+    )
 
 
 class EmiCalculateRequest(BaseModel):
@@ -74,6 +83,61 @@ class EmiCalculateResponse(BaseModel):
     total_interest: float = Field(..., description="Total interest payable over loan tenure in INR")
 
 
+class NearestPartnersRequest(BaseModel):
+    lat: float = Field(..., description="Applicant latitude (e.g., 28.6139)")
+    lng: float = Field(..., description="Applicant longitude (e.g., 77.2090)")
+    scheme: Optional[str] = Field(
+        default="Micro Finance Scheme", description="Scheme to filter eligible partners"
+    )
+    limit: int = Field(default=5, description="Number of nearest partners to return")
+    max_risk_score: Optional[int] = Field(
+        default=None, description="Optional maximum risk score threshold"
+    )
+
+
+class PartnerRecord(BaseModel):
+    id: str
+    name: str
+    type: str
+    branch_name: Optional[str] = None
+    address: Optional[str] = None
+    city: str
+    state: str
+    pincode: Optional[str] = None
+    lat: float
+    lng: float
+    contact_phone: Optional[str] = None
+    contact_email: Optional[str] = None
+    supported_schemes: List[str]
+    simulated_risk_score: int
+    simulated: bool = True
+    disbursement_speed_days: Optional[int] = None
+    distance_km: Optional[float] = None
+    match_reason: Optional[str] = None
+
+
+class NearestPartnersResponse(BaseModel):
+    partners: List[PartnerRecord]
+    total_found: int
+    user_location: Dict[str, float]
+    scheme_filter: Optional[str]
+
+
+class AiParseRequest(BaseModel):
+    query: str = Field(..., description="Free-text or conversational prompt from applicant")
+
+
+class AiParseResponse(BaseModel):
+    income: float
+    project_type: str
+    project_cost: float
+    education_need: bool
+    city: str
+    gender: str
+    tenure_months: int
+    extracted_from: str
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -82,8 +146,16 @@ class EmiCalculateResponse(BaseModel):
 def root():
     return {
         "status": "online",
-        "service": "Concessional Scheme Matching Engine",
-        "version": "1.0.0",
+        "service": "Concessional Scheme Matching & AI Engine",
+        "version": "2.0.0",
+        "endpoints": [
+            "/recommend",
+            "/calculate-emi",
+            "/nearest-partners",
+            "/partners",
+            "/ai/parse-query",
+            "/health",
+        ],
     }
 
 
@@ -95,7 +167,8 @@ def health_check():
 @app.post("/recommend", response_model=RecommendResponse)
 def get_recommendation(payload: RecommendRequest):
     """
-    Evaluates applicant profile against scheme rules and returns recommended scheme.
+    Evaluates applicant profile against scheme rules and returns recommended scheme,
+    alternates, and plain-language AI explanation.
     """
     try:
         result = recommend_scheme(
@@ -127,6 +200,57 @@ def get_emi_calculation(payload: EmiCalculateRequest):
         return EmiCalculateResponse(**result)
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/nearest-partners", response_model=NearestPartnersResponse)
+def get_nearest_partners(payload: NearestPartnersRequest):
+    """
+    Calculates Haversine distance and returns nearest eligible channel partners,
+    ranked by proximity and simulated risk score.
+    """
+    try:
+        partners = find_nearest_partners(
+            lat=payload.lat,
+            lng=payload.lng,
+            scheme=payload.scheme,
+            limit=payload.limit,
+            max_risk_score=payload.max_risk_score,
+        )
+        return NearestPartnersResponse(
+            partners=[PartnerRecord(**p) for p in partners],
+            total_found=len(partners),
+            user_location={"lat": payload.lat, "lng": payload.lng},
+            scheme_filter=payload.scheme,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/partners")
+def list_all_partners(city: Optional[str] = None):
+    """
+    Returns full list of channel partners, optionally filtered by city name.
+    """
+    try:
+        all_partners = load_partners()
+        if city:
+            city_norm = city.strip().lower()
+            all_partners = [p for p in all_partners if p.get("city", "").lower() == city_norm]
+        return {"partners": all_partners, "count": len(all_partners)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ai/parse-query", response_model=AiParseResponse)
+def parse_conversational_query(payload: AiParseRequest):
+    """
+    NLP layer to parse conversational English/Hindi-transliterated text into structured applicant parameters.
+    """
+    try:
+        parsed = parse_natural_language_query(payload.query)
+        return AiParseResponse(**parsed)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

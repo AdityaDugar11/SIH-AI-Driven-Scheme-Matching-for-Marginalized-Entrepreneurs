@@ -9,6 +9,9 @@ import os
 from typing import Any, Dict, List, Optional
 
 
+from ai_explainer import generate_ai_explanation
+
+
 DEFAULT_DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "schemes.json")
 
 
@@ -48,7 +51,8 @@ def recommend_scheme(
 ) -> Dict[str, Any]:
     """
     Deterministic rules engine to evaluate applicant eligibility and recommend
-    the best-fit concessional loan scheme along with plain-language explanations and alternates.
+    the best-fit concessional loan scheme along with plain-language explanations, alternates,
+    and AI audit checklist.
 
     Parameters:
         income (float): Annual family/individual income in INR.
@@ -59,7 +63,7 @@ def recommend_scheme(
         schemes_file (Optional[str]): Path to schemes JSON file.
 
     Returns:
-        Dict[str, Any]: Recommendation result with recommended_scheme, reason, alternates, and eligible flag.
+        Dict[str, Any]: Recommendation result with recommended_scheme, reason, alternates, eligible flag, and ai_explanation.
     """
     schemes = load_schemes(schemes_file)
     scheme_dict = {s["id"]: s for s in schemes}
@@ -72,6 +76,15 @@ def recommend_scheme(
 
     # 1. Income Eligibility Check
     if income > income_limit:
+        ai_exp = generate_ai_explanation(
+            income=income,
+            project_cost=project_cost,
+            project_type=project_type,
+            education_need=education_need,
+            gender=gender,
+            recommended_scheme=None,
+            eligible=False,
+        )
         return {
             "recommended_scheme": None,
             "reason": (
@@ -80,6 +93,7 @@ def recommend_scheme(
             ),
             "alternates": [],
             "eligible": False,
+            "ai_explanation": ai_exp,
         }
 
     # Normalize inputs
@@ -102,6 +116,15 @@ def recommend_scheme(
     if is_education:
         max_edu_cost = education_loan.get("max_project_cost", 5000000)
         if project_cost > max_edu_cost:
+            ai_exp = generate_ai_explanation(
+                income=income,
+                project_cost=project_cost,
+                project_type=project_type,
+                education_need=True,
+                gender=gender,
+                recommended_scheme=None,
+                eligible=False,
+            )
             return {
                 "recommended_scheme": None,
                 "reason": (
@@ -110,16 +133,32 @@ def recommend_scheme(
                 ),
                 "alternates": [],
                 "eligible": False,
+                "ai_explanation": ai_exp,
             }
 
+        rec_name = education_loan.get("name", "Education Loan Scheme")
+        ai_exp = generate_ai_explanation(
+            income=income,
+            project_cost=project_cost,
+            project_type=project_type,
+            education_need=True,
+            gender=gender,
+            recommended_scheme=rec_name,
+            eligible=True,
+            loan_amount=min(project_cost * 0.9, max_edu_cost),
+            applicant_contribution=project_cost - min(project_cost * 0.9, max_edu_cost),
+            interest_rate=6.5 if gender == "female" else 7.0,
+            moratorium_months=6,
+        )
         return {
-            "recommended_scheme": education_loan.get("name", "Education Loan Scheme"),
+            "recommended_scheme": rec_name,
             "reason": (
                 "You qualify for the Education Loan Scheme covering up to 90% of course expenses "
                 "for recognized professional and higher education programs."
             ),
             "alternates": [term_loan.get("name", "Term Loan Scheme")] if term_loan else [],
             "eligible": True,
+            "ai_explanation": ai_exp,
         }
 
     # 3. Enterprise / Business Project Route
@@ -132,32 +171,70 @@ def recommend_scheme(
         if term_loan:
             alternates.append(term_loan.get("name", "Term Loan Scheme"))
 
+        rec_name = micro_finance.get("name", "Micro Finance Scheme")
+        ai_exp = generate_ai_explanation(
+            income=income,
+            project_cost=project_cost,
+            project_type=project_type,
+            education_need=False,
+            gender=gender,
+            recommended_scheme=rec_name,
+            eligible=True,
+            loan_amount=min(project_cost * 0.9, micro_cap),
+            applicant_contribution=project_cost - min(project_cost * 0.9, micro_cap),
+            interest_rate=7.0,
+            moratorium_months=3,
+        )
         return {
-            "recommended_scheme": micro_finance.get("name", "Micro Finance Scheme"),
+            "recommended_scheme": rec_name,
             "reason": (
                 f"Your project cost is within the ₹{micro_cap / 100000:.2f} Lakh limit "
                 "and your income qualifies for concessional lending."
             ),
             "alternates": alternates,
             "eligible": True,
+            "ai_explanation": ai_exp,
         }
     elif project_cost <= term_cap:
         alternates = []
-        # If cost is near micro boundary or user wants smaller initial draw
         if micro_finance:
             alternates.append(micro_finance.get("name", "Micro Finance Scheme"))
 
+        rec_name = term_loan.get("name", "Term Loan Scheme")
+        ai_exp = generate_ai_explanation(
+            income=income,
+            project_cost=project_cost,
+            project_type=project_type,
+            education_need=False,
+            gender=gender,
+            recommended_scheme=rec_name,
+            eligible=True,
+            loan_amount=min(project_cost * 0.9, term_cap),
+            applicant_contribution=project_cost - min(project_cost * 0.9, term_cap),
+            interest_rate=8.0 if project_cost <= 500000 else (9.0 if project_cost <= 2500000 else 10.0),
+            moratorium_months=6,
+        )
         return {
-            "recommended_scheme": term_loan.get("name", "Term Loan Scheme"),
+            "recommended_scheme": rec_name,
             "reason": (
                 f"Your project cost of ₹{project_cost:,.0f} qualifies under the Term Loan Scheme "
                 f"for manufacturing, trade, or service projects (up to ₹{term_cap / 100000:.2f} Lakh)."
             ),
             "alternates": alternates,
             "eligible": True,
+            "ai_explanation": ai_exp,
         }
     else:
         # Project cost exceeds term loan cap of 50 Lakh
+        ai_exp = generate_ai_explanation(
+            income=income,
+            project_cost=project_cost,
+            project_type=project_type,
+            education_need=False,
+            gender=gender,
+            recommended_scheme=None,
+            eligible=False,
+        )
         return {
             "recommended_scheme": None,
             "reason": (
@@ -166,4 +243,5 @@ def recommend_scheme(
             ),
             "alternates": [],
             "eligible": False,
+            "ai_explanation": ai_exp,
         }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   CheckCircle2, 
   XCircle, 
@@ -6,12 +6,16 @@ import {
   Info, 
   Award, 
   Layers, 
-  HelpCircle,
-  ShieldCheck,
-  AlertTriangle
+  ShieldCheck, 
+  AlertTriangle,
+  FileCheck2,
+  Lightbulb,
+  Check
 } from 'lucide-react';
 
 export default function RecommendationResult({ recommendation, isLoading }) {
+  const [activeTab, setActiveTab] = useState('summary'); // 'summary' | 'audit'
+
   if (isLoading) {
     return (
       <div className="glass-card rounded-2xl p-6 border border-slate-800 animate-pulse">
@@ -30,13 +34,13 @@ export default function RecommendationResult({ recommendation, isLoading }) {
         </div>
         <h3 className="text-base font-semibold text-slate-200">No Evaluation Submitted Yet</h3>
         <p className="text-xs text-slate-400 max-w-sm mt-1">
-          Fill in the intake details on the left or select a 1-click test scenario to match the optimal concessional scheme.
+          Fill in the intake details or ask the AI Assistant above to match the optimal concessional scheme.
         </p>
       </div>
     );
   }
 
-  const { eligible, recommended_scheme, reason, alternates } = recommendation;
+  const { eligible, recommended_scheme, reason, alternates, ai_explanation } = recommendation;
 
   return (
     <div className="glass-card rounded-2xl p-5 sm:p-6 shadow-xl border border-slate-800 transition-all">
@@ -48,7 +52,7 @@ export default function RecommendationResult({ recommendation, isLoading }) {
           </div>
           <div>
             <h2 className="text-lg font-bold text-white">Scheme Recommendation</h2>
-            <p className="text-xs text-slate-400">Rule-driven deterministic matching result</p>
+            <p className="text-xs text-slate-400">Rule-driven deterministic matching + AI explainability</p>
           </div>
         </div>
 
@@ -73,20 +77,78 @@ export default function RecommendationResult({ recommendation, isLoading }) {
           <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-emerald-950/60 via-slate-900/90 to-teal-950/60 border border-emerald-500/40 relative overflow-hidden">
             <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-28 h-28 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
             
-            <div className="flex items-center space-x-2 mb-1.5">
+            <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
-                Recommended Primary Scheme
+                Primary Recommended Scheme
               </span>
+              
+              {/* Tab Selector: Summary vs AI Audit */}
+              <div className="flex items-center bg-slate-950/80 p-0.5 rounded-lg border border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('summary')}
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition ${
+                    activeTab === 'summary'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  Overview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('audit')}
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition flex items-center space-x-1 ${
+                    activeTab === 'audit'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <FileCheck2 className="w-3 h-3" />
+                  <span>AI Audit Trail</span>
+                </button>
+              </div>
             </div>
             
             <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               {recommended_scheme}
             </h3>
 
-            <div className="mt-3 flex items-start space-x-2.5 text-xs sm:text-sm text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-slate-800">
-              <Info className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <p className="leading-relaxed">{reason}</p>
-            </div>
+            {/* Tab 1: Overview */}
+            {activeTab === 'summary' && (
+              <div className="mt-3 flex items-start space-x-2.5 text-xs sm:text-sm text-slate-300 bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
+                <Info className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="leading-relaxed">{reason}</p>
+                  {ai_explanation?.financial_tip && (
+                    <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center space-x-1.5 text-xs text-amber-300">
+                      <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span><strong>Key Tip:</strong> {ai_explanation.financial_tip}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Tab 2: 5-Point AI Audit Trail */}
+            {activeTab === 'audit' && (
+              <div className="mt-3 space-y-2 bg-slate-950/80 p-3.5 rounded-lg border border-slate-800 text-xs">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-2">
+                  5-Point Financial & Statutory Verification Trace:
+                </div>
+                {ai_explanation?.audit_checklist?.map((item, idx) => (
+                  <div key={idx} className="flex items-start space-x-2 py-1 border-b border-slate-900 last:border-0">
+                    <div className={`p-0.5 rounded-full mt-0.5 ${item.passed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                      <Check className="w-3 h-3" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-slate-200">{item.rule}: </span>
+                      <span className="text-slate-400">{item.detail}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Alternate Eligible Schemes */}

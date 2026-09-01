@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
+import AiAssistantBar from './components/AiAssistantBar';
 import IntakeForm from './components/IntakeForm';
 import RecommendationResult from './components/RecommendationResult';
 import EmiBreakdown from './components/EmiBreakdown';
+import PartnerLocator from './components/PartnerLocator';
 import Disclosures from './components/Disclosures';
 import { 
   checkBackendHealth, 
@@ -22,6 +24,7 @@ const DEFAULT_FORM_STATE = {
 
 export default function App() {
   const [formData, setFormData] = useState(DEFAULT_FORM_STATE);
+  const [selectedCity, setSelectedCity] = useState('delhi');
   const [recommendation, setRecommendation] = useState(null);
   const [emiData, setEmiData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +44,7 @@ export default function App() {
     setErrorMessage(null);
 
     try {
-      // 1. Call /recommend endpoint
+      // 1. Call /recommend endpoint (includes AI audit explanation)
       const recResult = await fetchSchemeRecommendation({
         income: dataToSubmit.income,
         project_type: dataToSubmit.project_type,
@@ -74,6 +77,23 @@ export default function App() {
     }
   };
 
+  const handleApplyParsedAiData = (parsedData) => {
+    const updatedForm = {
+      ...formData,
+      income: parsedData.income,
+      project_type: parsedData.project_type,
+      project_cost: parsedData.project_cost,
+      education_need: parsedData.education_need,
+      gender: parsedData.gender || formData.gender,
+      tenure_months: parsedData.tenure_months || formData.tenure_months,
+    };
+    setFormData(updatedForm);
+    if (parsedData.city) {
+      setSelectedCity(parsedData.city);
+    }
+    handleEvaluate(updatedForm);
+  };
+
   useEffect(() => {
     checkHealth();
     handleEvaluate(DEFAULT_FORM_STATE);
@@ -81,6 +101,7 @@ export default function App() {
 
   const handleReset = () => {
     setFormData(DEFAULT_FORM_STATE);
+    setSelectedCity('delhi');
     handleEvaluate(DEFAULT_FORM_STATE);
   };
 
@@ -96,10 +117,10 @@ export default function App() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                AI Concessional Scheme Recommender & EMI Engine
+                AI Concessional Scheme Matching & Partner Locator
               </h1>
               <p className="text-sm text-slate-400 mt-1">
-                Deterministic matching engine delivering instant concessional loan eligibility, 90% loan calculation, and repayment forecasting.
+                Deterministic matching engine delivering instant concessional loan eligibility, 90% loan calculation, AI audit trail, and nearest channel partner routing.
               </p>
             </div>
             {!isConnected && (
@@ -108,7 +129,7 @@ export default function App() {
                   checkHealth();
                   handleEvaluate();
                 }}
-                className="self-start sm:self-auto flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-semibold transition"
+                className="self-start sm:self-auto flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-semibold transition cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Retry Connection</span>
@@ -129,6 +150,13 @@ export default function App() {
             </div>
           )}
         </div>
+
+        {/* Phase 3 AI Conversational Intake Assistant Bar */}
+        <AiAssistantBar
+          onApplyParsedData={handleApplyParsedAiData}
+          onCityChange={setSelectedCity}
+          isEvaluating={isLoading}
+        />
 
         {/* 2-Column Responsive Layout: Left (Form) & Right (Results + EMI) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
@@ -158,6 +186,14 @@ export default function App() {
           </div>
         </div>
 
+        {/* Phase 3: Interactive Channel Partner Map & Nearest Branches */}
+        <PartnerLocator
+          selectedCity={selectedCity}
+          onCityChange={setSelectedCity}
+          recommendedScheme={recommendation?.recommended_scheme}
+          isEligible={recommendation?.eligible}
+        />
+
         {/* SIH Governance & Phase Disclosures Footer */}
         <Disclosures />
       </main>
@@ -165,7 +201,7 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500">
         <p>
-          SIH Prototype — Concessional Loan Scheme Matching System for SC Entrepreneurs & Students | Phase 2 Frontend
+          SIH Prototype — AI-Driven Concessional Loan Scheme Matching & Channel Partner Routing System | Phase 3
         </p>
       </footer>
     </div>
