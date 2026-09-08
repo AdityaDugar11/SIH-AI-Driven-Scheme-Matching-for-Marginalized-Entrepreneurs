@@ -35,3 +35,9 @@
     box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
   }
 }
+
+.leaflet-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
