@@ -1,9 +1,4 @@
-const { createClient } = require('@supabase/supabase-js');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+const { getSupabase } = require('./_lib/supabase');
 
 /**
  * Haversine distance between two lat/lng points in km.
@@ -35,6 +30,14 @@ module.exports = async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  let supabase;
+  try {
+    supabase = getSupabase();
+  } catch (err) {
+    console.error('Supabase init error:', err.message);
+    return res.status(500).json({ error: 'Server configuration error', detail: err.message });
   }
 
   try {
