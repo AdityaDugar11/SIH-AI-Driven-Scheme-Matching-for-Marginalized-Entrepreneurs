@@ -17,26 +17,47 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 ---
 
 ## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: [agent/session name] on [date/time]
-**Phase we're in** (per PHASES.md): [e.g., "Phase 2 — frontend intake+results"]
+**Last updated by**: Antigravity backend build session on 2026-09-09T12:31+05:30
+**Phase we're in** (per PHASES.md): Phase 1 complete — Core recommender + calculator + locator backend logic
 
 ### Done
-- [list completed, working pieces — be specific: "recommender endpoint returns correct results for test cases 1-8 in Testing.md" not just "backend done"]
+- Supabase Postgres schema: `schemes` table (3 schemes from PRD §6) + `partners` table (30 entries across SCA/PSB/RRB/NBFC-MFI)
+- Migration SQL: `supabase/migrations/001_create_tables.sql` — DDL + RLS policies
+- Seed SQL: `supabase/seed.sql` — all scheme + partner data
+- Static JSON data files: `data/schemes.json` (3 schemes), `data/partners.json` (30 partners)
+- **POST /api/recommend** — deterministic rules engine, passes all 10 Testing.md cases
+- **POST /api/calculate-emi** — standard EMI formula, 90% loan-to-cost, scheme-based rate/moratorium
+- **POST /api/nearest-partners** — Haversine distance, risk_score deprioritization (>70 threshold)
+- **GET /api/health** — health check for cold-start warming
+- `vercel.json` with CORS config
+- `package.json` with `@supabase/supabase-js`
+- `.env` / `.env.example` for Supabase credentials
+- `.gitignore` for node_modules/.env
+- `scripts/test-endpoints.js` — automated test runner for all Testing.md cases
+- TECH_STACK.md updated with deviation flags (Supabase instead of JSON, Vercel instead of Render)
 
-### In progress
-- [what's half-built, and exactly where it was left off]
+### Pending user action before endpoints go live
+- Run `supabase/migrations/001_create_tables.sql` in Supabase SQL Editor
+- Run `supabase/seed.sql` in Supabase SQL Editor
+- Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in Vercel Dashboard → Settings → Environment Variables
+- Push to GitHub main (triggers Vercel auto-deploy)
 
 ### Not started
-- [remaining scope from PHASES.md]
+- Frontend (Phase 2): intake form, recommendation display, EMI calculator UI, partner map
+- n8n workflows (Phase 4): lead logging, email notifications
+- i18n (Phase 4): English + Hindi dictionaries
+- Polish (Phase 5): edge case handling in UI, mobile responsiveness
 
 ### Known bugs / issues
-- [anything broken, with enough detail that the next session doesn't have to rediscover it]
+- None yet — endpoints not yet tested against live Supabase (pending table creation + seed)
 
 ---
 
 ## Do NOT redo these (already decided/built — re-reading Decisions.md wastes tokens if it's already summarized here)
-- [Short bullet pointers to settled decisions, e.g., "Data layer is static JSON, not a DB — do not suggest adding one, see Decisions.md D2"]
-- [Any dead-end approach already tried and abandoned, so it isn't tried again — e.g., "Tried geolocation API for Screen 1 location field, dropped it for a city dropdown due to permission-prompt unreliability in testing"]
+- Data layer changed from static JSON to Supabase Postgres — see TECH_STACK.md "Deviations" section
+- Backend hosting changed from Render/Railway to Vercel Serverless Functions
+- Eligibility logic is deterministic rules engine (if/else + sort by max_amount), NOT ML — do not suggest replacing it
+- API contract matches TECH_STACK.md exactly (request/response shapes unchanged), endpoint paths have /api/ prefix per Vercel convention
 
 ## Open questions / blockers (things that need a human decision, not an agent decision)
 - [e.g., "Which backend language — Node or Python — still needs the team to confirm based on who's free"]

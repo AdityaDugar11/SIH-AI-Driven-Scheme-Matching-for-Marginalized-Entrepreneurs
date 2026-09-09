@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Micro Finance Scheme",
+    "max_amount": 140000,
+    "interest_rate_min": 6.5,
+    "interest_rate_max": 8.0,
+    "moratorium_months_min": 3,
+    "moratorium_months_max": 6,
+    "eligibility_criteria": {
+      "max_income": 500000,
+      "project_types": ["small_business"],
+      "education_need": false
+    }
+  },
+  {
+    "id": 2,
+    "name": "Term Loan Scheme",
+    "max_amount": 5000000,
+    "interest_rate_min": 8.0,
+    "interest_rate_max": 10.0,
+    "moratorium_months_min": 6,
+    "moratorium_months_max": 12,
+    "eligibility_criteria": {
+      "max_income": 500000,
+      "project_types": ["small_business", "larger_project", "manufacturing", "trade", "service"],
+      "education_need": false
+    }
+  },
+  {
+    "id": 3,
+    "name": "Education Loan Scheme",
+    "max_amount": 2000000,
+    "interest_rate_min": 6.5,
+    "interest_rate_max": 8.0,
+    "moratorium_months_min": 6,
+    "moratorium_months_max": 12,
+    "eligibility_criteria": {
+      "max_income": 500000,
+      "project_types": ["education"],
+      "education_need": true
+    }
+  }
+]

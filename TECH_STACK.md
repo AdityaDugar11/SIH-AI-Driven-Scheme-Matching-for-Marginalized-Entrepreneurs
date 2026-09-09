@@ -13,6 +13,23 @@
 | Hosting — backend | Render or Railway | free tier, watch for cold-start delay before demo (hit the URL a few times beforehand to warm it up) |
 | Version control | GitHub, one shared repo | branch per person, merge to `main` frequently — do not let 4 people work unmerged for 12+ hours |
 
+## ⚠️ Deviations from original plan (read before integrating)
+
+> **Updated 2026-09-09** by backend build session. Two changes from the original spec:
+
+| Original plan | What changed | Why | Impact on frontend |
+|---|---|---|---|
+| Data store: static JSON files | **Supabase Postgres** (tables: `schemes`, `partners`) | Team decided structured queries + seeded DB is cleaner for 3-endpoint backend | **None** — API request/response shapes are identical to the contract below |
+| Backend hosting: Render/Railway | **Vercel Serverless Functions** (Node.js) | Same platform as frontend, no cold-start issues, simpler CI/CD | Endpoint paths are `/api/recommend`, `/api/calculate-emi`, `/api/nearest-partners` (Vercel `/api/` prefix convention) |
+
+**What did NOT change:** API contract (request/response JSON shapes), eligibility logic (still deterministic rules, no ML), data schema, or CORS setup. Frontend can integrate against the same contract below without modifications.
+
+**Environment variables required in Vercel Dashboard → Settings → Environment Variables:**
+- `SUPABASE_URL` — the Supabase project URL
+- `SUPABASE_ANON_KEY` — the Supabase publishable/anon key
+
+---
+
 ## Why not other options (so nobody re-litigates this at hour 10)
 - **No database (Postgres/Mongo/etc.)**: adds hosting, migrations, and connection-string debugging for a dataset of ~50 records that fits fine in a JSON file. Not worth it at this scale/timeframe.
 - **No native mobile app**: a responsive web app covers the "digital platform or mobile application" requirement in the problem statement and is far faster to build and to demo (no app store, no device pairing).

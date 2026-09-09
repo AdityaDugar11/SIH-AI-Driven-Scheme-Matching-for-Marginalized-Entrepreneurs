@@ -1,0 +1,302 @@
+[
+  {
+    "id": "P001",
+    "name": "State Bank of India — Connaught Place Branch",
+    "type": "PSB",
+    "lat": 28.6315,
+    "lng": 77.2167,
+    "contact_email": "cp.branch@sbi.co.in",
+    "risk_score": 18,
+    "simulated": true
+  },
+  {
+    "id": "P002",
+    "name": "Punjab National Bank — Karol Bagh Branch",
+    "type": "PSB",
+    "lat": 28.6519,
+    "lng": 77.1907,
+    "contact_email": "karolbagh@pnb.co.in",
+    "risk_score": 25,
+    "simulated": true
+  },
+  {
+    "id": "P003",
+    "name": "Bank of Baroda — Fort Branch Mumbai",
+    "type": "PSB",
+    "lat": 18.9340,
+    "lng": 72.8356,
+    "contact_email": "fort.mumbai@bankofbaroda.co.in",
+    "risk_score": 15,
+    "simulated": true
+  },
+  {
+    "id": "P004",
+    "name": "Canara Bank — MG Road Bangalore",
+    "type": "PSB",
+    "lat": 12.9756,
+    "lng": 77.6066,
+    "contact_email": "mgroad.blr@canarabank.com",
+    "risk_score": 20,
+    "simulated": true
+  },
+  {
+    "id": "P005",
+    "name": "Union Bank of India — Anna Salai Chennai",
+    "type": "PSB",
+    "lat": 13.0604,
+    "lng": 80.2496,
+    "contact_email": "annasalai@unionbankofindia.co.in",
+    "risk_score": 22,
+    "simulated": true
+  },
+  {
+    "id": "P006",
+    "name": "Indian Bank — Abids Hyderabad",
+    "type": "PSB",
+    "lat": 17.3927,
+    "lng": 78.4753,
+    "contact_email": "abids.hyd@indianbank.co.in",
+    "risk_score": 28,
+    "simulated": true
+  },
+  {
+    "id": "P007",
+    "name": "Central Bank of India — BBD Bagh Kolkata",
+    "type": "PSB",
+    "lat": 22.5726,
+    "lng": 88.3510,
+    "contact_email": "bbdbagh.kol@centralbankofindia.co.in",
+    "risk_score": 32,
+    "simulated": true
+  },
+  {
+    "id": "P008",
+    "name": "Bank of India — CG Road Ahmedabad",
+    "type": "PSB",
+    "lat": 23.0300,
+    "lng": 72.5660,
+    "contact_email": "cgroad.ahm@bankofindia.co.in",
+    "risk_score": 19,
+    "simulated": true
+  },
+  {
+    "id": "P009",
+    "name": "Uttar Bihar Gramin Bank — Patna Main",
+    "type": "RRB",
+    "lat": 25.6120,
+    "lng": 85.1440,
+    "contact_email": "patna.main@ubgb.in",
+    "risk_score": 42,
+    "simulated": true
+  },
+  {
+    "id": "P010",
+    "name": "Baroda UP Gramin Bank — Lucknow Branch",
+    "type": "RRB",
+    "lat": 26.8500,
+    "lng": 80.9460,
+    "contact_email": "lucknow@barodaupbank.in",
+    "risk_score": 38,
+    "simulated": true
+  },
+  {
+    "id": "P011",
+    "name": "Karnataka Gramin Bank — Dharwad Branch",
+    "type": "RRB",
+    "lat": 15.4589,
+    "lng": 75.0078,
+    "contact_email": "dharwad@karnatakagraminbank.com",
+    "risk_score": 35,
+    "simulated": true
+  },
+  {
+    "id": "P012",
+    "name": "Andhra Pradesh Grameena Vikas Bank — Warangal",
+    "type": "RRB",
+    "lat": 17.9784,
+    "lng": 79.5941,
+    "contact_email": "warangal@apgvbank.in",
+    "risk_score": 40,
+    "simulated": true
+  },
+  {
+    "id": "P013",
+    "name": "Madhyanchal Gramin Bank — Bhopal Branch",
+    "type": "RRB",
+    "lat": 23.2599,
+    "lng": 77.4126,
+    "contact_email": "bhopal@mgbank.in",
+    "risk_score": 45,
+    "simulated": true
+  },
+  {
+    "id": "P014",
+    "name": "Rajasthan Marudhara Gramin Bank — Jaipur",
+    "type": "RRB",
+    "lat": 26.9124,
+    "lng": 75.7873,
+    "contact_email": "jaipur@rmgb.in",
+    "risk_score": 22,
+    "simulated": true
+  },
+  {
+    "id": "P015",
+    "name": "Telangana Grameena Bank — Hyderabad Branch",
+    "type": "RRB",
+    "lat": 17.4000,
+    "lng": 78.4800,
+    "contact_email": "hyderabad@tgbank.in",
+    "risk_score": 30,
+    "simulated": true
+  },
+  {
+    "id": "P016",
+    "name": "Kerala Gramin Bank — Ernakulam Branch",
+    "type": "RRB",
+    "lat": 9.9816,
+    "lng": 76.2999,
+    "contact_email": "ernakulam@keralagbank.in",
+    "risk_score": 16,
+    "simulated": true
+  },
+  {
+    "id": "P017",
+    "name": "NSFDC — Head Office Delhi",
+    "type": "SCA",
+    "lat": 28.6271,
+    "lng": 77.2219,
+    "contact_email": "info@nsfdc.nic.in",
+    "risk_score": 12,
+    "simulated": true
+  },
+  {
+    "id": "P018",
+    "name": "Tamil Nadu Adi Dravidar Housing & Dev Corporation — Chennai",
+    "type": "SCA",
+    "lat": 13.0878,
+    "lng": 80.2785,
+    "contact_email": "tahdco.chennai@tn.gov.in",
+    "risk_score": 24,
+    "simulated": true
+  },
+  {
+    "id": "P019",
+    "name": "UP SC Finance & Development Corporation — Lucknow",
+    "type": "SCA",
+    "lat": 26.8489,
+    "lng": 80.9340,
+    "contact_email": "upscfdc@up.gov.in",
+    "risk_score": 48,
+    "simulated": true
+  },
+  {
+    "id": "P020",
+    "name": "Maharashtra Mahatma Phule BC Dev Corporation — Mumbai",
+    "type": "SCA",
+    "lat": 19.0760,
+    "lng": 72.8777,
+    "contact_email": "mpbcdc@maharashtra.gov.in",
+    "risk_score": 30,
+    "simulated": true
+  },
+  {
+    "id": "P021",
+    "name": "MP SC Finance & Development Corporation — Bhopal",
+    "type": "SCA",
+    "lat": 23.2650,
+    "lng": 77.4100,
+    "contact_email": "mpscfdc@mp.gov.in",
+    "risk_score": 55,
+    "simulated": true
+  },
+  {
+    "id": "P022",
+    "name": "Dr. BR Ambedkar Dev Corporation — Bangalore",
+    "type": "SCA",
+    "lat": 12.9800,
+    "lng": 77.5900,
+    "contact_email": "ambedkarcorp@karnataka.gov.in",
+    "risk_score": 26,
+    "simulated": true
+  },
+  {
+    "id": "P023",
+    "name": "Bihar SC/ST Development Corporation — Patna",
+    "type": "SCA",
+    "lat": 25.6100,
+    "lng": 85.1300,
+    "contact_email": "bscstdc@bihar.gov.in",
+    "risk_score": 60,
+    "simulated": true
+  },
+  {
+    "id": "P024",
+    "name": "Rajasthan SC/ST Finance & Dev Corporation — Jaipur",
+    "type": "SCA",
+    "lat": 26.9200,
+    "lng": 75.7900,
+    "contact_email": "rscstfdc@rajasthan.gov.in",
+    "risk_score": 33,
+    "simulated": true
+  },
+  {
+    "id": "P025",
+    "name": "Bandhan Bank — Salt Lake Kolkata",
+    "type": "NBFC-MFI",
+    "lat": 22.5800,
+    "lng": 88.4100,
+    "contact_email": "saltlake.kol@bandhanbank.com",
+    "risk_score": 20,
+    "simulated": true
+  },
+  {
+    "id": "P026",
+    "name": "Bharat Financial Inclusion — Begumpet Hyderabad",
+    "type": "NBFC-MFI",
+    "lat": 17.4400,
+    "lng": 78.4700,
+    "contact_email": "begumpet@bharatfinancial.in",
+    "risk_score": 35,
+    "simulated": true
+  },
+  {
+    "id": "P027",
+    "name": "Cashpor Micro Credit — Varanasi Branch",
+    "type": "NBFC-MFI",
+    "lat": 25.3176,
+    "lng": 82.9739,
+    "contact_email": "varanasi@cashpor.in",
+    "risk_score": 44,
+    "simulated": true
+  },
+  {
+    "id": "P028",
+    "name": "ESAF Small Finance Bank — Thrissur Branch",
+    "type": "NBFC-MFI",
+    "lat": 10.5276,
+    "lng": 76.2144,
+    "contact_email": "thrissur@esafbank.com",
+    "risk_score": 17,
+    "simulated": true
+  },
+  {
+    "id": "P029",
+    "name": "Ujjivan Small Finance Bank — Koramangala Bangalore",
+    "type": "NBFC-MFI",
+    "lat": 12.9352,
+    "lng": 77.6245,
+    "contact_email": "koramangala.blr@ujjivan.com",
+    "risk_score": 21,
+    "simulated": true
+  },
+  {
+    "id": "P030",
+    "name": "Arohan Financial Services — Park Street Kolkata",
+    "type": "NBFC-MFI",
+    "lat": 22.5530,
+    "lng": 88.3510,
+    "contact_email": "parkstreet.kol@arohan.in",
+    "risk_score": 38,
+    "simulated": true
+  }
+]
