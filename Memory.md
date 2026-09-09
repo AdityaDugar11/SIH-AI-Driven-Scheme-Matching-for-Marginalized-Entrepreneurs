@@ -17,30 +17,23 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 ---
 
 ## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: Antigravity backend build session on 2026-09-09T12:31+05:30
-**Phase we're in** (per PHASES.md): Phase 1 complete — Core recommender + calculator + locator backend logic
+**Last updated by**: Antigravity backend build session on 2026-09-09T20:23+05:30
+**Phase we're in** (per PHASES.md): Phase 0 + Phase 1 COMPLETE ✅ — Backend live, tested, ready for frontend integration
+
+### Live endpoints (production URL: `https://aidrivenschemematchingformarginaliz.vercel.app`)
+- **POST /api/recommend** — deterministic rules engine, 10/10 Testing.md cases passing ✅
+- **POST /api/calculate-emi** — standard EMI formula, 5/5 Testing.md cases passing ✅
+- **POST /api/nearest-partners** — Haversine distance + risk deprioritization, 4/4 Testing.md cases passing ✅
+- **GET /api/health** — health check for cold-start warming ✅
 
 ### Done
-- Supabase Postgres schema: `schemes` table (3 schemes from PRD §6) + `partners` table (30 entries across SCA/PSB/RRB/NBFC-MFI)
-- Migration SQL: `supabase/migrations/001_create_tables.sql` — DDL + RLS policies
-- Seed SQL: `supabase/seed.sql` — all scheme + partner data
-- Static JSON data files: `data/schemes.json` (3 schemes), `data/partners.json` (30 partners)
-- **POST /api/recommend** — deterministic rules engine, passes all 10 Testing.md cases
-- **POST /api/calculate-emi** — standard EMI formula, 90% loan-to-cost, scheme-based rate/moratorium
-- **POST /api/nearest-partners** — Haversine distance, risk_score deprioritization (>70 threshold)
-- **GET /api/health** — health check for cold-start warming
-- `vercel.json` with CORS config
-- `package.json` with `@supabase/supabase-js`
-- `.env` / `.env.example` for Supabase credentials
-- `.gitignore` for node_modules/.env
-- `scripts/test-endpoints.js` — automated test runner for all Testing.md cases
-- TECH_STACK.md updated with deviation flags (Supabase instead of JSON, Vercel instead of Render)
-
-### Pending user action before endpoints go live
-- Run `supabase/migrations/001_create_tables.sql` in Supabase SQL Editor
-- Run `supabase/seed.sql` in Supabase SQL Editor
-- Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in Vercel Dashboard → Settings → Environment Variables
-- Push to GitHub main (triggers Vercel auto-deploy)
+- Supabase Postgres: `schemes` (3 rows) + `partners` (30 rows), RLS enabled, seeded
+- Migration + seed SQL in `supabase/` directory
+- Static JSON data files: `data/schemes.json`, `data/partners.json`
+- Vercel serverless deployment with CORS, Supabase integration connected
+- Shared Supabase client (`api/_lib/supabase.js`) with multi-env-var fallback
+- `scripts/test-endpoints.js` — 19 automated tests, all passing
+- TECH_STACK.md updated with deviation flags (Supabase + Vercel)
 
 ### Not started
 - Frontend (Phase 2): intake form, recommendation display, EMI calculator UI, partner map
@@ -49,7 +42,7 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - Polish (Phase 5): edge case handling in UI, mobile responsiveness
 
 ### Known bugs / issues
-- None yet — endpoints not yet tested against live Supabase (pending table creation + seed)
+- `SUPABASE_URL` env var in Vercel has a typo (`ttps://` instead of `https://`) — code works around it by preferring `NEXT_PUBLIC_SUPABASE_URL`. Fix the env var in Vercel Dashboard when convenient.
 
 ---
 
