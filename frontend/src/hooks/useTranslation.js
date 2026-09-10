@@ -6,6 +6,7 @@
  * Supports {{variable}} template interpolation.
  */
 
+import { useCallback } from "react";
 import { useApp } from "../context/AppContext.jsx";
 import en from "../i18n/en.json";
 import hi from "../i18n/hi.json";
@@ -21,7 +22,7 @@ export function useTranslation() {
    * Translate a key, with optional interpolation.
    * t("step_of", { current: 1, total: 5 }) → "Step 1 of 5"
    */
-  function t(key, vars) {
+  const t = useCallback((key, vars) => {
     let str = dict[key] || dictionaries.en[key] || key;
     if (vars) {
       Object.entries(vars).forEach(([k, v]) => {
@@ -29,7 +30,7 @@ export function useTranslation() {
       });
     }
     return str;
-  }
+  }, [dict]);
 
   return { t, language: lang };
 }

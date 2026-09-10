@@ -77,3 +77,11 @@ See TECH_STACK.md "why not other options."
 **Trade-off accepted**: mock layer doesn't intercept at the network level (no DevTools Network tab visibility for mocks). Acceptable — the mock layer is a development fallback, not a testing framework.
 **Revisit if**: the project needs comprehensive API mocking for integration tests — then MSW would be worth the setup cost.
 
+---
+
+### D10: React-Leaflet for Partner Locator Map
+**Alternatives considered**: Google Maps API, Mapbox GL JS.
+**Decision**: `react-leaflet` with OpenStreetMap tiles.
+**Why**: completely free, no API keys required, no billing setup needed for the hackathon. It perfectly matches the requirement of plotting a few points without incurring complex dependencies or usage limits.
+**Trade-off accepted**: slightly less polished default tiles compared to Google Maps, but perfectly adequate for demo purposes.
+**Revisit if**: real-time traffic or highly customized routing is needed, which OpenStreetMap/Leaflet might not natively provide out-of-the-box as cleanly as Google.

@@ -18,17 +18,8 @@ import IntakeForm from "./components/IntakeForm.jsx";
 import RecommendationResult from "./components/RecommendationResult.jsx";
 import EmiCalculator from "./components/EmiCalculator.jsx";
 
-/** Placeholder for Screens 4-5 (built by another team member) */
-function ComingSoon({ screen }) {
-  return (
-    <div className="card text-center py-12">
-      <p className="text-heading mb-2">Screen {screen}</p>
-      <p style={{ color: "var(--color-text-muted)" }}>
-        This screen will be built by another team member.
-      </p>
-    </div>
-  );
-}
+import PartnerLocator from "./components/PartnerLocator.jsx";
+import ConfirmationScreen from "./components/ConfirmationScreen.jsx";
 
 export default function App() {
   return (
@@ -63,8 +54,8 @@ export default function App() {
               <Route path="/" element={<IntakeForm />} />
               <Route path="/result" element={<RecommendationResult />} />
               <Route path="/emi" element={<EmiCalculator />} />
-              <Route path="/partners" element={<ComingSoon screen={4} />} />
-              <Route path="/confirmation" element={<ComingSoon screen={5} />} />
+              <Route path="/partners" element={<PartnerLocator />} />
+              <Route path="/confirmation" element={<ConfirmationScreen />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

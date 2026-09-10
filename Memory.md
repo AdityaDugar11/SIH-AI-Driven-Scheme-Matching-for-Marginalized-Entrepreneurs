@@ -17,8 +17,8 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 ---
 
 ## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: Antigravity frontend build session on 2026-09-10T08:53+05:30
-**Phase we're in** (per PHASES.md): Phase 1 COMPLETE + Phase 2 IN PROGRESS — Frontend Screens 1-3 built, wired to live backend
+**Last updated by**: Antigravity frontend build session on 2026-09-10T10:55+05:30
+**Phase we're in** (per PHASES.md): Phase 3 & 4 COMPLETE — All 5 frontend screens built and integrated, i18n support added.
 
 ### Live backend (URL: `https://aidrivenschemematchingformarginalizedentrepren-afxeu5xhv.vercel.app`)
 - **POST /api/recommend** — ✅ tested, working
@@ -31,14 +31,15 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - **Screen 1 (IntakeForm)**: income, loan purpose (radio), cost, city dropdown, "Find My Scheme" CTA → calls real backend `/api/recommend`
 - **Screen 2 (RecommendationResult)**: eligible badge + scheme name + reason + alternates (green), or ineligible with amber styling (not red, per Design.md)
 - **Screen 3 (EmiCalculator)**: loan/contribution split, native range slider (6-60 months), live EMI recalculation via real `/api/calculate-emi`, visual bar, secondary info
-- **Shared components**: LanguageToggle (English/Hindi), CurrencyDisplay (₹ Indian locale), StepHeader (Step X of 5 + dots)
-- **React Context** (`AppContext.jsx`): shared state for intake, recommendation, EMI, language — Screens 4-5 can read same state
-- **API client** (`api/client.js`): swappable mock/real fetch wrapper via `VITE_USE_MOCK_API` env var. Currently set to `false` (real backend)
-- **Mock fixtures** (`api/mocks.js`): offline dev fallback matching TECH_STACK.md response shapes exactly
-- **i18n**: English + Hindi dictionaries for all Screen 1-3 strings, custom `useTranslation` hook
-- **Design system** (`index.css`): all Design.md tokens (trust-blue primary, off-white bg, system font, 18px mobile base, 44px touch targets, 8px radius)
-- **Routing**: React Router — `/` (Screen 1), `/result` (Screen 2), `/emi` (Screen 3), `/partners` + `/confirmation` (placeholders for Screens 4-5)
-- Build passes with zero errors (`npx vite build` — 119ms, 252KB JS gzipped to 79KB)
+- **Screen 4 (PartnerLocator)**: Integrates `react-leaflet` to display map, lists nearest partners, incorporates non-negotiable simulated data tooltip, and navigates to confirmation.
+- **Screen 5 (ConfirmationScreen)**: Success state confirming scheme, EMI, and partner details, with "Start Over" reset flow.
+- **Shared components**: LanguageToggle, CurrencyDisplay, StepHeader, InfoTooltip (for simulated data).
+- **React Context** (`AppContext.jsx`): shared state working across all 5 screens.
+- **API client** (`api/client.js`): supports `/recommend`, `/calculate-emi`, and `/nearest-partners` toggling between real/mock via `VITE_USE_MOCK_API`.
+- **Mock fixtures** (`api/mocks.js`): completely mocked for offline dev matching all 3 endpoint shapes.
+- **i18n**: English + Hindi dictionaries covering all Screens 1-5 strings, using custom `useTranslation` hook.
+- **Design system** (`index.css`): all Design.md tokens. Map styles imported.
+- **Routing**: React Router fully operational (`/`, `/result`, `/emi`, `/partners`, `/confirmation`).
 
 ### Done (prior session — backend)
 - Supabase Postgres: `schemes` (3 rows) + `partners` (30 rows), RLS enabled, seeded
@@ -46,8 +47,6 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - `scripts/test-endpoints.js` — 19 automated tests, all passing
 
 ### Not started
-- Screen 4 (Partner Locator + Leaflet map) — to be built by another team member
-- Screen 5 (Confirmation) — to be built by another team member
 - n8n workflows (Phase 4): lead logging, email notifications
 - Hindi translation pass review (strings present but need native review)
 - Mobile responsiveness polish (Phase 5)
@@ -68,7 +67,7 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - Frontend `.env` has `VITE_USE_MOCK_API=false` pointing at real backend — mock layer kept as fallback
 
 ## Open questions / blockers (things that need a human decision, not an agent decision)
-- None currently — Screens 4-5 can be built by another team member using the shared AppContext
+- N8n webhook URL is not yet integrated in the client; a console log acts as a placeholder on Screen 4.
 
 ---
 

@@ -47,5 +47,21 @@
   "screen3_bar_loan": "ऋण",
   "screen3_bar_contribution": "आपका हिस्सा",
 
-  "error_generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+  "error_generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।",
+
+  "screen4_title": "निकटतम साझेदार खोजें",
+  "screen4_loading": "आपके आस-पास साझेदार खोज रहे हैं...",
+  "screen4_km": "किमी दूर",
+  "screen4_risk_score": "जोखिम स्कोर",
+  "screen4_simulated_tooltip": "सिम्युलेटेड डेटा — उत्पादन संस्करण NBCFDC/SCA MIS के साथ एकीकृत होता है।",
+  "screen4_contact": "संपर्क करें",
+  "screen4_cta_send": "इस साझेदार को मेरा विवरण भेजें",
+
+  "screen5_success_title": "सफलता!",
+  "screen5_success_subtitle": "आपका विवरण भेज दिया गया है। पुष्टि के लिए अपना ईमेल जांचें।",
+  "screen5_scheme_label": "योजना",
+  "screen5_emi_label": "अनुमानित ईएमआई",
+  "screen5_partner_label": "चैनल पार्टनर",
+  "screen5_check_email": "ईमेल के माध्यम से विवरण भेजा गया",
+  "screen5_cta_start_over": "पुनः प्रारंभ करें"
 }

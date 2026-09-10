@@ -8,7 +8,7 @@
  * Components import ONLY from this file — never from mocks.js directly.
  */
 
-import { getMockRecommendation, getMockEmi } from "./mocks.js";
+import { getMockRecommendation, getMockEmi, getMockNearestPartners } from "./mocks.js";
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK_API === "true";
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
@@ -57,6 +57,31 @@ export async function calculateEmi(data) {
   }
 
   const res = await fetch(`${API_BASE}/api/calculate-emi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `API error: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+/**
+ * POST /api/nearest-partners
+ * @param {{ lat: number, lng: number, scheme: string, limit: number }} data
+ * @returns {Promise<{ partners: Array<{ id: string, name: string, type: string, distance_km: number, risk_score: number, simulated: boolean, contact_email: string, lat?: number, lng?: number }> }>}
+ */
+export async function nearestPartners(data) {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY_MS);
+    return getMockNearestPartners(data);
+  }
+
+  const res = await fetch(`${API_BASE}/api/nearest-partners`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

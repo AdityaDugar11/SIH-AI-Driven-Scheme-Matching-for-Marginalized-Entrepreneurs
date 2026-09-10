@@ -47,5 +47,21 @@
   "screen3_bar_loan": "Loan",
   "screen3_bar_contribution": "Your Share",
 
-  "error_generic": "Something went wrong. Please try again."
+  "error_generic": "Something went wrong. Please try again.",
+
+  "screen4_title": "Find Nearest Partner",
+  "screen4_loading": "Finding partners near you...",
+  "screen4_km": "km away",
+  "screen4_risk_score": "Risk Score",
+  "screen4_simulated_tooltip": "Simulated data — production version integrates with NBCFDC/SCA MIS.",
+  "screen4_contact": "Contact",
+  "screen4_cta_send": "Send My Details to This Partner",
+
+  "screen5_success_title": "Success!",
+  "screen5_success_subtitle": "Your details have been sent. Check your email for confirmation.",
+  "screen5_scheme_label": "Scheme",
+  "screen5_emi_label": "Estimated EMI",
+  "screen5_partner_label": "Channel Partner",
+  "screen5_check_email": "Details sent via email",
+  "screen5_cta_start_over": "Start Over"
 }

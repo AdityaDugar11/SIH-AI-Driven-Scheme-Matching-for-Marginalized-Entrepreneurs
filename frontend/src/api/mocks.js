@@ -43,6 +43,45 @@ export const MOCK_CALCULATE_EMI = {
   total_interest: 12240,
 };
 
+// MOCK DATA — simulated fixture for POST /nearest-partners
+export const MOCK_NEAREST_PARTNERS = {
+  partners: [
+    {
+      id: "P014",
+      name: "XYZ RRB Branch",
+      type: "RRB",
+      distance_km: 3.2,
+      risk_score: 22,
+      simulated: true,
+      contact_email: "branch@xyzrrb.in",
+      lat: 28.615,
+      lng: 77.215
+    },
+    {
+      id: "P025",
+      name: "National SC Finance Corp",
+      type: "SCA",
+      distance_km: 5.1,
+      risk_score: 15,
+      simulated: true,
+      contact_email: "contact@nsfdc.in",
+      lat: 28.600,
+      lng: 77.225
+    },
+    {
+      id: "P102",
+      name: "City Bank Microfinance",
+      type: "PSB",
+      distance_km: 7.8,
+      risk_score: 45,
+      simulated: true,
+      contact_email: "loans@citybank.in",
+      lat: 28.630,
+      lng: 77.200
+    }
+  ]
+};
+
 /**
  * Returns the appropriate mock response for /recommend based on input.
  * Simulates the deterministic rules engine logic for offline dev.
@@ -89,5 +128,17 @@ export function getMockEmi(data) {
     emi,
     moratorium_months: 3,
     total_interest: totalInterest,
+  };
+}
+
+/**
+ * Returns mock nearest partners based on location.
+ */
+export function getMockNearestPartners(data) {
+  // In a real app we'd filter/sort by distance and risk score.
+  // Here we just return the static list, maybe slicing it to the limit.
+  const limit = data.limit || 3;
+  return {
+    partners: MOCK_NEAREST_PARTNERS.partners.slice(0, limit)
   };
 }
