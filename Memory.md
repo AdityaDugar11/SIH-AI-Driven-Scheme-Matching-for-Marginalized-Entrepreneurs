@@ -17,32 +17,44 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 ---
 
 ## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: Antigravity backend build session on 2026-09-09T20:23+05:30
-**Phase we're in** (per PHASES.md): Phase 0 + Phase 1 COMPLETE ✅ — Backend live, tested, ready for frontend integration
+**Last updated by**: Antigravity frontend build session on 2026-09-10T08:53+05:30
+**Phase we're in** (per PHASES.md): Phase 1 COMPLETE + Phase 2 IN PROGRESS — Frontend Screens 1-3 built, wired to live backend
 
-### Live endpoints (production URL: `https://aidrivenschemematchingformarginaliz.vercel.app`)
-- **POST /api/recommend** — deterministic rules engine, 10/10 Testing.md cases passing ✅
-- **POST /api/calculate-emi** — standard EMI formula, 5/5 Testing.md cases passing ✅
-- **POST /api/nearest-partners** — Haversine distance + risk deprioritization, 4/4 Testing.md cases passing ✅
-- **GET /api/health** — health check for cold-start warming ✅
+### Live backend (URL: `https://aidrivenschemematchingformarginalizedentrepren-afxeu5xhv.vercel.app`)
+- **POST /api/recommend** — ✅ tested, working
+- **POST /api/calculate-emi** — ✅ tested, working
+- **POST /api/nearest-partners** — ✅ tested, working
+- **GET /api/health** — ✅ tested, working
 
-### Done
+### Done (this session — frontend)
+- Vite + React + Tailwind v4 scaffolded in `/frontend/` (separate from backend root)
+- **Screen 1 (IntakeForm)**: income, loan purpose (radio), cost, city dropdown, "Find My Scheme" CTA → calls real backend `/api/recommend`
+- **Screen 2 (RecommendationResult)**: eligible badge + scheme name + reason + alternates (green), or ineligible with amber styling (not red, per Design.md)
+- **Screen 3 (EmiCalculator)**: loan/contribution split, native range slider (6-60 months), live EMI recalculation via real `/api/calculate-emi`, visual bar, secondary info
+- **Shared components**: LanguageToggle (English/Hindi), CurrencyDisplay (₹ Indian locale), StepHeader (Step X of 5 + dots)
+- **React Context** (`AppContext.jsx`): shared state for intake, recommendation, EMI, language — Screens 4-5 can read same state
+- **API client** (`api/client.js`): swappable mock/real fetch wrapper via `VITE_USE_MOCK_API` env var. Currently set to `false` (real backend)
+- **Mock fixtures** (`api/mocks.js`): offline dev fallback matching TECH_STACK.md response shapes exactly
+- **i18n**: English + Hindi dictionaries for all Screen 1-3 strings, custom `useTranslation` hook
+- **Design system** (`index.css`): all Design.md tokens (trust-blue primary, off-white bg, system font, 18px mobile base, 44px touch targets, 8px radius)
+- **Routing**: React Router — `/` (Screen 1), `/result` (Screen 2), `/emi` (Screen 3), `/partners` + `/confirmation` (placeholders for Screens 4-5)
+- Build passes with zero errors (`npx vite build` — 119ms, 252KB JS gzipped to 79KB)
+
+### Done (prior session — backend)
 - Supabase Postgres: `schemes` (3 rows) + `partners` (30 rows), RLS enabled, seeded
-- Migration + seed SQL in `supabase/` directory
-- Static JSON data files: `data/schemes.json`, `data/partners.json`
-- Vercel serverless deployment with CORS, Supabase integration connected
-- Shared Supabase client (`api/_lib/supabase.js`) with multi-env-var fallback
+- Vercel serverless deployment with CORS, Supabase integration
 - `scripts/test-endpoints.js` — 19 automated tests, all passing
-- TECH_STACK.md updated with deviation flags (Supabase + Vercel)
 
 ### Not started
-- Frontend (Phase 2): intake form, recommendation display, EMI calculator UI, partner map
+- Screen 4 (Partner Locator + Leaflet map) — to be built by another team member
+- Screen 5 (Confirmation) — to be built by another team member
 - n8n workflows (Phase 4): lead logging, email notifications
-- i18n (Phase 4): English + Hindi dictionaries
-- Polish (Phase 5): edge case handling in UI, mobile responsiveness
+- Hindi translation pass review (strings present but need native review)
+- Mobile responsiveness polish (Phase 5)
 
 ### Known bugs / issues
-- `SUPABASE_URL` env var in Vercel has a typo (`ttps://` instead of `https://`) — code works around it by preferring `NEXT_PUBLIC_SUPABASE_URL`. Fix the env var in Vercel Dashboard when convenient.
+- `SUPABASE_URL` env var in Vercel has a typo (`ttps://` instead of `https://`) — backend code works around it by preferring `NEXT_PUBLIC_SUPABASE_URL`
+- Browser automated testing unavailable (Playwright CDN issue) — manual testing via `npm run dev` recommended
 
 ---
 
@@ -51,9 +63,12 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - Backend hosting changed from Render/Railway to Vercel Serverless Functions
 - Eligibility logic is deterministic rules engine (if/else + sort by max_amount), NOT ML — do not suggest replacing it
 - API contract matches TECH_STACK.md exactly (request/response shapes unchanged), endpoint paths have /api/ prefix per Vercel convention
+- Frontend uses native `<input type="range">` for tenure slider — no external library (see Decisions.md D7)
+- i18n uses custom `useTranslation` hook, not `react-i18next` — simpler for 2 languages (see Decisions.md D8)
+- Frontend `.env` has `VITE_USE_MOCK_API=false` pointing at real backend — mock layer kept as fallback
 
 ## Open questions / blockers (things that need a human decision, not an agent decision)
-- [e.g., "Which backend language — Node or Python — still needs the team to confirm based on who's free"]
+- None currently — Screens 4-5 can be built by another team member using the shared AppContext
 
 ---
 

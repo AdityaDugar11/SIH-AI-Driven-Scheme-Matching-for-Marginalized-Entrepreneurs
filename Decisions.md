@@ -52,9 +52,28 @@ See TECH_STACK.md "why not other options."
 
 ---
 
-### D7 (template for team to add more):
-**Alternatives considered**:
-**Decision**:
-**Why**:
-**Trade-off accepted**:
-**Revisit if**:
+### D7: Native range slider for tenure, no external library
+**Alternatives considered**: `rc-slider`, `react-slider`, `@mui/material Slider`.
+**Decision**: native `<input type="range">` styled with CSS.
+**Why**: the EMI calculator has one slider (tenure, 6-60 months, step 6). Adding a library for one slider adds bundle size, API surface, and a dependency to track — all for a control that HTML provides natively. CSS styling of the native range input covers the Design.md aesthetic requirements (22px thumb, primary-blue color, rounded track).
+**Trade-off accepted**: slightly less visual polish than a custom component; cross-browser styling requires vendor-prefixed pseudo-elements (`::-webkit-slider-thumb`, `::-moz-range-thumb`), both handled in `index.css`.
+**Revisit if**: more complex slider interactions are needed (e.g., dual-handle range, tick marks with labels) — unlikely for this scope.
+
+---
+
+### D8: Custom useTranslation hook, not react-i18next
+**Alternatives considered**: `react-i18next`, `i18next`, `react-intl`.
+**Decision**: custom `useTranslation` hook (~30 lines) with JSON dictionaries (`i18n/en.json`, `i18n/hi.json`).
+**Why**: the app supports exactly 2 languages (English + Hindi per PRD scope). `react-i18next` adds ~40KB to the bundle, requires initialization config, and supports features (namespaces, lazy loading, plurals, interpolation contexts) that aren't needed here. A plain JSON lookup with `{{variable}}` interpolation covers all current strings.
+**Trade-off accepted**: if a 3rd+ language is added, the custom hook would need minor extension (add the JSON file + import). Still simpler than a full i18n framework for ≤3 languages.
+**Revisit if**: language count exceeds 3, or complex pluralization rules are needed — then `react-i18next` earns its weight.
+
+---
+
+### D9: Fetch-wrapper mock/real toggle pattern, not MSW
+**Alternatives considered**: MSW (Mock Service Worker), `json-server`, `miragejs`.
+**Decision**: simple fetch wrapper (`api/client.js`) with `VITE_USE_MOCK_API` env flag. When `true`, returns fixtures from `api/mocks.js` after 300ms simulated delay. When `false`, calls real backend.
+**Why**: MSW requires a service worker registration, a `public/mockServiceWorker.js` file, and browser-specific setup that adds complexity for a 2-day hackathon. The fetch-wrapper approach is ~70 lines, zero dependencies, one env var to toggle, and keeps mock data in a single importable file.
+**Trade-off accepted**: mock layer doesn't intercept at the network level (no DevTools Network tab visibility for mocks). Acceptable — the mock layer is a development fallback, not a testing framework.
+**Revisit if**: the project needs comprehensive API mocking for integration tests — then MSW would be worth the setup cost.
+

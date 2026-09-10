@@ -1,0 +1,71 @@
+/**
+ * API Client — swappable mock/real fetch layer
+ *
+ * Toggle between mock and real backend via environment variables:
+ *   VITE_USE_MOCK_API=true   → returns fixture data from mocks.js
+ *   VITE_USE_MOCK_API=false  → calls real backend at VITE_API_BASE_URL
+ *
+ * Components import ONLY from this file — never from mocks.js directly.
+ */
+
+import { getMockRecommendation, getMockEmi } from "./mocks.js";
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK_API === "true";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
+/** Simulated network delay for mock mode (ms) */
+const MOCK_DELAY_MS = 300;
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * POST /api/recommend
+ * @param {{ income: number, project_type: string, project_cost: number, education_need: boolean }} data
+ * @returns {Promise<{ recommended_scheme: string|null, reason: string, alternates: string[], eligible: boolean }>}
+ */
+export async function recommendScheme(data) {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY_MS);
+    return getMockRecommendation(data);
+  }
+
+  const res = await fetch(`${API_BASE}/api/recommend`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `API error: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+/**
+ * POST /api/calculate-emi
+ * @param {{ scheme: string, project_cost: number, tenure_months: number }} data
+ * @returns {Promise<{ loan_amount: number, applicant_contribution: number, interest_rate: number, emi: number, moratorium_months: number, total_interest: number }>}
+ */
+export async function calculateEmi(data) {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY_MS);
+    return getMockEmi(data);
+  }
+
+  const res = await fetch(`${API_BASE}/api/calculate-emi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `API error: ${res.status}`);
+  }
+
+  return res.json();
+}

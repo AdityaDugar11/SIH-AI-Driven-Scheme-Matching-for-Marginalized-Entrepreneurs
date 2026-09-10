@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — sourced from Design.md
+ * All colors, typography, and spacing values defined here.
+ * Components use these via Tailwind utilities or var() references.
+ */
+
+@theme {
+  /* ── Colors ─────────────────────────────────────────────── */
+  /* Primary: trustworthy blue — government-scheme association (Design.md) */
+  --color-primary: #1a73a7;
+  --color-primary-dark: #135a82;
+  --color-primary-light: #e8f4fb;
+
+  /* Success/positive: eligible, confirmed (Design.md) */
+  --color-success: #2e7d32;
+  --color-success-light: #e8f5e9;
+
+  /* Warning: not eligible, simulated-data disclosure — amber, NOT red (Design.md) */
+  --color-warning: #f9a825;
+  --color-warning-light: #fff8e1;
+  --color-warning-dark: #c17900;
+
+  /* Neutral background: off-white, reduces glare (Design.md) */
+  --color-bg: #f5f5f0;
+  --color-surface: #ffffff;
+
+  /* Text: near-black, 4.5:1 contrast minimum (Design.md) */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #555555;
+  --color-text-muted: #777777;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  /* System font stack — no custom web font load risk for demo (Design.md) */
+  --font-sans: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* ── Spacing / Layout ──────────────────────────────────── */
+  --radius-card: 8px;
+  --max-w-content: 640px;
+}
+
+/* ── Base styles ────────────────────────────────────────────── */
+html {
+  font-size: 16px;
+  /* Mobile: 18px base — this audience needs bigger text (Design.md) */
+  @media (max-width: 640px) {
+    font-size: 18px;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Button base ────────────────────────────────────────────── */
+/* Primary CTA: one per screen, primary color fill (Design.md) */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 44px; /* touch target minimum (Design.md) */
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Secondary/outline button (Design.md) */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary-light);
+}
+
+/* ── Card (partner list, scheme result) ─────────────────────── */
+/* Subtle border or shadow, 8px radius, generous padding (Design.md) */
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid #e0e0e0;
+  border-radius: var(--radius-card);
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Form inputs ────────────────────────────────────────────── */
+.form-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 0.75rem;
+  font-size: 1rem;
+  border: 1.5px solid #cccccc;
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(26, 115, 167, 0.15);
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.375rem;
+  font-size: 0.9375rem;
+}
+
+.form-helper {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ── Tenure slider (native range input, styled) ─────────────── */
+/* Decision D7: native range slider, no external library */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  outline: none;
+  margin: 0.5rem 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Utility classes ─────────────────────────────────────────── */
+/* Numbers: largest and boldest text on any screen (Design.md) */
+.text-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Headings: bold, clear size jump from body (at least 1.5x — Design.md) */
+.text-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.text-subheading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
