@@ -1,0 +1,201 @@
+{
+  "name": "Workflow 1: Lead Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "webhookId": "lead-intake-12345"
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "project_cost",
+              "value": "={{ $json.body.project_cost }}"
+            },
+            {
+              "name": "emi",
+              "value": "={{ $json.body.emi }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Format Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Google Sheets (Leads)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node['Webhook'].json.body.scheme_recommended }}",
+              "operation": "equal",
+              "value2": "Micro Finance Scheme"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "IF Scheme",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $node['Webhook'].json.body.email }}",
+        "subject": "Your Loan Scheme Recommendation",
+        "message": "Hello ={{ $node['Webhook'].json.body.name }},<br><br>Your recommended scheme is <b>={{ $node['Webhook'].json.body.scheme_recommended }}</b>.<br>Your EMI will be approx ₹={{ $node['Webhook'].json.body.emi }}.<br><br>Nearest Partner: ={{ $node['Webhook'].json.body.nearest_partner_name }}",
+        "options": {}
+      },
+      "id": "5",
+      "name": "Email Applicant",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [800, -100]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $node['Webhook'].json.body.nearest_partner_email }}",
+        "subject": "New Lead Routed to You",
+        "message": "Hello,<br><br>New applicant: ={{ $node['Webhook'].json.body.name }}<br>Phone: ={{ $node['Webhook'].json.body.phone }}<br>Project Cost: ₹={{ $node['Webhook'].json.body.project_cost }}<br>Scheme: ={{ $node['Webhook'].json.body.scheme_recommended }}",
+        "options": {}
+      },
+      "id": "6",
+      "name": "Email Partner",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [800, 100]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"success\",\n  \"partner_notified\": true\n}",
+        "options": {}
+      },
+      "id": "7",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1000, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets (Leads)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets (Leads)": {
+      "main": [
+        [
+          {
+            "node": "IF Scheme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Scheme": {
+      "main": [
+        [
+          {
+            "node": "Email Applicant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Applicant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Applicant": {
+      "main": [
+        [
+          {
+            "node": "Email Partner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Partner": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

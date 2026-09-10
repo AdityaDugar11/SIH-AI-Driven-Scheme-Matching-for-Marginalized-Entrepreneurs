@@ -85,3 +85,12 @@ See TECH_STACK.md "why not other options."
 **Why**: completely free, no API keys required, no billing setup needed for the hackathon. It perfectly matches the requirement of plotting a few points without incurring complex dependencies or usage limits.
 **Trade-off accepted**: slightly less polished default tiles compared to Google Maps, but perfectly adequate for demo purposes.
 **Revisit if**: real-time traffic or highly customized routing is needed, which OpenStreetMap/Leaflet might not natively provide out-of-the-box as cleanly as Google.
+
+---
+
+### D11: Deviation - Backend uses Supabase instead of JSON
+**Alternatives considered**: `data/*.json` as planned in Architecture.md and original TECH_STACK.md.
+**Decision**: The backend team implemented Supabase Postgres for the dataset instead of sticking to static JSON files.
+**Why**: Team decided structured queries + seeded DB is cleaner for 3-endpoint backend.
+**Trade-off accepted**: Violates the "No database" rule in `AGENTS.md` and `Architecture.md` but was decided by the backend team to improve the API implementation.
+**Revisit if**: We need to strictly comply with `AGENTS.md` rules, which explicitly state "Do not introduce a database."

@@ -7,7 +7,7 @@ This file is read automatically by some AI coding agents (Cursor, Codex-CLI, etc
 - No authentication, no user accounts, no session persistence across visits.
 - No real-time NPA/fund-utilization data — that field is simulated and must be labeled `simulated: true` in data and disclosed in the UI (see Design.md tooltip spec).
 - Single backend service, single frontend app. No microservices.
-- Data layer is static JSON files (`data/schemes.json`, `data/partners.json`) committed to the repo. Do not introduce a database.
+- **Data layer is Supabase Postgres** (`schemes` and `partners` tables) — this supersedes the original static-JSON-only plan. See Decisions.md D11 for why. Static JSON files may still exist in the repo as seed/fallback data, but the backend's live source of truth for `/recommend`, `/calculate-emi`, and `/nearest-partners` is Postgres via Supabase. Do not introduce a *second*, different database — Supabase Postgres is the one and only DB for this project.
 
 ## Where to look first
 - Full scope/rules: `PRD.md`
@@ -17,14 +17,18 @@ This file is read automatically by some AI coding agents (Cursor, Codex-CLI, etc
 - Screen specs: `UI.md`
 - Visual design tokens: `Design.md`
 - Test cases: `Testing.md`
+- Current build status / live URLs: `Memory.md`
+- Why past decisions were made (including the Postgres switch): `Decisions.md`
 
 ## Style/output expectations for generated code
 - Comment any simulated/mocked data inline at the point it's defined, not just in docs.
 - Prefer small, working increments per commit over large multi-file rewrites.
 - Match existing file/module structure in `INSTRUCTIONS.md` — don't restructure the repo layout mid-build.
 - When uncertain about a scheme rule number (interest rate, cap), use the values in `PRD.md` section 6 and do not invent different figures.
+- Supabase credentials (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) belong ONLY in the backend project's environment variables. Never add them to the frontend project or commit them to the repo.
 
 ## What NOT to do even if asked in a follow-up prompt
 - Do not add a login/signup flow.
 - Do not swap the rules engine for a model "to make it smarter."
 - Do not fetch live data from any external NPA/credit-bureau source — no such public API exists for this use case; don't hallucinate one.
+- Do not revert the data layer back to static-JSON-only or introduce a second database — Supabase Postgres is the settled decision (Decisions.md D11).

@@ -17,14 +17,16 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 ---
 
 ## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: Antigravity frontend build session on 2026-09-10T10:55+05:30
-**Phase we're in** (per PHASES.md): Phase 3 & 4 COMPLETE — All 5 frontend screens built and integrated, i18n support added.
+**Last updated by**: Antigravity session on 2026-09-10T19:21+05:30
+**Phase we're in** (per PHASES.md): Phase 4 COMPLETE — Workflows generated and deployed URLs verified.
 
-### Live backend (URL: `https://aidrivenschemematchingformarginalizedentrepren-afxeu5xhv.vercel.app`)
-- **POST /api/recommend** — ✅ tested, working
-- **POST /api/calculate-emi** — ✅ tested, working
-- **POST /api/nearest-partners** — ✅ tested, working
-- **GET /api/health** — ✅ tested, working
+### Live URLs
+- **Backend**: `https://aidrivenschemematchingformarginaliz.vercel.app`
+  - **POST /api/recommend** — ✅ tested, working
+  - **POST /api/calculate-emi** — ✅ tested, working
+  - **POST /api/nearest-partners** — ✅ tested, working
+  - **GET /api/health** — ✅ tested, working
+- **Frontend**: `https://frontend-six-alpha-92.vercel.app/` — ✅ tested, working
 
 ### Done (this session — frontend)
 - Vite + React + Tailwind v4 scaffolded in `/frontend/` (separate from backend root)
@@ -41,13 +43,17 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - **Design system** (`index.css`): all Design.md tokens. Map styles imported.
 - **Routing**: React Router fully operational (`/`, `/result`, `/emi`, `/partners`, `/confirmation`).
 
+### Done (this session — workflows & devops)
+- Verified Backend and Frontend Vercel deployments.
+- Generated `n8n_workflow_1_lead_notification.json` and `n8n_workflow_2_partner_risk_refresh.json` for manual import to self-hosted n8n.
+- Pre-demo testing completed successfully (checked `/api/health` and `/api/recommend` on production URLs).
+
 ### Done (prior session — backend)
 - Supabase Postgres: `schemes` (3 rows) + `partners` (30 rows), RLS enabled, seeded
 - Vercel serverless deployment with CORS, Supabase integration
 - `scripts/test-endpoints.js` — 19 automated tests, all passing
 
 ### Not started
-- n8n workflows (Phase 4): lead logging, email notifications
 - Hindi translation pass review (strings present but need native review)
 - Mobile responsiveness polish (Phase 5)
 
@@ -67,7 +73,7 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - Frontend `.env` has `VITE_USE_MOCK_API=false` pointing at real backend — mock layer kept as fallback
 
 ## Open questions / blockers (things that need a human decision, not an agent decision)
-- N8n webhook URL is not yet integrated in the client; a console log acts as a placeholder on Screen 4.
+- N8n webhook URL needs to be configured in the frontend once the workflow JSON is imported and active. Currently pending URL from the self-hosted n8n instance.
 
 ---
 
