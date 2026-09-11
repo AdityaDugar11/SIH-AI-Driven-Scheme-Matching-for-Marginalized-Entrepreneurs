@@ -132,7 +132,7 @@ export default function Dashboard() {
 
       await patchInterest({ id: item.id, interested: true });
 
-      fetch("https://n8n.adityadugar.com/webhook/new-lead", {
+      fetch("https://scheme-matcher-n8n.onrender.com/webhook/new-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

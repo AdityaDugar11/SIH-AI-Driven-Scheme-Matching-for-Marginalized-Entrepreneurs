@@ -96,33 +96,29 @@ export default function IntakeForm() {
         education_need: intakeData.education_need,
       });
 
-      if (result.matches && result.matches.length > 0) {
-        const sortedMatches = [...result.matches].sort((a, b) => b.match_score - a.match_score);
-        
-        sortedMatches.forEach((match) => {
-          saveRecommendation({
-            email: intakeData.email,
-            scheme_name: match.scheme,
-            match_score: match.match_score,
-            eligible: match.eligible,
-            reason: match.reason,
-            state: "N/A",
-            city: intakeData.location.city,
-          }).catch((err) => console.error("Failed to save recommendation", err));
-        });
+      if (result.eligible && result.recommended_scheme) {
+        saveRecommendation({
+          email: intakeData.email,
+          scheme_name: result.recommended_scheme,
+          match_score: 100,
+          eligible: result.eligible,
+          reason: result.reason,
+          state: "N/A",
+          city: intakeData.location.city,
+        }).catch((err) => console.error("Failed to save recommendation", err));
 
         setRecommendation({
-          matches: sortedMatches,
-          recommended_scheme: sortedMatches[0].scheme,
-          reason: sortedMatches[0].reason,
-          alternates: sortedMatches.slice(1).map(m => m.scheme),
-          eligible: sortedMatches[0].eligible,
+          matches: [],
+          recommended_scheme: result.recommended_scheme,
+          reason: result.reason,
+          alternates: result.alternates || [],
+          eligible: result.eligible,
         });
       } else {
         setRecommendation({
           matches: [],
           recommended_scheme: null,
-          reason: "No matches found.",
+          reason: result.reason || "No matches found.",
           alternates: [],
           eligible: false,
         });
@@ -178,10 +174,10 @@ export default function IntakeForm() {
                 id="familyIncome"
                 inputMode="numeric"
                 name="familyIncome"
-                placeholder="e.g. 1,50,000"
+                placeholder="e.g. 150000"
                 type="text"
                 value={income}
-                onChange={(e) => setIncome(e.target.value)}
+                onChange={(e) => setIncome(e.target.value.replace(/[^0-9]/g, ''))}
               />
             </div>
             {errors.income ? (
@@ -314,10 +310,10 @@ export default function IntakeForm() {
                 id="projectCost"
                 inputMode="numeric"
                 name="projectCost"
-                placeholder="e.g. 2,00,000"
+                placeholder="e.g. 200000"
                 type="text"
                 value={cost}
-                onChange={(e) => setCost(e.target.value)}
+                onChange={(e) => setCost(e.target.value.replace(/[^0-9]/g, ''))}
               />
             </div>
             {errors.cost ? (
