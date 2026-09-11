@@ -20,6 +20,7 @@ import EmiCalculator from "./components/EmiCalculator.jsx";
 
 import PartnerLocator from "./components/PartnerLocator.jsx";
 import ConfirmationScreen from "./components/ConfirmationScreen.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="/emi" element={<EmiCalculator />} />
               <Route path="/partners" element={<PartnerLocator />} />
               <Route path="/confirmation" element={<ConfirmationScreen />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

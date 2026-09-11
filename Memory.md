@@ -17,8 +17,8 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 ---
 
 ## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: Antigravity session on 2026-09-10T19:21+05:30
-**Phase we're in** (per PHASES.md): Phase 4 COMPLETE — Workflows generated and deployed URLs verified.
+**Last updated by**: Antigravity session on 2026-09-11T16:00+05:30
+**Phase we're in** (per PHASES.md): Phase 4 COMPLETE — Workflows generated and deployed URLs verified. Frontend dashboard and email saving complete.
 
 ### Live URLs
 - **Backend**: `https://aidrivenschemematchingformarginaliz.vercel.app`
@@ -33,8 +33,8 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 
 ### Done (this session — frontend)
 - Vite + React + Tailwind v4 scaffolded in `/frontend/` (separate from backend root)
-- **Screen 1 (IntakeForm)**: income, loan purpose (radio), cost, city dropdown, "Find My Scheme" CTA → calls real backend `/api/recommend`
-- **Screen 2 (RecommendationResult)**: eligible badge + scheme name + reason + alternates (green), or ineligible with amber styling (not red, per Design.md)
+- **Screen 1 (IntakeForm)**: income, loan purpose (radio), cost, city dropdown, email input, "Find My Scheme" CTA → calls real backend `/api/recommend` and saves matches to `/api/save-recommendation`.
+- **Screen 2 (RecommendationResult)**: displays a ranked list of matched schemes (green/amber badges). Top match expanded. "View My Dashboard" link.
 - **Screen 3 (EmiCalculator)**: loan/contribution split, native range slider (6-60 months), live EMI recalculation via real `/api/calculate-emi`, visual bar, secondary info
 - **Screen 4 (PartnerLocator)**: Integrates `react-leaflet` to display map, lists nearest partners, incorporates non-negotiable simulated data tooltip, and navigates to confirmation.
 - **Screen 5 (ConfirmationScreen)**: Success state confirming scheme, EMI, and partner details, with "Start Over" reset flow.
@@ -44,7 +44,8 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 - **Mock fixtures** (`api/mocks.js`): completely mocked for offline dev matching all 3 endpoint shapes.
 - **i18n**: English + Hindi dictionaries covering all Screens 1-5 strings, using custom `useTranslation` hook.
 - **Design system** (`index.css`): all Design.md tokens. Map styles imported.
-- **Routing**: React Router fully operational (`/`, `/result`, `/emi`, `/partners`, `/confirmation`).
+- **Routing**: React Router fully operational (`/`, `/result`, `/emi`, `/partners`, `/confirmation`, `/dashboard`).
+- **Screen 6 (Dashboard)**: Fetches and displays saved recommendations for a given email. Users can mark "Interested" which pings the N8N webhook.
 
 ### Done (this session — workflows & devops)
 - Verified Backend and Frontend Vercel deployments.

@@ -8,29 +8,48 @@
 
 // MOCK DATA — simulated fixture for POST /recommend (eligible case)
 export const MOCK_RECOMMEND_ELIGIBLE = {
-  recommended_scheme: "Micro Finance Scheme",
-  reason:
-    "Your project cost is within the ₹1.40 Lakh limit and your income qualifies for concessional lending.",
-  alternates: ["Term Loan Scheme"],
-  eligible: true,
+  matches: [
+    {
+      scheme: "Micro Finance Scheme",
+      match_score: 100,
+      eligible: true,
+      reason: "Your project cost is within the ₹1.40 Lakh limit and your income qualifies for concessional lending.",
+      required_documents: ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Project Proposal", "Bank Passbook"]
+    },
+    {
+      scheme: "Term Loan Scheme",
+      match_score: 67,
+      eligible: false,
+      reason: "Your project cost (₹1,20,000) exceeds the maximum allowed for this scheme.",
+      required_documents: ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Detailed Project Report", "Bank Passbook"]
+    }
+  ]
 };
 
 // MOCK DATA — simulated fixture for POST /recommend (ineligible: income too high)
 export const MOCK_RECOMMEND_INELIGIBLE = {
-  recommended_scheme: null,
-  reason:
-    "Your annual income (₹6,00,000) exceeds the ₹5,00,000 threshold for concessional lending schemes.",
-  alternates: [],
-  eligible: false,
+  matches: [
+    {
+      scheme: "Micro Finance Scheme",
+      match_score: 33,
+      eligible: false,
+      reason: "Your annual income exceeds the ₹5,00,000 threshold for concessional lending schemes.",
+      required_documents: ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Project Proposal", "Bank Passbook"]
+    }
+  ]
 };
 
 // MOCK DATA — simulated fixture for POST /recommend (education)
 export const MOCK_RECOMMEND_EDUCATION = {
-  recommended_scheme: "Education Loan Scheme",
-  reason:
-    "Your course cost qualifies for the Education Loan Scheme at concessional interest rates of 6.5%–8%.",
-  alternates: [],
-  eligible: true,
+  matches: [
+    {
+      scheme: "Education Loan Scheme",
+      match_score: 100,
+      eligible: true,
+      reason: "Your course cost qualifies for the Education Loan Scheme at concessional interest rates of 6.5%–8%.",
+      required_documents: ["Aadhaar Card", "Income Certificate", "Admission Letter", "Fee Structure"]
+    }
+  ]
 };
 
 // MOCK DATA — simulated fixture for POST /calculate-emi
@@ -88,20 +107,24 @@ export const MOCK_NEAREST_PARTNERS = {
  */
 export function getMockRecommendation(data) {
   if (data.income > 500000) {
-    return {
-      ...MOCK_RECOMMEND_INELIGIBLE,
-      reason: `Your annual income (₹${data.income.toLocaleString("en-IN")}) exceeds the ₹5,00,000 threshold for concessional lending schemes.`,
-    };
+    const res = JSON.parse(JSON.stringify(MOCK_RECOMMEND_INELIGIBLE));
+    res.matches[0].reason = `Your annual income (₹${data.income.toLocaleString("en-IN")}) exceeds the ₹5,00,000 threshold for concessional lending schemes.`;
+    return res;
   }
   if (data.education_need) {
     return MOCK_RECOMMEND_EDUCATION;
   }
   if (data.project_cost > 140000) {
     return {
-      recommended_scheme: "Term Loan Scheme",
-      reason: `Your project cost (₹${data.project_cost.toLocaleString("en-IN")}) qualifies for the Term Loan Scheme (up to ₹50 Lakh) at concessional rates.`,
-      alternates: [],
-      eligible: true,
+      matches: [
+        {
+          scheme: "Term Loan Scheme",
+          match_score: 100,
+          eligible: true,
+          reason: `Your project cost (₹${data.project_cost.toLocaleString("en-IN")}) qualifies for the Term Loan Scheme (up to ₹50 Lakh) at concessional rates.`,
+          required_documents: ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Detailed Project Report", "Bank Passbook"]
+        }
+      ]
     };
   }
   return MOCK_RECOMMEND_ELIGIBLE;
@@ -135,10 +158,38 @@ export function getMockEmi(data) {
  * Returns mock nearest partners based on location.
  */
 export function getMockNearestPartners(data) {
-  // In a real app we'd filter/sort by distance and risk score.
-  // Here we just return the static list, maybe slicing it to the limit.
   const limit = data.limit || 3;
   return {
     partners: MOCK_NEAREST_PARTNERS.partners.slice(0, limit)
   };
+}
+
+// Memory store for mock dashboard
+let mockSavedRecommendations = [];
+
+export function mockSaveRecommendation(data) {
+  const newRec = {
+    id: "mock-" + Date.now() + Math.random().toString(36).substr(2, 5),
+    ...data,
+    interested: null,
+    reminder_sent: false,
+    created_at: new Date().toISOString()
+  };
+  mockSavedRecommendations.push(newRec);
+  return { success: true, saved_recommendation: newRec };
+}
+
+export function mockGetDashboard(email) {
+  return {
+    recommendations: mockSavedRecommendations.filter(r => r.email === email)
+  };
+}
+
+export function mockPatchInterest(data) {
+  const rec = mockSavedRecommendations.find(r => r.id === data.id);
+  if (rec) {
+    rec.interested = data.interested;
+    return { success: true, updated_recommendation: rec };
+  }
+  throw new Error("Recommendation not found");
 }

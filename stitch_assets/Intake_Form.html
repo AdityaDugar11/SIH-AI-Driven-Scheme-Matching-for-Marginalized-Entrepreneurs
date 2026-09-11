@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Scheme Matcher</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,600,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100vw;background-color:#F7F7F5;font-family:'Public Sans',sans-serif;-webkit-tap-highlight-color:transparent;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#e9edff", "surface-dim": "#d3daef", "primary-fixed": "#dce1ff", "on-surface-variant": "#434655", "outline": "#747686", "surface-bright": "#f9f9ff", "on-tertiary": "#ffffff", "on-background": "#141b2b", "on-tertiary-fixed-variant": "#6e3900", "on-surface": "#141b2b", "tertiary-fixed": "#ffdcc3", "surface-container-high": "#e1e8fd", "secondary-container": "#92f5a4", "on-primary-fixed": "#001551", "secondary-fixed": "#95f8a7", "inverse-surface": "#293040", "on-secondary-fixed": "#00210a", "surface-tint": "#2151da", "tertiary": "#6b3700", "surface-container-lowest": "#ffffff", "surface-variant": "#dce2f7", "on-primary-fixed-variant": "#0039b5", "on-primary": "#ffffff", "surface-container-low": "#f1f3ff", "background": "#f9f9ff", "secondary": "#006d30", "primary": "#0037b0", "on-secondary-fixed-variant": "#005323", "error-container": "#ffdad6", "surface-container-highest": "#dce2f7", "inverse-on-surface": "#edf0ff", "outline-variant": "#c4c5d7", "on-secondary-container": "#007233", "tertiary-fixed-dim": "#ffb77d", "surface": "#f9f9ff", "on-primary-container": "#cad3ff", "tertiary-container": "#8d4b00", "error": "#ba1a1a", "on-error-container": "#93000a", "inverse-primary": "#b7c4ff", "on-error": "#ffffff", "on-tertiary-fixed": "#2f1500", "secondary-fixed-dim": "#79db8d", "primary-container": "#1d4ed8", "on-tertiary-container": "#ffcba3", "primary-fixed-dim": "#b7c4ff", "on-secondary": "#ffffff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.5rem", "margin-mobile": "1rem", "space-sm": "0.75rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "gutter": "1rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.5rem" }, fontFamily: { "label-md": ["Public Sans"], "headline-sm": ["Public Sans"], "headline-lg": ["Public Sans"], "body-md": ["Public Sans"], "display-currency-mobile": ["Public Sans"], "label-lg": ["Public Sans"], "headline-md": ["Public Sans"], "body-lg-bold": ["Public Sans"], "headline-lg-mobile": ["Public Sans"], "display-currency": ["Public Sans"], "body-lg": ["Public Sans"] }, fontSize: { "label-md": ["14px", { lineHeight: "20px", fontWeight: "700" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "500" }], "display-currency-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }], "label-lg": ["16px", { lineHeight: "22px", fontWeight: "700" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }], "body-lg-bold": ["18px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "700" }], "display-currency": ["40px", { lineHeight: "48px", fontWeight: "800" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-lg text-on-surface flex flex-col min-h-screen pt-safe pb-safe selection:bg-primary-fixed selection:text-on-primary-fixed"><main class="flex flex-col flex-1 relative w-full px-margin-mobile bg-surface"><div class="flex flex-col w-full max-w-[720px] mx-auto pb-space-xl">
+<!-- Top Progress & Header Area -->
+<div class="flex flex-col gap-space-xs mt-space-md mb-space-lg">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center px-space-sm py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md">
+        Step 1 of 5
+      </span>
+<div aria-hidden="true" class="flex items-center gap-1.5">
+<span class="w-6 h-2 rounded-full bg-primary-container"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-extrabold tracking-tight mt-1">
+      Find the Right Scheme for You
+    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+      Answer 5 simple questions to check your eligibility for government concessional loans.
+    </p>
+</div>
+<!-- Main Intake Form -->
+<form class="flex flex-col gap-space-lg" id="schemeIntakeForm" onsubmit="event.preventDefault();">
+<!-- Question 1: Annual Family Income -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<label class="font-body-lg-bold text-body-lg-bold text-on-surface mb-2" for="familyIncome">
+        1. Annual Family Income
+      </label>
+<div class="relative flex items-center">
+<div class="absolute left-4 pointer-events-none flex items-center justify-center text-on-surface font-headline-sm text-headline-sm">
+          ₹
+        </div>
+<input aria-describedby="incomeHelper" class="w-full h-[52px] pl-10 pr-4 bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold rounded-lg focus:outline-none focus:bg-surface-container-lowest" id="familyIncome" inputmode="numeric" name="familyIncome" placeholder="e.g. 1,50,000" type="text" value="1,80,000"/>
+</div>
+<div class="mt-2.5 flex items-start gap-1.5 p-2 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant" id="incomeHelper">
+<span aria-hidden="true" class="material-symbols-outlined text-tertiary text-[20px] shrink-0 mt-0.5">info</span>
+<p class="font-label-md text-label-md leading-tight">
+          Must be ₹5,00,000 or below to qualify for highest concessional interest rates.
+        </p>
+</div>
+</div>
+<!-- Question 2: Loan Purpose -->
+<fieldset class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm m-0">
+<legend class="font-body-lg-bold text-body-lg-bold text-on-surface mb-1 p-0 float-none">
+        2. What is this loan for?
+      </legend>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-sm">
+        Select the primary category that matches your requirement:
+      </p>
+<div aria-label="Loan Purpose" class="flex flex-col gap-space-xs" role="radiogroup">
+<!-- Card A: Selected -->
+<label class="loan-purpose-card relative flex items-start gap-space-sm p-space-md rounded-lg bg-surface-container-lowest cursor-pointer transition-colors" data-value="small-business">
+<input checked="" class="sr-only" name="loanPurpose" type="radio" value="small-business"/>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<div class="flex flex-col flex-1 pr-6">
+<div class="flex items-center gap-2">
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">Small Business</span>
+<span class="check-pill inline-flex items-center px-1.5 py-0.5 rounded bg-secondary text-on-secondary font-label-md text-[11px] leading-none">
+                Selected
+              </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+              Kirana shop, cycle/auto repair, tea stall, tailoring, street vending.
+            </p>
+</div>
+<div class="absolute right-4 top-4 flex items-center justify-center w-6 h-6 rounded-full bg-primary text-on-primary check-icon">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+</label>
+<!-- Card B: Business Project -->
+<label class="loan-purpose-card relative flex items-start gap-space-sm p-space-md rounded-lg bg-surface-container-low cursor-pointer transition-colors" data-value="larger-project">
+<input class="sr-only" name="loanPurpose" type="radio" value="larger-project"/>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center shrink-0 text-on-surface-variant">
+<span class="material-symbols-outlined text-[28px]">domain</span>
+</div>
+<div class="flex flex-col flex-1 pr-6">
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">Larger Business Project</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+              Small manufacturing unit, food processing, machinery, or workshop expansion.
+            </p>
+</div>
+<div class="absolute right-4 top-4 flex items-center justify-center w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant check-icon opacity-0">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+</label>
+<!-- Card C: Education -->
+<label class="loan-purpose-card relative flex items-start gap-space-sm p-space-md rounded-lg bg-surface-container-low cursor-pointer transition-colors" data-value="education">
+<input class="sr-only" name="loanPurpose" type="radio" value="education"/>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center shrink-0 text-on-surface-variant">
+<span class="material-symbols-outlined text-[28px]">school</span>
+</div>
+<div class="flex flex-col flex-1 pr-6">
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">Education</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+              Vocational trades, polytechnic, nursing, degree, or skill certification.
+            </p>
+</div>
+<div class="absolute right-4 top-4 flex items-center justify-center w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant check-icon opacity-0">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+</label>
+</div>
+</fieldset>
+<!-- Question 3: Estimated Cost -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<label class="font-body-lg-bold text-body-lg-bold text-on-surface mb-2" for="projectCost">
+        3. Estimated Project or Course Cost
+      </label>
+<div class="relative flex items-center">
+<div class="absolute left-4 pointer-events-none flex items-center justify-center text-on-surface font-headline-sm text-headline-sm">
+          ₹
+        </div>
+<input aria-describedby="costHelper" class="w-full h-[52px] pl-10 pr-4 bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold rounded-lg focus:outline-none" id="projectCost" inputmode="numeric" name="projectCost" placeholder="e.g. 2,00,000" type="text" value="2,00,000"/>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-2" id="costHelper">
+        Enter the approximate loan amount required.
+      </span>
+</div>
+<!-- Question 4: Your City / District -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<label class="font-body-lg-bold text-body-lg-bold text-on-surface mb-2" for="userLocation">
+        4. Your City / District
+      </label>
+<div class="relative flex items-center">
+<select class="w-full h-[52px] px-4 pr-12 bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold rounded-lg appearance-none cursor-pointer focus:outline-none" id="userLocation" name="userLocation">
+<option selected="" value="hubballi-dharwad">Hubballi-Dharwad, Karnataka</option>
+<option value="belagavi">Belagavi, Karnataka</option>
+<option value="kalaburagi">Kalaburagi, Karnataka</option>
+<option value="mysuru">Mysuru, Karnataka</option>
+<option value="bengaluru-rural">Bengaluru Rural, Karnataka</option>
+<option value="other">Other District / State</option>
+</select>
+<div class="absolute right-4 pointer-events-none flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[28px]">expand_more</span>
+</div>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-2">
+        Schemes vary based on your state and municipal district.
+      </span>
+</div>
+<!-- Question 5: Email Address -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<label class="font-body-lg-bold text-body-lg-bold text-on-surface mb-2" for="userEmail">
+        5. Email Address
+      </label>
+<input aria-describedby="emailHelper" class="w-full h-[52px] px-4 bg-surface-container-lowest text-on-surface font-body-lg text-body-lg rounded-lg focus:outline-none" id="userEmail" name="userEmail" placeholder="yourname@gmail.com" type="email" value="rahul.kamat@gmail.com"/>
+<div class="mt-2 flex items-start gap-1.5 text-on-surface-variant" id="emailHelper">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">mark_email_read</span>
+<p class="font-body-md text-body-md leading-normal">
+          We use this to save your matched schemes so you can return anytime. Strictly no password needed.
+        </p>
+</div>
+</div>
+<!-- Bottom Action Area -->
+<div class="flex flex-col gap-space-sm mt-space-xs">
+<button class="w-full h-[52px] bg-primary-container text-on-primary font-body-lg-bold text-body-lg-bold rounded-lg flex items-center justify-center gap-2 transition-transform active:scale-[0.99]" id="submitBtn" type="submit">
+<span>Find My Scheme</span>
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Civic Assurance Note -->
+<div class="flex items-center justify-center gap-2 p-3 bg-surface-container-low rounded-lg text-center">
+<span aria-hidden="true" class="material-symbols-outlined text-secondary text-[20px] shrink-0">verified_user</span>
+<span class="font-body-md text-body-md text-on-surface-variant">
+          Your details are private and matched only against official government guidelines.
+        </span>
+</div>
+</div>
+</form>
+</div>
+<script>
+  (function initCardSelection() {
+    const cards = document.querySelectorAll('.loan-purpose-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => {
+          c.classList.remove('bg-surface-container-lowest');
+          c.classList.add('bg-surface-container-low');
+          const badge = c.querySelector('.check-pill');
+          if (badge) badge.remove();
+          const icon = c.querySelector('.check-icon');
+          if (icon) {
+            icon.classList.remove('bg-primary', 'text-on-primary', 'opacity-100');
+            icon.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'opacity-0');
+          }
+        });
+
+        card.classList.remove('bg-surface-container-low');
+        card.classList.add('bg-surface-container-lowest');
+        const icon = card.querySelector('.check-icon');
+        if (icon) {
+          icon.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'opacity-0');
+          icon.classList.add('bg-primary', 'text-on-primary', 'opacity-100');
+        }
+
+        const titleDiv = card.querySelector('.flex.items-center') || card.querySelector('.font-body-lg-bold').parentNode;
+        if (!card.querySelector('.check-pill')) {
+          const pill = document.createElement('span');
+          pill.className = 'check-pill inline-flex items-center px-1.5 py-0.5 rounded bg-secondary text-on-secondary font-label-md text-[11px] leading-none ml-2';
+          pill.textContent = 'Selected';
+          titleDiv.appendChild(pill);
+        }
+      });
+    });
+  })();
+</script></main></body></html>

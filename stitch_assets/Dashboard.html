@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Scheme Matcher</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,600,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100vw;background-color:#F7F7F5;font-family:'Public Sans',sans-serif;-webkit-tap-highlight-color:transparent;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#e9edff", "surface-dim": "#d3daef", "primary-fixed": "#dce1ff", "on-surface-variant": "#434655", "outline": "#747686", "surface-bright": "#f9f9ff", "on-tertiary": "#ffffff", "on-background": "#141b2b", "on-tertiary-fixed-variant": "#6e3900", "on-surface": "#141b2b", "tertiary-fixed": "#ffdcc3", "surface-container-high": "#e1e8fd", "secondary-container": "#92f5a4", "on-primary-fixed": "#001551", "secondary-fixed": "#95f8a7", "inverse-surface": "#293040", "on-secondary-fixed": "#00210a", "surface-tint": "#2151da", "tertiary": "#6b3700", "surface-container-lowest": "#ffffff", "surface-variant": "#dce2f7", "on-primary-fixed-variant": "#0039b5", "on-primary": "#ffffff", "surface-container-low": "#f1f3ff", "background": "#f9f9ff", "secondary": "#006d30", "primary": "#0037b0", "on-secondary-fixed-variant": "#005323", "error-container": "#ffdad6", "surface-container-highest": "#dce2f7", "inverse-on-surface": "#edf0ff", "outline-variant": "#c4c5d7", "on-secondary-container": "#007233", "tertiary-fixed-dim": "#ffb77d", "surface": "#f9f9ff", "on-primary-container": "#cad3ff", "tertiary-container": "#8d4b00", "error": "#ba1a1a", "on-error-container": "#93000a", "inverse-primary": "#b7c4ff", "on-error": "#ffffff", "on-tertiary-fixed": "#2f1500", "secondary-fixed-dim": "#79db8d", "primary-container": "#1d4ed8", "on-tertiary-container": "#ffcba3", "primary-fixed-dim": "#b7c4ff", "on-secondary": "#ffffff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.5rem", "margin-mobile": "1rem", "space-sm": "0.75rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "gutter": "1rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.5rem" }, fontFamily: { "label-md": ["Public Sans"], "headline-sm": ["Public Sans"], "headline-lg": ["Public Sans"], "body-md": ["Public Sans"], "display-currency-mobile": ["Public Sans"], "label-lg": ["Public Sans"], "headline-md": ["Public Sans"], "body-lg-bold": ["Public Sans"], "headline-lg-mobile": ["Public Sans"], "display-currency": ["Public Sans"], "body-lg": ["Public Sans"] }, fontSize: { "label-md": ["14px", { lineHeight: "20px", fontWeight: "700" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "500" }], "display-currency-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }], "label-lg": ["16px", { lineHeight: "22px", fontWeight: "700" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }], "body-lg-bold": ["18px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "700" }], "display-currency": ["40px", { lineHeight: "48px", fontWeight: "800" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-lg text-on-surface flex flex-col min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[28px]">shield</span><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Scheme Matcher</span><span class="font-label-md text-label-md text-on-surface-variant sr-only">Applications Hub</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Language switch" class="h-11 px-space-sm rounded-full bg-surface-container-low flex items-center gap-1.5 text-on-surface hover:bg-surface-container active:bg-surface-dim transition-colors" type="button"><span class="material-symbols-outlined text-[20px] text-primary">language</span><span class="font-label-md text-label-md text-on-surface">English / हिंदी</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col flex-1 relative w-full pt-16 pb-28 px-margin-mobile bg-surface"><div class="flex flex-col w-full space-y-space-md">
+<!-- Header Civic Card -->
+<section class="w-full bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+<div class="flex flex-col space-y-space-xs">
+<div class="flex items-center justify-between">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Your Scheme Matches</h1>
+<span class="inline-flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed px-space-xs py-0.5 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+          Verified
+        </span>
+</div>
+<!-- Email Lookup Attribution (Strictly no password/auth framing) -->
+<div class="flex items-center gap-2 bg-surface-container-low p-space-xs rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0">mark_email_read</span>
+<p class="font-body-md text-body-md">
+          Looked up by the email you provided: <strong class="text-on-surface">rahul.kamat@gmail.com</strong>
+</p>
+</div>
+<!-- Quick Summary Badges -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1.5 bg-primary-fixed text-on-primary-fixed px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">fact_check</span>
+<span>3 Schemes Found</span>
+</div>
+<div class="flex items-center gap-1.5 bg-secondary-fixed text-on-secondary-fixed px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">forward_to_inbox</span>
+<span>1 Application Referred</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-highest text-on-surface-variant px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
+<span>Income: ₹1.8L</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Bar with 4 Civic Dropdown Selectors -->
+<section class="w-full bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+<span class="font-label-lg text-label-lg">Refine Schemes</span>
+</div>
+<button class="font-label-md text-label-md text-primary hover:underline" type="button">Reset Filters</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-xs">
+<!-- Filter 1 -->
+<div class="flex flex-col bg-surface-container-low rounded-lg p-2">
+<label class="font-label-md text-label-md text-on-surface-variant mb-1" for="filter-score">Match Score</label>
+<div class="relative w-full">
+<select class="w-full bg-surface-container-lowest text-on-surface font-body-md text-body-md h-11 px-3 pr-8 rounded-lg appearance-none" id="filter-score">
+<option selected="">75%+ Match (1)</option>
+<option>50%+ Match (3)</option>
+<option>All Match Levels</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Filter 2 -->
+<div class="flex flex-col bg-surface-container-low rounded-lg p-2">
+<label class="font-label-md text-label-md text-on-surface-variant mb-1" for="filter-type">Scheme Type</label>
+<div class="relative w-full">
+<select class="w-full bg-surface-container-lowest text-on-surface font-body-md text-body-md h-11 px-3 pr-8 rounded-lg appearance-none" id="filter-type">
+<option selected="">All Types (Small Business)</option>
+<option>Term Loan Concessional</option>
+<option>Subsidy Subsistence</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Filter 3 -->
+<div class="flex flex-col bg-surface-container-low rounded-lg p-2">
+<label class="font-label-md text-label-md text-on-surface-variant mb-1" for="filter-location">State &amp; City</label>
+<div class="relative w-full">
+<select class="w-full bg-surface-container-lowest text-on-surface font-body-md text-body-md h-11 px-3 pr-8 rounded-lg appearance-none" id="filter-location">
+<option selected="">Hubballi, Karnataka</option>
+<option>Dharwad, Karnataka</option>
+<option>All Karnataka</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Filter 4 -->
+<div class="flex flex-col bg-surface-container-low rounded-lg p-2">
+<label class="font-label-md text-label-md text-on-surface-variant mb-1" for="filter-interest">Interest Cap</label>
+<div class="relative w-full">
+<select class="w-full bg-surface-container-lowest text-on-surface font-body-md text-body-md h-11 px-3 pr-8 rounded-lg appearance-none" id="filter-interest">
+<option selected="">Concessional (≤6%)</option>
+<option>Zero Interest (0%)</option>
+<option>Standard Priority (&lt;10%)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- List of Saved Scheme Cards -->
+<section aria-label="Scheme Card Listings" class="flex flex-col w-full space-y-space-md">
+<!-- Card 1: Referred to Partner (High Match) -->
+<article class="w-full bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col space-y-space-sm" id="scheme-card-1">
+<!-- Top Status Row -->
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 bg-secondary-fixed text-on-secondary-fixed px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Referred to Partner</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high text-on-surface px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-primary text-[18px]">percent</span>
+<span>94% Match</span>
+</div>
+</div>
+<!-- Scheme Main Meta -->
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">NBCFDC Term Loan Scheme</h2>
+<p class="font-body-lg-bold text-body-lg-bold text-primary mt-1">Up to ₹2,00,000 • 4.0% p.a. • EMI: ₹5,316/mo</p>
+</div>
+<!-- Referred Partner Callout -->
+<div class="bg-surface-container-low rounded-lg p-space-xs flex items-start gap-2 text-on-surface">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">business</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Assigned Corporation Partner</span>
+<span class="font-body-md text-body-md text-on-surface font-bold">Karnataka State D. Devaraj Urs DCWD Ltd</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Lead Ref: #KA-HUB-2024-8819</span>
+</div>
+</div>
+<!-- Document Readiness Checklist -->
+<div class="flex flex-col bg-surface-container-lowest rounded-lg space-y-2 pt-1">
+<span class="font-label-lg text-label-lg text-on-surface">Document Readiness Checklist</span>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<span class="font-body-lg text-body-lg">Aadhaar Linked</span>
+</div>
+<span class="font-label-md text-label-md text-secondary">Ready</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<span class="font-body-lg text-body-lg">Income Certificate (&lt; ₹5L)</span>
+</div>
+<span class="font-label-md text-label-md text-secondary">Ready</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<span class="font-body-lg text-body-lg">Caste Certificate</span>
+</div>
+<span class="font-label-md text-label-md text-secondary">Ready</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[22px]">pending_actions</span>
+<span class="font-body-lg-bold text-body-lg-bold">Quotation Bill</span>
+</div>
+<span class="font-label-md text-label-md text-on-tertiary-fixed-variant">Pending - bring to office</span>
+</div>
+</div>
+<!-- Toggle Action Buttons -->
+<div class="grid grid-cols-2 gap-space-xs pt-2">
+<button aria-pressed="true" class="h-[52px] bg-primary-container text-on-primary rounded-lg font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1.5 shadow-sm active:opacity-95" type="button">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+<span>Interested</span>
+</button>
+<button aria-pressed="false" class="h-[52px] bg-surface-container-low text-on-surface rounded-lg font-body-lg text-body-lg flex items-center justify-center gap-1.5 active:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+<span>Not Interested</span>
+</button>
+</div>
+</article>
+<!-- Card 2: Saved Scheme (Moderate Match) -->
+<article class="w-full bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col space-y-space-sm" id="scheme-card-2">
+<!-- Top Status Row -->
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 bg-tertiary-fixed text-on-tertiary-fixed-variant px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">info</span>
+<span>Not a strong match</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high text-on-surface px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">percent</span>
+<span>68% Match</span>
+</div>
+</div>
+<!-- Scheme Main Meta -->
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">PMEGP (Prime Minister Employment Generation)</h2>
+<p class="font-body-lg-bold text-body-lg-bold text-on-surface-variant mt-1">Up to ₹25,00,000 • 15% Own Contribution</p>
+</div>
+<!-- Document Readiness Checklist -->
+<div class="flex flex-col bg-surface-container-lowest rounded-lg space-y-2">
+<span class="font-label-lg text-label-lg text-on-surface">Prerequisite Checks</span>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<span class="font-body-lg text-body-lg">Aadhaar Linked</span>
+</div>
+<span class="font-label-md text-label-md text-secondary">Ready</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-high text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[22px]">cancel</span>
+<span class="font-body-lg text-body-lg">Class 8 Certificate</span>
+</div>
+<span class="font-label-md text-label-md text-tertiary font-bold">Required</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-high text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[22px]">history_edu</span>
+<span class="font-body-lg text-body-lg">EDP Training</span>
+</div>
+<span class="font-label-md text-label-md text-tertiary font-bold">Pending</span>
+</div>
+</div>
+<!-- Interactive Calculator Action Link -->
+<div class="pt-1">
+<button class="inline-flex items-center gap-1 text-primary font-body-lg-bold text-body-lg-bold hover:underline" type="button">
+<span>Recalculate EMI</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+<!-- Toggle Action Buttons -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button class="h-[52px] bg-surface-container text-on-surface rounded-lg font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1.5 active:bg-primary active:text-on-primary" type="button">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+<span>Interested</span>
+</button>
+<button class="h-[52px] bg-surface-container-low text-on-surface-variant rounded-lg font-body-lg text-body-lg flex items-center justify-center gap-1.5 active:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+<span>Not Interested</span>
+</button>
+</div>
+</article>
+<!-- Card 3: Saved Scheme (Low Match) -->
+<article class="w-full bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col space-y-space-sm" id="scheme-card-3">
+<!-- Top Status Row -->
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 bg-tertiary-fixed text-on-tertiary-fixed-variant px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">info</span>
+<span>Not a strong match</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high text-on-surface px-space-xs py-1 rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">percent</span>
+<span>52% Match</span>
+</div>
+</div>
+<!-- Scheme Main Meta -->
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Stand-Up India Scheme</h2>
+<p class="font-body-lg-bold text-body-lg-bold text-on-surface-variant mt-1">₹10 Lakh - ₹1 Crore</p>
+</div>
+<!-- Document Readiness Checklist -->
+<div class="flex flex-col bg-surface-container-lowest rounded-lg space-y-2">
+<span class="font-label-lg text-label-lg text-on-surface">Prerequisite Checks</span>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<span class="font-body-lg text-body-lg">Caste Certificate</span>
+</div>
+<span class="font-label-md text-label-md text-secondary">Ready</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-high text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[22px]">description</span>
+<span class="font-body-lg text-body-lg">Business Plan Draft</span>
+</div>
+<span class="font-label-md text-label-md text-tertiary font-bold">Missing</span>
+</div>
+</div>
+<!-- Toggle Action Buttons -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button class="h-[52px] bg-surface-container text-on-surface rounded-lg font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1.5 active:bg-primary active:text-on-primary" type="button">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+<span>Interested</span>
+</button>
+<button class="h-[52px] bg-surface-container-low text-on-surface-variant rounded-lg font-body-lg text-body-lg flex items-center justify-center gap-1.5 active:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+<span>Not Interested</span>
+</button>
+</div>
+</article>
+</section>
+<!-- Footer Civic Assistance & Re-check Section -->
+<footer class="w-full bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col space-y-space-md">
+<!-- Re-check Link Card -->
+<div class="flex items-center justify-between gap-2 p-space-xs bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">search_check</span>
+<div class="flex flex-col">
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">Looking for a different scheme?</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Update annual income, category, or business type</span>
+</div>
+</div>
+<a class="h-11 px-3 bg-surface-container-lowest text-primary rounded-lg font-label-md text-label-md flex items-center justify-center shrink-0 hover:bg-surface-container" href="#">
+        Check eligibility with new criteria
+      </a>
+</div>
+<!-- Official Helpline Desk -->
+<div class="flex flex-col space-y-1 bg-surface-container rounded-lg p-space-sm text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">headset_mic</span>
+<span class="font-label-lg text-label-lg text-on-surface">Civic Helpdesk &amp; Application Support</span>
+</div>
+<p class="font-body-lg-bold text-body-lg-bold text-primary">
+        Toll-free Helpline: 1800-11-2026
+      </p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Operating Hours: Monday – Saturday, 9:00 AM – 6:00 PM (IST)
+      </p>
+</div>
+<!-- Privacy Note -->
+<div class="text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Government Concessional Portal • Free Public Verification • No credentials stored on device
+      </p>
+</div>
+</footer>
+</div>
+<script>
+  (function initDashboardInteractions() {
+    const cards = document.querySelectorAll('article[id^="scheme-card-"]');
+    cards.forEach(card => {
+      const buttons = card.querySelectorAll('button[type="button"]');
+      if (buttons.length >= 2) {
+        const interestedBtn = buttons[0];
+        const notInterestedBtn = buttons[1];
+
+        interestedBtn.addEventListener('click', () => {
+          interestedBtn.className = 'h-[52px] bg-primary-container text-on-primary rounded-lg font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1.5 shadow-sm active:opacity-95';
+          interestedBtn.setAttribute('aria-pressed', 'true');
+          notInterestedBtn.className = 'h-[52px] bg-surface-container-low text-on-surface rounded-lg font-body-lg text-body-lg flex items-center justify-center gap-1.5 active:bg-surface-container';
+          notInterestedBtn.setAttribute('aria-pressed', 'false');
+        });
+
+        notInterestedBtn.addEventListener('click', () => {
+          notInterestedBtn.className = 'h-[52px] bg-tertiary text-on-tertiary rounded-lg font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1.5 shadow-sm active:opacity-95';
+          notInterestedBtn.setAttribute('aria-pressed', 'true');
+          interestedBtn.className = 'h-[52px] bg-surface-container-low text-on-surface-variant rounded-lg font-body-lg text-body-lg flex items-center justify-center gap-1.5 active:bg-surface-container';
+          interestedBtn.setAttribute('aria-pressed', 'false');
+        });
+      }
+    });
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="scheme-catalog" href="#"><span class="material-symbols-outlined text-[24px]">account_balance</span><span class="font-label-md text-label-md text-xs">Schemes</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="eligibility-check" href="#"><span class="material-symbols-outlined text-[24px]">how_to_reg</span><span class="font-label-md text-label-md text-xs">Eligibility</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="calculator" href="#"><span class="material-symbols-outlined text-[24px]">calculate</span><span class="font-label-md text-label-md text-xs">Subsidy</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-bold" data-path="applications-hub" href="#"><span class="material-symbols-outlined text-[24px]">description</span><span class="font-label-md text-label-md text-xs">Status</span></a></div></nav></body></html>

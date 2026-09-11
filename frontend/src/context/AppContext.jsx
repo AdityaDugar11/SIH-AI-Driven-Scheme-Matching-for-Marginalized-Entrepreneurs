@@ -12,6 +12,7 @@ import { createContext, useContext, useReducer, useCallback } from "react";
 const initialState = {
   // Screen 1 inputs
   intake: {
+    email: "",
     income: null,
     project_type: "",
     project_cost: null,
@@ -21,6 +22,7 @@ const initialState = {
 
   // Screen 2 result (from POST /recommend)
   recommendation: {
+    matches: [],
     recommended_scheme: null,
     reason: "",
     alternates: [],

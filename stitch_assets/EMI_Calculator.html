@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Scheme Matcher</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,600,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100vw;background-color:#F7F7F5;font-family:'Public Sans',sans-serif;-webkit-tap-highlight-color:transparent;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#e9edff", "surface-dim": "#d3daef", "primary-fixed": "#dce1ff", "on-surface-variant": "#434655", "outline": "#747686", "surface-bright": "#f9f9ff", "on-tertiary": "#ffffff", "on-background": "#141b2b", "on-tertiary-fixed-variant": "#6e3900", "on-surface": "#141b2b", "tertiary-fixed": "#ffdcc3", "surface-container-high": "#e1e8fd", "secondary-container": "#92f5a4", "on-primary-fixed": "#001551", "secondary-fixed": "#95f8a7", "inverse-surface": "#293040", "on-secondary-fixed": "#00210a", "surface-tint": "#2151da", "tertiary": "#6b3700", "surface-container-lowest": "#ffffff", "surface-variant": "#dce2f7", "on-primary-fixed-variant": "#0039b5", "on-primary": "#ffffff", "surface-container-low": "#f1f3ff", "background": "#f9f9ff", "secondary": "#006d30", "primary": "#0037b0", "on-secondary-fixed-variant": "#005323", "error-container": "#ffdad6", "surface-container-highest": "#dce2f7", "inverse-on-surface": "#edf0ff", "outline-variant": "#c4c5d7", "on-secondary-container": "#007233", "tertiary-fixed-dim": "#ffb77d", "surface": "#f9f9ff", "on-primary-container": "#cad3ff", "tertiary-container": "#8d4b00", "error": "#ba1a1a", "on-error-container": "#93000a", "inverse-primary": "#b7c4ff", "on-error": "#ffffff", "on-tertiary-fixed": "#2f1500", "secondary-fixed-dim": "#79db8d", "primary-container": "#1d4ed8", "on-tertiary-container": "#ffcba3", "primary-fixed-dim": "#b7c4ff", "on-secondary": "#ffffff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.5rem", "margin-mobile": "1rem", "space-sm": "0.75rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "gutter": "1rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.5rem" }, fontFamily: { "label-md": ["Public Sans"], "headline-sm": ["Public Sans"], "headline-lg": ["Public Sans"], "body-md": ["Public Sans"], "display-currency-mobile": ["Public Sans"], "label-lg": ["Public Sans"], "headline-md": ["Public Sans"], "body-lg-bold": ["Public Sans"], "headline-lg-mobile": ["Public Sans"], "display-currency": ["Public Sans"], "body-lg": ["Public Sans"] }, fontSize: { "label-md": ["14px", { lineHeight: "20px", fontWeight: "700" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "500" }], "display-currency-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }], "label-lg": ["16px", { lineHeight: "22px", fontWeight: "700" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }], "body-lg-bold": ["18px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "700" }], "display-currency": ["40px", { lineHeight: "48px", fontWeight: "800" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-lg text-on-surface flex flex-col min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[28px]">shield</span><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Scheme Matcher</span><span class="font-label-md text-label-md text-on-surface-variant sr-only">Calculator</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Language switch" class="h-11 px-space-sm rounded-full bg-surface-container-low flex items-center gap-1.5 text-on-surface hover:bg-surface-container active:bg-surface-dim transition-colors" type="button"><span class="material-symbols-outlined text-[20px] text-primary">language</span><span class="font-label-md text-label-md text-on-surface">English / हिंदी</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col flex-1 relative w-full pt-16 pb-28 px-margin-mobile bg-surface"><div class="flex flex-col w-full max-w-[720px] mx-auto gap-space-md">
+<!-- Step & Header Box -->
+<div class="flex flex-col gap-space-xs bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded-full text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">tune</span>
+        Step 3 of 5
+      </span>
+<span class="inline-flex items-center gap-1 px-space-sm py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+        94% Match
+      </span>
+</div>
+<div class="flex flex-col mt-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface leading-tight">
+        Calculate Your Monthly Repayment (EMI)
+      </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+        For: <span class="text-on-surface font-bold">NBCFDC Term Loan Scheme</span>
+</p>
+</div>
+</div>
+<!-- Key Financial Data Section (90/10 Ratio Split) -->
+<div class="flex flex-col gap-space-sm bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<span class="font-label-lg text-label-lg text-on-surface">Total Project Cost: ₹ 2,00,000</span>
+<div class="grid grid-cols-2 gap-gutter-mobile">
+<!-- Left Card: Loan Split -->
+<div class="flex flex-col p-space-sm bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-1 text-primary mb-1">
+<span class="material-symbols-outlined text-[18px]">account_balance</span>
+<span class="font-label-md text-label-md">Govt Loan (90%)</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">
+          ₹ 1,80,000
+        </span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-1 text-xs">Direct Subsidized Capital</span>
+</div>
+<!-- Right Card: Self Contribution -->
+<div class="flex flex-col p-space-sm bg-surface-variant rounded-lg">
+<div class="flex items-center gap-1 text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-[18px]">person</span>
+<span class="font-label-md text-label-md">Your Share (10%)</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface tracking-tight">
+          ₹ 20,000
+        </span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-1 text-xs">Own Equity Contribution</span>
+</div>
+</div>
+<!-- Proportion Bar Visualizer -->
+<div class="flex flex-col gap-1.5 pt-1">
+<div class="w-full h-8 flex rounded-lg overflow-hidden bg-surface-dim">
+<div class="w-[90%] bg-primary flex items-center justify-start px-2.5 transition-all duration-300">
+<span class="font-label-md text-label-md text-on-primary tracking-wide text-xs">Loan: 90% (₹1.80L)</span>
+</div>
+<div class="w-[10%] bg-outline flex items-center justify-center transition-all duration-300">
+<span class="font-label-md text-label-md text-surface-container-lowest text-xs truncate px-1">10%</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-label-md text-label-md text-xs">
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span> Government Term Subsidy</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-outline inline-block"></span> Beneficiary Equity</span>
+</div>
+</div>
+</div>
+<!-- Interactive Tenure Slider Section -->
+<div class="flex flex-col gap-space-sm bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center justify-between">
+<label class="font-label-lg text-label-lg text-on-surface" for="tenureSlider">
+        Select Repayment Period (Tenure)
+      </label>
+<span class="px-2.5 py-1 bg-surface-container-high text-primary font-headline-sm text-headline-sm rounded-lg" id="tenureBadge">
+        36 Months (3 Yrs)
+      </span>
+</div>
+<!-- Range Input with custom mobile styling -->
+<div class="flex flex-col gap-2 py-2">
+<input aria-label="Select loan repayment tenure in months" class="w-full h-3 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none" id="tenureSlider" max="60" min="6" step="6" type="range" value="36"/>
+<!-- Range markers -->
+<div class="flex justify-between items-center px-1 font-label-md text-label-md text-on-surface-variant text-xs">
+<span class="font-bold text-on-surface">6M</span>
+<span>12M</span>
+<span>24M</span>
+<span class="text-primary font-bold">36M</span>
+<span>48M</span>
+<span class="font-bold text-on-surface">60M</span>
+</div>
+</div>
+<!-- Tenure Selector Quick Pills -->
+<div class="grid grid-cols-4 gap-space-xs mt-1">
+<button class="tenure-pill h-11 bg-surface-container-low rounded-lg font-label-md text-label-md text-on-surface active:bg-primary active:text-on-primary" data-months="12" type="button">
+        12 Mo
+      </button>
+<button class="tenure-pill h-11 bg-surface-container-low rounded-lg font-label-md text-label-md text-on-surface active:bg-primary active:text-on-primary" data-months="24" type="button">
+        24 Mo
+      </button>
+<button class="tenure-pill h-11 bg-primary text-on-primary rounded-lg font-label-md text-label-md" data-months="36" type="button">
+        36 Mo
+      </button>
+<button class="tenure-pill h-11 bg-surface-container-low rounded-lg font-label-md text-label-md text-on-surface active:bg-primary active:text-on-primary" data-months="60" type="button">
+        60 Mo
+      </button>
+</div>
+</div>
+<!-- Live EMI Result Box -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-xl shadow-md gap-space-sm">
+<div class="flex flex-col pb-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px] text-primary">calendar_month</span>
+<span class="font-label-lg text-label-lg">Estimated Monthly Payment (EMI)</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-display-currency-mobile text-display-currency-mobile text-primary" id="emiDisplay">
+          ₹ 5,316
+        </span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface-variant">/ month</span>
+</div>
+</div>
+<!-- Metadata Grid Breakdown -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-xs bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex flex-col py-1">
+<span class="font-body-md text-body-md text-on-surface-variant text-xs">Interest Rate</span>
+<span class="font-body-lg-bold text-body-lg-bold text-secondary">4.0% p.a. (Fixed)</span>
+</div>
+<div class="flex flex-col py-1">
+<span class="font-body-md text-body-md text-on-surface-variant text-xs">Moratorium Grace</span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">6 Months Free</span>
+</div>
+<div class="flex flex-col py-1">
+<span class="font-body-md text-body-md text-on-surface-variant text-xs">Total Interest</span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface" id="interestDisplay">₹ 11,376</span>
+</div>
+</div>
+</div>
+<!-- Citizen-Friendly Moratorium Notice Box -->
+<div class="flex items-start gap-space-sm bg-tertiary-fixed text-on-tertiary-fixed p-space-md rounded-xl">
+<span class="material-symbols-outlined text-[26px] text-tertiary flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-tertiary">Supportive 6-Month Breathing Room</span>
+<p class="font-body-md text-body-md text-on-tertiary-fixed-variant mt-0.5 leading-relaxed">
+        Your first repayment will only start after the 6-month moratorium period so your shop can set up inventory and generate positive cash flow first.
+      </p>
+</div>
+</div>
+<!-- Actions / Navigation Bottom Section -->
+<div class="flex flex-col gap-space-sm mt-1">
+<button class="w-full h-[52px] bg-primary text-on-primary font-body-lg-bold text-body-lg-bold rounded-lg flex items-center justify-center gap-2 hover:bg-primary-container active:scale-[0.99] transition-transform shadow-sm" id="nextPartnerBtn" type="button">
+<span>Find Nearest Partner</span>
+<span class="material-symbols-outlined text-[22px]">arrow_forward</span>
+</button>
+<a class="h-11 flex items-center justify-center font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors text-center" href="#">
+      ← Change Loan Scheme
+    </a>
+</div>
+</div>
+<script>
+  (function() {
+    const slider = document.getElementById('tenureSlider');
+    const tenureBadge = document.getElementById('tenureBadge');
+    const emiDisplay = document.getElementById('emiDisplay');
+    const interestDisplay = document.getElementById('interestDisplay');
+    const pills = document.querySelectorAll('.tenure-pill');
+
+    const principal = 180000;
+    const annualRate = 0.04;
+    const monthlyRate = annualRate / 12;
+
+    function calculateEMI(months) {
+      if (months <= 0) return { emi: 0, interest: 0 };
+      const factor = Math.pow(1 + monthlyRate, months);
+      const emi = Math.round((principal * monthlyRate * factor) / (factor - 1));
+      const totalPayment = emi * months;
+      const totalInterest = Math.max(0, totalPayment - principal);
+      return { emi, interest: totalInterest };
+    }
+
+    function updateView(months) {
+      months = parseInt(months, 10);
+      const years = (months / 12).toFixed(months % 12 === 0 ? 0 : 1);
+      tenureBadge.textContent = `${months} Months (${years} Yr${years > 1 ? 's' : ''})`;
+
+      const { emi, interest } = calculateEMI(months);
+      emiDisplay.textContent = '₹ ' + emi.toLocaleString('en-IN');
+      interestDisplay.textContent = '₹ ' + interest.toLocaleString('en-IN');
+
+      // Update pill active styles
+      pills.forEach(pill => {
+        const pillMonths = parseInt(pill.getAttribute('data-months'), 10);
+        if (pillMonths === months) {
+          pill.className = 'tenure-pill h-11 bg-primary text-on-primary rounded-lg font-label-md text-label-md';
+        } else {
+          pill.className = 'tenure-pill h-11 bg-surface-container-low text-on-surface rounded-lg font-label-md text-label-md active:bg-primary active:text-on-primary';
+        }
+      });
+    }
+
+    if (slider) {
+      slider.addEventListener('input', function(e) {
+        updateView(e.target.value);
+      });
+    }
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', function() {
+        const val = this.getAttribute('data-months');
+        if (slider) slider.value = val;
+        updateView(val);
+      });
+    });
+
+    const partnerBtn = document.getElementById('nextPartnerBtn');
+    if (partnerBtn) {
+      partnerBtn.addEventListener('click', function() {
+        partnerBtn.classList.add('opacity-90');
+        setTimeout(() => {
+          partnerBtn.classList.remove('opacity-90');
+        }, 150);
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="scheme-catalog" href="#"><span class="material-symbols-outlined text-[24px]">account_balance</span><span class="font-label-md text-label-md text-xs">Schemes</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="eligibility-check" href="#"><span class="material-symbols-outlined text-[24px]">how_to_reg</span><span class="font-label-md text-label-md text-xs">Eligibility</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-bold" data-path="calculator" href="#"><span class="material-symbols-outlined text-[24px]">calculate</span><span class="font-label-md text-label-md text-xs">Subsidy</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="applications-hub" href="#"><span class="material-symbols-outlined text-[24px]">description</span><span class="font-label-md text-label-md text-xs">Status</span></a></div></nav></body></html>

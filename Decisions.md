@@ -94,3 +94,12 @@ See TECH_STACK.md "why not other options."
 **Why**: Team decided structured queries + seeded DB is cleaner for 3-endpoint backend.
 **Trade-off accepted**: Violates the "No database" rule in `AGENTS.md` and `Architecture.md` but was decided by the backend team to improve the API implementation.
 **Revisit if**: We need to strictly comply with `AGENTS.md` rules, which explicitly state "Do not introduce a database."
+
+---
+
+### D12: Dashboard state managed locally in component
+**Alternatives considered**: adding dashboard data to the global `AppContext`.
+**Decision**: keep dashboard fetch and state isolated within `Dashboard.jsx`.
+**Why**: the global context is focused on the single flow (intake -> recommend -> EMI -> partner). The dashboard is an isolated view. Overloading the global context with dashboard state adds unnecessary complexity.
+**Trade-off accepted**: navigating to the dashboard refetches data each time (unless cached by the browser). Acceptable since it guarantees fresh data on each view.
+**Revisit if**: dashboard data needs to be accessed by other parts of the app, or if the dashboard becomes the primary home screen.

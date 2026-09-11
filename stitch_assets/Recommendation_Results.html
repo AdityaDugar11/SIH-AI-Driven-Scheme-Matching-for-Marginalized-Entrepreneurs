@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Scheme Matcher</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,600,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100vw;background-color:#F7F7F5;font-family:'Public Sans',sans-serif;-webkit-tap-highlight-color:transparent;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#e9edff", "surface-dim": "#d3daef", "primary-fixed": "#dce1ff", "on-surface-variant": "#434655", "outline": "#747686", "surface-bright": "#f9f9ff", "on-tertiary": "#ffffff", "on-background": "#141b2b", "on-tertiary-fixed-variant": "#6e3900", "on-surface": "#141b2b", "tertiary-fixed": "#ffdcc3", "surface-container-high": "#e1e8fd", "secondary-container": "#92f5a4", "on-primary-fixed": "#001551", "secondary-fixed": "#95f8a7", "inverse-surface": "#293040", "on-secondary-fixed": "#00210a", "surface-tint": "#2151da", "tertiary": "#6b3700", "surface-container-lowest": "#ffffff", "surface-variant": "#dce2f7", "on-primary-fixed-variant": "#0039b5", "on-primary": "#ffffff", "surface-container-low": "#f1f3ff", "background": "#f9f9ff", "secondary": "#006d30", "primary": "#0037b0", "on-secondary-fixed-variant": "#005323", "error-container": "#ffdad6", "surface-container-highest": "#dce2f7", "inverse-on-surface": "#edf0ff", "outline-variant": "#c4c5d7", "on-secondary-container": "#007233", "tertiary-fixed-dim": "#ffb77d", "surface": "#f9f9ff", "on-primary-container": "#cad3ff", "tertiary-container": "#8d4b00", "error": "#ba1a1a", "on-error-container": "#93000a", "inverse-primary": "#b7c4ff", "on-error": "#ffffff", "on-tertiary-fixed": "#2f1500", "secondary-fixed-dim": "#79db8d", "primary-container": "#1d4ed8", "on-tertiary-container": "#ffcba3", "primary-fixed-dim": "#b7c4ff", "on-secondary": "#ffffff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.5rem", "margin-mobile": "1rem", "space-sm": "0.75rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "gutter": "1rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.5rem" }, fontFamily: { "label-md": ["Public Sans"], "headline-sm": ["Public Sans"], "headline-lg": ["Public Sans"], "body-md": ["Public Sans"], "display-currency-mobile": ["Public Sans"], "label-lg": ["Public Sans"], "headline-md": ["Public Sans"], "body-lg-bold": ["Public Sans"], "headline-lg-mobile": ["Public Sans"], "display-currency": ["Public Sans"], "body-lg": ["Public Sans"] }, fontSize: { "label-md": ["14px", { lineHeight: "20px", fontWeight: "700" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "500" }], "display-currency-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }], "label-lg": ["16px", { lineHeight: "22px", fontWeight: "700" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }], "body-lg-bold": ["18px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "700" }], "display-currency": ["40px", { lineHeight: "48px", fontWeight: "800" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-lg text-on-surface flex flex-col min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[28px]">shield</span><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Scheme Matcher</span><span class="font-label-md text-label-md text-on-surface-variant sr-only">Scheme Catalog</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Language switch" class="h-11 px-space-sm rounded-full bg-surface-container-low flex items-center gap-1.5 text-on-surface hover:bg-surface-container active:bg-surface-dim transition-colors" type="button"><span class="material-symbols-outlined text-[20px] text-primary">language</span><span class="font-label-md text-label-md text-on-surface">English / हिंदी</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col flex-1 relative w-full pt-16 pb-28 px-margin-mobile bg-surface"><div class="flex flex-col w-full gap-space-md">
+<!-- Progress Header & Context Banner -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md flex flex-col gap-space-xs shadow-sm">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 bg-surface-container text-on-surface font-label-md text-label-md rounded-full">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        Step 2 of 5
+      </span>
+<span class="font-label-md text-label-md text-secondary flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+        Verified Match Engine
+      </span>
+</div>
+<div class="flex flex-col gap-1 mt-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Recommended Schemes for You</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-snug">
+        3 schemes evaluated based on family income under <strong class="text-on-surface">₹5L</strong> and <strong class="text-on-surface">Small Business</strong> requirement in <strong class="text-on-surface">Karnataka</strong>.
+      </p>
+</div>
+<!-- Quick Stat Pill Strip -->
+<div class="grid grid-cols-2 gap-space-xs pt-space-xs">
+<div class="bg-surface-container-low p-space-xs rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">storefront</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface-variant text-xs truncate">Business Category</span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface text-sm truncate">Kirana / Retail Trade</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-xs rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">savings</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface-variant text-xs truncate">Reported Income</span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface text-sm truncate">₹1,80,000 / year</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section Title -->
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">workspace_premium</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Ranked Results</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Sorted by Eligibility</span>
+</div>
+<!-- Card 1: Expanded Top Recommendation -->
+<article class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<!-- Top Badge and Match Stat -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between gap-2 flex-wrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-full">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+          Recommended (≥75% Match)
+        </span>
+<span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed font-label-md text-label-md rounded">Top Selected</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 leading-snug">
+        National Backward Classes Finance &amp; Development Corp (NBCFDC) Term Loan
+      </h2>
+</div>
+<!-- Match Visual Callout -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-center justify-between gap-4">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Computed Fit</span>
+<span class="font-display-currency-mobile text-display-currency-mobile text-secondary leading-tight">94% Match</span>
+</div>
+<div class="flex flex-col items-end text-right">
+<span class="font-label-md text-label-md text-on-surface-variant">Subsidized Interest</span>
+<span class="font-body-lg-bold text-body-lg-bold text-primary text-xl">4.0% p.a.</span>
+</div>
+</div>
+<!-- Plain-language explanation -->
+<div class="bg-surface-container p-space-md rounded-lg flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[24px] flex-shrink-0 mt-0.5">lightbulb</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Why this scheme fits you best</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-0.5">
+          Your family income (₹1.8L) is well below the ₹5.0L ceiling, and your retail business project qualifies for subsidized interest rates (4% p.a.).
+        </p>
+</div>
+</div>
+<!-- Financial Key Metrics Grid -->
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="bg-surface-bright p-space-sm rounded-lg flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant text-xs">Eligible Loan Range</span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">₹50k – ₹5.0 Lakhs</span>
+</div>
+<div class="bg-surface-bright p-space-sm rounded-lg flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant text-xs">Repayment Tenure</span>
+<span class="font-body-lg-bold text-body-lg-bold text-on-surface">Up to 5 Years</span>
+</div>
+</div>
+<!-- Document Readiness Checklist -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface">Required Documents Checklist</span>
+<span class="font-label-md text-label-md text-secondary">3 of 4 Ready</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-lowest flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-lg text-body-lg text-on-surface">Aadhaar Card linked to mobile</span>
+</div>
+<span class="px-2 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded text-xs">Ready</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-lg text-body-lg text-on-surface">Income Certificate (&lt; ₹5 Lakhs)</span>
+</div>
+<span class="px-2 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded text-xs">Ready</span>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-lowest flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-lg text-body-lg text-on-surface">Caste / Community Certificate</span>
+</div>
+<span class="px-2 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded text-xs">Ready</span>
+</div>
+<!-- Item 4: Pending -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-tertiary-fixed flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[22px]">cancel</span>
+<span class="font-body-lg text-body-lg text-on-tertiary-fixed">Project Quotation / Machinery Bill</span>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-lowest text-tertiary font-label-md text-label-md rounded text-xs">Pending</span>
+</div>
+</div>
+</div>
+<!-- Primary CTA -->
+<div class="flex flex-col gap-2 pt-space-xs">
+<button class="w-full min-h-[52px] bg-primary-container text-on-primary font-body-lg-bold text-body-lg-bold rounded-xl flex items-center justify-center gap-2 shadow-sm active:bg-primary transition-colors" type="button">
+<span>See EMI Breakdown</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-1.5 text-on-surface-variant font-label-md text-label-md text-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span>No advance fees required under Government mandate</span>
+</div>
+</div>
+</article>
+<!-- Card 2: Collapsed with Amber Badge -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm" id="card-pmegp">
+<div class="flex items-center justify-between gap-2">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md rounded-full">
+<span class="material-symbols-outlined text-[16px]">info</span>
+        Not a strong match
+      </span>
+<span class="font-body-lg-bold text-body-lg-bold text-tertiary text-lg">68% Match</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">
+        PMEGP - Prime Minister Employment Generation Programme
+      </h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+        Requires minimum 8th class educational certificate and higher own capital contribution (15%).
+      </p>
+</div>
+<!-- Toggleable Accordion Container -->
+<div class="hidden flex flex-col gap-space-xs pt-space-xs" id="details-pmegp">
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-label-md text-label-md text-on-surface">Criteria Details</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant text-sm">
+          Subsidized margin money is available between 15% to 35% depending on rural/urban demarcation. Project report review is mandatory.
+        </p>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-lg text-body-lg text-sm px-1">
+<span>Max Project Cost: ₹50 Lakhs</span>
+<span>Own Contribution: 5-10% (Spl)</span>
+</div>
+</div>
+<button class="w-full min-h-[44px] bg-surface-container-low text-on-surface font-label-lg text-label-lg rounded-lg flex items-center justify-center gap-1.5 hover:bg-surface-container transition-colors" onclick="toggleDetails('pmegp')" type="button">
+<span id="pmegp-btn-text">Tap to expand details</span>
+<span class="material-symbols-outlined text-[20px] transition-transform" id="pmegp-btn-icon">expand_more</span>
+</button>
+</article>
+<!-- Card 3: Collapsed with Amber Badge -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm" id="card-standup">
+<div class="flex items-center justify-between gap-2">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md rounded-full">
+<span class="material-symbols-outlined text-[16px]">info</span>
+        Not a strong match
+      </span>
+<span class="font-body-lg-bold text-body-lg-bold text-tertiary text-lg">52% Match</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">
+        Stand-Up India Scheme
+      </h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+        Minimum loan size starts at ₹10 Lakhs, which exceeds your ₹2 Lakh requirement.
+      </p>
+</div>
+<!-- Toggleable Accordion Container -->
+<div class="hidden flex flex-col gap-space-xs pt-space-xs" id="details-standup">
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-label-md text-label-md text-on-surface">Criteria Details</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant text-sm">
+          Targeted at SC/ST and women entrepreneurs for greenfield enterprise setups in manufacturing, services, or trading sector.
+        </p>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-lg text-body-lg text-sm px-1">
+<span>Loan Size: ₹10L - ₹1 Crore</span>
+<span>Tenure: Up to 7 Years</span>
+</div>
+</div>
+<button class="w-full min-h-[44px] bg-surface-container-low text-on-surface font-label-lg text-label-lg rounded-lg flex items-center justify-center gap-1.5 hover:bg-surface-container transition-colors" onclick="toggleDetails('standup')" type="button">
+<span id="standup-btn-text">Tap to expand details</span>
+<span class="material-symbols-outlined text-[20px] transition-transform" id="standup-btn-icon">expand_more</span>
+</button>
+</article>
+<!-- Bottom Navigation & Civic Disclaimer -->
+<section class="flex flex-col gap-space-sm pt-space-xs">
+<button class="w-full min-h-[52px] bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold rounded-xl flex items-center justify-center gap-2 shadow-sm hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+<span>← Back to Modify Details</span>
+</button>
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[22px] flex-shrink-0">gavel</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant text-sm leading-relaxed">
+<strong>Note:</strong> Match scores indicate alignment with published government criteria. Official sanction is granted by the partner bank/SCA.
+      </p>
+</div>
+</section>
+</div>
+<script>
+  function toggleDetails(id) {
+    const details = document.getElementById('details-' + id);
+    const textSpan = document.getElementById(id + '-btn-text');
+    const iconSpan = document.getElementById(id + '-btn-icon');
+    
+    if (details.classList.contains('hidden')) {
+      details.classList.remove('hidden');
+      textSpan.textContent = 'Hide details';
+      iconSpan.textContent = 'expand_less';
+    } else {
+      details.classList.add('hidden');
+      textSpan.textContent = 'Tap to expand details';
+      iconSpan.textContent = 'expand_more';
+    }
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-bold" data-path="scheme-catalog" href="#"><span class="material-symbols-outlined text-[24px]">account_balance</span><span class="font-label-md text-label-md text-xs">Schemes</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="eligibility-check" href="#"><span class="material-symbols-outlined text-[24px]">how_to_reg</span><span class="font-label-md text-label-md text-xs">Eligibility</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="calculator" href="#"><span class="material-symbols-outlined text-[24px]">calculate</span><span class="font-label-md text-label-md text-xs">Subsidy</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="applications-hub" href="#"><span class="material-symbols-outlined text-[24px]">description</span><span class="font-label-md text-label-md text-xs">Status</span></a></div></nav></body></html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Scheme Matcher</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,600,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;width:100vw;background-color:#F7F7F5;font-family:'Public Sans',sans-serif;-webkit-tap-highlight-color:transparent;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#e9edff", "surface-dim": "#d3daef", "primary-fixed": "#dce1ff", "on-surface-variant": "#434655", "outline": "#747686", "surface-bright": "#f9f9ff", "on-tertiary": "#ffffff", "on-background": "#141b2b", "on-tertiary-fixed-variant": "#6e3900", "on-surface": "#141b2b", "tertiary-fixed": "#ffdcc3", "surface-container-high": "#e1e8fd", "secondary-container": "#92f5a4", "on-primary-fixed": "#001551", "secondary-fixed": "#95f8a7", "inverse-surface": "#293040", "on-secondary-fixed": "#00210a", "surface-tint": "#2151da", "tertiary": "#6b3700", "surface-container-lowest": "#ffffff", "surface-variant": "#dce2f7", "on-primary-fixed-variant": "#0039b5", "on-primary": "#ffffff", "surface-container-low": "#f1f3ff", "background": "#f9f9ff", "secondary": "#006d30", "primary": "#0037b0", "on-secondary-fixed-variant": "#005323", "error-container": "#ffdad6", "surface-container-highest": "#dce2f7", "inverse-on-surface": "#edf0ff", "outline-variant": "#c4c5d7", "on-secondary-container": "#007233", "tertiary-fixed-dim": "#ffb77d", "surface": "#f9f9ff", "on-primary-container": "#cad3ff", "tertiary-container": "#8d4b00", "error": "#ba1a1a", "on-error-container": "#93000a", "inverse-primary": "#b7c4ff", "on-error": "#ffffff", "on-tertiary-fixed": "#2f1500", "secondary-fixed-dim": "#79db8d", "primary-container": "#1d4ed8", "on-tertiary-container": "#ffcba3", "primary-fixed-dim": "#b7c4ff", "on-secondary": "#ffffff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.5rem", "margin-mobile": "1rem", "space-sm": "0.75rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "gutter": "1rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.5rem" }, fontFamily: { "label-md": ["Public Sans"], "headline-sm": ["Public Sans"], "headline-lg": ["Public Sans"], "body-md": ["Public Sans"], "display-currency-mobile": ["Public Sans"], "label-lg": ["Public Sans"], "headline-md": ["Public Sans"], "body-lg-bold": ["Public Sans"], "headline-lg-mobile": ["Public Sans"], "display-currency": ["Public Sans"], "body-lg": ["Public Sans"] }, fontSize: { "label-md": ["14px", { lineHeight: "20px", fontWeight: "700" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }], "body-md": ["16px", { lineHeight: "24px", fontWeight: "500" }], "display-currency-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }], "label-lg": ["16px", { lineHeight: "22px", fontWeight: "700" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }], "body-lg-bold": ["18px", { lineHeight: "28px", fontWeight: "700" }], "headline-lg-mobile": ["26px", { lineHeight: "34px", fontWeight: "700" }], "display-currency": ["40px", { lineHeight: "48px", fontWeight: "800" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-lg text-on-surface flex flex-col min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[28px]">shield</span><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Scheme Matcher</span><span class="font-label-md text-label-md text-on-surface-variant sr-only">Applications Hub</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Language switch" class="h-11 px-space-sm rounded-full bg-surface-container-low flex items-center gap-1.5 text-on-surface hover:bg-surface-container active:bg-surface-dim transition-colors" type="button"><span class="material-symbols-outlined text-[20px] text-primary">language</span><span class="font-label-md text-label-md text-on-surface">English / हिंदी</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col flex-1 relative w-full pt-16 pb-28 px-margin-mobile bg-surface"><div class="flex flex-col w-full pb-8">
+<!-- Progress Header -->
+<div class="flex flex-col gap-space-xs mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-md text-label-md">Step 4 of 5</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Concessional Loan Workflow</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Find Nearest Sanctioning Partner</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Select a government-approved partner in Hubballi to process your concessional loan application.</p>
+</div>
+<!-- Map Section Card -->
+<div class="flex flex-col w-full bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm mb-space-lg">
+<!-- Map Canvas (Civic High-Contrast Minimalist Style) -->
+<div class="relative w-full h-56 bg-surface-container-low overflow-hidden select-none">
+<!-- Minimalist Street Vector Map -->
+<svg aria-label="Stylized civic grid of Hubballi" class="absolute inset-0 w-full h-full text-outline-variant" fill="none" viewbox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+<!-- Water / Greenery patches -->
+<rect fill="#f1f3ff" height="240" width="400" x="0" y="0"></rect>
+<path d="M-10 180 C 80 170, 120 220, 180 240 L -10 240 Z" fill="#dce2f7" opacity="0.6"></path>
+<!-- Grid Roads (Secondary) -->
+<path d="M-20 40 L420 40 M-20 90 L420 90 M-20 150 L420 150 M-20 200 L420 200" stroke="#dce2f7" stroke-width="4"></path>
+<path d="M70 -20 L70 260 M150 -20 L150 260 M250 -20 L250 260 M340 -20 L340 260" stroke="#dce2f7" stroke-width="4"></path>
+<!-- Major Arterials (National / State Highway style) -->
+<path d="M-10 120 C 100 110, 170 80, 240 70 C 310 60, 360 40, 420 30" stroke="#ffffff" stroke-linecap="round" stroke-width="12"></path>
+<path d="M-10 120 C 100 110, 170 80, 240 70 C 310 60, 360 40, 420 30" stroke="#c4c5d7" stroke-linecap="round" stroke-width="8"></path>
+<!-- Connecting Ring Trunk -->
+<path d="M120 -20 Q 200 130, 290 260" stroke="#ffffff" stroke-width="10"></path>
+<path d="M120 -20 Q 200 130, 290 260" stroke="#c4c5d7" stroke-width="6"></path>
+<!-- Hubballi Railway & Station Indicator -->
+<rect fill="#ffffff" height="22" rx="4" stroke="#747686" stroke-width="2" width="48" x="85" y="80"></rect>
+<text fill="#141b2b" font-family="'Public Sans'" font-size="9" font-weight="700" text-anchor="middle" x="109" y="95">STATION</text>
+</svg>
+<!-- Pin #1 (Karnataka State D. Devaraj Urs DCWD Ltd) -->
+<button aria-label="Pin 1: Station Road, Active" class="absolute top-[82px] left-[138px] -translate-x-1/2 -translate-y-full flex flex-col items-center group cursor-pointer focus:outline-none" onclick="selectPartner(1)" type="button">
+<div class="w-9 h-9 rounded-full bg-primary-container text-surface-container-lowest flex items-center justify-center font-headline-sm text-headline-sm shadow-md transition-transform group-hover:scale-110 group-focus:scale-110">
+          1
+        </div>
+<div class="w-3 h-2 bg-primary-container clip-triangle -mt-0.5"></div>
+<span class="mt-1 px-1.5 py-0.5 rounded bg-inverse-surface text-inverse-on-surface font-label-md text-xs whitespace-nowrap shadow-sm">Station Rd (2.4 km)</span>
+</button>
+<!-- Pin #2 (Canara Bank Hub) -->
+<button aria-label="Pin 2: Koppikar Road" class="absolute top-[64px] left-[262px] -translate-x-1/2 -translate-y-full flex flex-col items-center group cursor-pointer focus:outline-none" onclick="selectPartner(2)" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest text-on-surface flex items-center justify-center font-headline-sm text-headline-sm shadow-sm transition-transform group-hover:scale-110 group-focus:scale-110">
+          2
+        </div>
+<div class="w-2.5 h-1.5 bg-surface-container-lowest clip-triangle -mt-0.5"></div>
+<span class="mt-1 px-1.5 py-0.5 rounded bg-inverse-surface text-inverse-on-surface font-label-md text-xs whitespace-nowrap shadow-sm">Koppikar Rd (4.1 km)</span>
+</button>
+<!-- Pin #3 (Karnataka Gramin Bank) -->
+<button aria-label="Pin 3: Vidyanagar" class="absolute top-[175px] left-[295px] -translate-x-1/2 -translate-y-full flex flex-col items-center group cursor-pointer focus:outline-none" onclick="selectPartner(3)" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest text-on-surface flex items-center justify-center font-headline-sm text-headline-sm shadow-sm transition-transform group-hover:scale-110 group-focus:scale-110">
+          3
+        </div>
+<div class="w-2.5 h-1.5 bg-surface-container-lowest clip-triangle -mt-0.5"></div>
+<span class="mt-1 px-1.5 py-0.5 rounded bg-inverse-surface text-inverse-on-surface font-label-md text-xs whitespace-nowrap shadow-sm">Vidyanagar (5.8 km)</span>
+</button>
+<!-- Map Compass/Civic Stamp -->
+<div class="absolute top-2 right-2 px-2 py-1 rounded bg-surface-container-lowest/95 text-on-surface font-label-md text-xs flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">my_location</span>
+<span>Hubballi Central</span>
+</div>
+</div>
+<!-- Map Info Banner -->
+<div class="p-space-sm bg-surface-container-high flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+<span class="font-label-md text-label-md text-on-surface">Showing 3 authorized channelizing agencies near Hubballi-Dharwad</span>
+</div>
+</div>
+<!-- Partner Cards List -->
+<div aria-label="Sanctioning Partner Selection" class="flex flex-col gap-space-md w-full mb-space-lg" id="partner-list" role="radiogroup">
+<!-- Card 1 (Selected by default) -->
+<article class="partner-card bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-sm transition-all" id="partner-card-1">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-start gap-space-xs flex-1 min-w-0">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-sm text-headline-sm flex-shrink-0">
+            1
+          </div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-snug">Karnataka State D. Devaraj Urs DCWD Ltd (SCA)</h2>
+<div class="mt-1">
+<span class="inline-flex px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md">State Channelising Agency (SCA)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Distance & Physical Office -->
+<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[20px] text-primary">navigation</span>
+<span>2.4 km away • Station Road, Hubballi</span>
+</div>
+<!-- Contact and Working Hours -->
+<div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-1 text-on-surface font-body-md text-body-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">call</span>
+<span>0836-2245890</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-outline">schedule</span>
+<span>Mon-Sat 10:00 AM - 5:30 PM</span>
+</div>
+</div>
+<!-- Status Indicator (Dot + Explicit Text) -->
+<div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-secondary-container/40">
+<span class="w-3 h-3 rounded-full bg-secondary flex-shrink-0"></span>
+<span class="font-label-md text-label-md text-on-secondary-container">Active Funding Window (Accepting Applications)</span>
+</div>
+<!-- Simulated Callout Box -->
+<div class="flex items-start gap-2 p-space-xs rounded bg-surface-container text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px] text-primary flex-shrink-0 mt-0.5">info</span>
+<span>Simulated eligibility data — production version integrates with official fund records</span>
+</div>
+<!-- Action Toggles -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button aria-pressed="true" class="h-12 rounded-lg bg-primary-container text-surface-container-lowest font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 shadow-sm active:bg-primary" id="btn-int-1" onclick="selectPartner(1)" type="button">
+<span class="material-symbols-outlined text-[20px]">check</span>
+<span>Interested</span>
+</button>
+<button aria-pressed="false" class="h-12 rounded-lg bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container-low" id="btn-noint-1" onclick="rejectPartner(1)" type="button">
+<span>Not Interested</span>
+</button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="partner-card bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-sm transition-all" id="partner-card-2">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-start gap-space-xs flex-1 min-w-0">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-headline-sm text-headline-sm flex-shrink-0">
+            2
+          </div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-snug">Canara Bank - Regional MSME Hub</h2>
+<div class="mt-1">
+<span class="inline-flex px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md">Public Sector Bank</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Distance -->
+<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[20px] text-primary">navigation</span>
+<span>4.1 km away • Koppikar Road, Hubballi</span>
+</div>
+<!-- Contact -->
+<div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-1 text-on-surface font-body-md text-body-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">call</span>
+<span>0836-2364100</span>
+</div>
+</div>
+<!-- Status Indicator -->
+<div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-secondary-container/40">
+<span class="w-3 h-3 rounded-full bg-secondary flex-shrink-0"></span>
+<span class="font-label-md text-label-md text-on-secondary-container">Active Allocation (Subsidy Quota Available)</span>
+</div>
+<!-- Simulated Callout Box -->
+<div class="flex items-start gap-2 p-space-xs rounded bg-surface-container text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px] text-primary flex-shrink-0 mt-0.5">info</span>
+<span>Simulated eligibility data — production version integrates with official fund records</span>
+</div>
+<!-- Action Toggles -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button aria-pressed="false" class="h-12 rounded-lg bg-surface-container-low text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container" id="btn-int-2" onclick="selectPartner(2)" type="button">
+<span>Interested</span>
+</button>
+<button aria-pressed="false" class="h-12 rounded-lg bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container-low" id="btn-noint-2" onclick="rejectPartner(2)" type="button">
+<span>Not Interested</span>
+</button>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="partner-card bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-sm transition-all" id="partner-card-3">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-start gap-space-xs flex-1 min-w-0">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-headline-sm text-headline-sm flex-shrink-0">
+            3
+          </div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-snug">Karnataka Gramin Bank (RRB Branch)</h2>
+<div class="mt-1">
+<span class="inline-flex px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md">Regional Rural Bank</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Distance -->
+<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[20px] text-primary">navigation</span>
+<span>5.8 km away • Vidyanagar, Hubballi</span>
+</div>
+<!-- Contact -->
+<div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-1 text-on-surface font-body-md text-body-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">call</span>
+<span>0836-2371200</span>
+</div>
+</div>
+<!-- Status Indicator (Amber Dot + Explicit Text) -->
+<div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-tertiary-fixed">
+<span class="w-3 h-3 rounded-full bg-tertiary flex-shrink-0"></span>
+<span class="font-label-md text-label-md text-on-tertiary-fixed-variant">Limited Quota (Reviewing Pending Backlog)</span>
+</div>
+<!-- Simulated Callout Box -->
+<div class="flex items-start gap-2 p-space-xs rounded bg-surface-container text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px] text-primary flex-shrink-0 mt-0.5">info</span>
+<span>Simulated eligibility data — production version integrates with official fund records</span>
+</div>
+<!-- Action Toggles -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button aria-pressed="false" class="h-12 rounded-lg bg-surface-container-low text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container" id="btn-int-3" onclick="selectPartner(3)" type="button">
+<span>Interested</span>
+</button>
+<button aria-pressed="false" class="h-12 rounded-lg bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container-low" id="btn-noint-3" onclick="rejectPartner(3)" type="button">
+<span>Not Interested</span>
+</button>
+</div>
+</article>
+</div>
+<!-- Bottom Action & Civic Trust Guarantee -->
+<div class="flex flex-col gap-space-xs w-full mt-auto">
+<button class="w-full h-14 rounded-xl bg-primary-container text-surface-container-lowest font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-2 shadow-md active:bg-primary transition-colors" id="submit-cta" onclick="submitSelection()" type="button">
+<span id="cta-label">Send My Details to This Partner</span>
+<span class="material-symbols-outlined text-[24px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-1.5 text-center text-on-surface-variant font-body-md text-body-md py-1">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span>No fees are ever charged for government scheme submissions.</span>
+</div>
+</div>
+</div>
+<script>
+  let currentSelection = 1;
+
+  function selectPartner(id) {
+    currentSelection = id;
+    for (let i = 1; i <= 3; i++) {
+      const card = document.getElementById('partner-card-' + i);
+      const btnInt = document.getElementById('btn-int-' + i);
+      const btnNoInt = document.getElementById('btn-noint-' + i);
+      
+      if (!card || !btnInt || !btnNoInt) continue;
+
+      if (i === id) {
+        // Selected visual treatment
+        card.classList.add('bg-surface-container-lowest');
+        btnInt.className = 'h-12 rounded-lg bg-primary-container text-surface-container-lowest font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 shadow-sm active:bg-primary';
+        btnInt.setAttribute('aria-pressed', 'true');
+        btnInt.innerHTML = '<span class="material-symbols-outlined text-[20px]">check</span><span>Interested</span>';
+        
+        btnNoInt.className = 'h-12 rounded-lg bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container-low';
+        btnNoInt.setAttribute('aria-pressed', 'false');
+      } else {
+        // Reset unselected state
+        btnInt.className = 'h-12 rounded-lg bg-surface-container-low text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container';
+        btnInt.setAttribute('aria-pressed', 'false');
+        btnInt.innerHTML = '<span>Interested</span>';
+        
+        btnNoInt.className = 'h-12 rounded-lg bg-surface-container-lowest text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container-low';
+        btnNoInt.setAttribute('aria-pressed', 'false');
+      }
+    }
+  }
+
+  function rejectPartner(id) {
+    const btnInt = document.getElementById('btn-int-' + id);
+    const btnNoInt = document.getElementById('btn-noint-' + id);
+    if (!btnInt || !btnNoInt) return;
+
+    btnNoInt.className = 'h-12 rounded-lg bg-inverse-surface text-inverse-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 shadow-sm';
+    btnNoInt.setAttribute('aria-pressed', 'true');
+
+    btnInt.className = 'h-12 rounded-lg bg-surface-container-low text-on-surface font-body-lg-bold text-body-lg-bold flex items-center justify-center gap-1 active:bg-surface-container';
+    btnInt.setAttribute('aria-pressed', 'false');
+    btnInt.innerHTML = '<span>Interested</span>';
+
+    if (currentSelection === id) {
+      currentSelection = null;
+    }
+  }
+
+  function submitSelection() {
+    const cta = document.getElementById('submit-cta');
+    const label = document.getElementById('cta-label');
+    if (!cta || !label) return;
+
+    if (!currentSelection) {
+      label.innerText = 'Please Select a Partner First';
+      setTimeout(() => {
+        label.innerText = 'Send My Details to This Partner';
+      }, 2000);
+      return;
+    }
+
+    cta.classList.add('bg-secondary', 'text-on-secondary');
+    cta.classList.remove('bg-primary-container');
+    label.innerText = 'Application Dispatched Successfully!';
+    setTimeout(() => {
+      label.innerText = 'Send My Details to This Partner';
+      cta.classList.remove('bg-secondary', 'text-on-secondary');
+      cta.classList.add('bg-primary-container');
+    }, 2800);
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="scheme-catalog" href="#"><span class="material-symbols-outlined text-[24px]">account_balance</span><span class="font-label-md text-label-md text-xs">Schemes</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="eligibility-check" href="#"><span class="material-symbols-outlined text-[24px]">how_to_reg</span><span class="font-label-md text-label-md text-xs">Eligibility</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" data-path="calculator" href="#"><span class="material-symbols-outlined text-[24px]">calculate</span><span class="font-label-md text-label-md text-xs">Subsidy</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-primary font-bold" data-path="applications-hub" href="#"><span class="material-symbols-outlined text-[24px]">description</span><span class="font-label-md text-label-md text-xs">Status</span></a></div></nav></body></html>
