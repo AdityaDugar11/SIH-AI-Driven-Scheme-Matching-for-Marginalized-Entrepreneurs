@@ -113,7 +113,7 @@ export default function Dashboard() {
       try {
         setLoading(true);
         const result = await getDashboard(email);
-        setData(result || []);
+        setData(result.recommendations || []);
       } catch (err) {
         setError(err.message || "Failed to load dashboard");
       } finally {
