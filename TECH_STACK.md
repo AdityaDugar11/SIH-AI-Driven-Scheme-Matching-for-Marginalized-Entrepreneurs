@@ -1,17 +1,16 @@
 # TECH_STACK.md
 
-## Final stack
+## Final stack (Updated)
 | Layer | Choice | Setup notes |
 |---|---|---|
-| Frontend | React + Vite + Tailwind CSS | `npm create vite@latest` with react template, add Tailwind per its own Vite guide |
-| Backend | FastAPI (Python) **or** Express (Node) — pick ONE based on team strength, do not mix | expose 3 endpoints: `/recommend`, `/calculate-emi`, `/nearest-partners` |
-| Data store | Google Sheets (via n8n) for Leads + Partners; static JSON files (`schemes.json`, `partners.json`) checked into the repo as the backend's own source of truth | keep backend's `partners.json` and n8n's "Partners" Sheet in sync manually before demo — do not try to make the backend read live from Sheets, that's an extra integration you don't need |
-| Maps | Leaflet.js + OpenStreetMap tiles | no API key needed, `react-leaflet` package for React |
-| i18n | `react-i18next` or a plain JSON dictionary + context toggle | English + Hindi only |
-| Automation | n8n (cloud, n8n.io free tier) | see N8N_WORKFLOWS.md |
-| Hosting — frontend | Vercel | connect GitHub repo, auto-deploy on push |
-| Hosting — backend | Render or Railway | free tier, watch for cold-start delay before demo (hit the URL a few times beforehand to warm it up) |
-| Version control | GitHub, one shared repo | branch per person, merge to `main` frequently — do not let 4 people work unmerged for 12+ hours |
+| Frontend | React + Vite + Tailwind CSS v4 | `npm create vite@latest` with react template. Using Tailwind CSS v4 for styling. |
+| Backend | FastAPI (Python) | Running locally with uvicorn. Handles AI chat and Scheme logic. |
+| Data store | Supabase (Postgres) | Used for user profiles and onboarding data (schema synced via `supabase_alter.sql`). |
+| Authentication | Supabase Auth | Handles user signup, login, and session persistence. |
+| AI Chatbot | Google GenAI (Gemini 2.5) | Integrated via `google-genai` Python SDK, with fallback mock logic for hackathon reliability. |
+| Maps | Leaflet.js + OpenStreetMap tiles | `react-leaflet` package. 100% free, no API keys needed. |
+| i18n | `react-i18next` | Fully translated in English, Hindi, Bengali, Telugu, and Marathi. |
+| Version control | GitHub | |
 
 ## ⚠️ Deviations from original plan (read before integrating)
 
@@ -19,10 +18,9 @@
 
 | Original plan | What changed | Why | Impact on frontend |
 |---|---|---|---|
-| Data store: static JSON files | **Supabase Postgres** (tables: `schemes`, `partners`) | Team decided structured queries + seeded DB is cleaner for 3-endpoint backend | **None** — API request/response shapes are identical to the contract below |
-| Backend hosting: Render/Railway | **Vercel Serverless Functions** (Node.js) | Same platform as frontend, no cold-start issues, simpler CI/CD | Endpoint paths are `/api/recommend`, `/api/calculate-emi`, `/api/nearest-partners` (Vercel `/api/` prefix convention) |
-
-**What did NOT change:** API contract (request/response JSON shapes), eligibility logic (still deterministic rules, no ML), data schema, or CORS setup. Frontend can integrate against the same contract below without modifications.
+| Data store: static JSON files | **Supabase Postgres** (tables: `profiles`) | Decided to use Supabase for Auth and structured profile storage. | Frontend communicates directly with Supabase for Auth and Profile saving, but uses Python FastAPI for `/api/chat` and `/api/recommend`. |
+| AI: None Planned | **Gemini AI Chatbot** | Team wanted a more interactive, multilingual floating chatbot for accessibility. | Added `google-genai` to FastAPI and `ChatWidget.jsx` in frontend. |
+| i18n: EN/HI | **EN, HI, BN, TE, MR** | Expanded inclusivity for a wider Indian demographic. | None, just more translation files in `i18n.js`. |
 
 **Environment variables required in Vercel Dashboard → Settings → Environment Variables:**
 - `SUPABASE_URL` — the Supabase project URL

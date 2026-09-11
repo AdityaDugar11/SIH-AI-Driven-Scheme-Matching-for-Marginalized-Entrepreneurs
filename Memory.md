@@ -1,87 +1,30 @@
-# Memory.md — AI agent persistent session memory
+# Agent Memory
 
-## Purpose
-This file exists so an AI coding agent starting a NEW session/task does not have to re-read the entire repo, re-derive prior decisions, or ask questions that were already answered. **The agent must update this file at the end of every work session** (or after completing a meaningful chunk of work) so the next session — even a different agent/tool — can resume instantly.
-
-Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, at the start of any task. Only read the deeper files if Memory.md doesn't already answer what you need. Update this file LAST, after finishing work, before ending the session.
+**Purpose:** This file is used by AI agents to maintain context across sessions. Before starting a new task, read this file. After finishing a task, append your progress here. This prevents wasting tokens on re-reading the entire codebase.
 
 ---
 
-## Project facts (stable — rarely changes, don't re-derive)
-- Project: AI-Driven Scheme Matching for Marginalized Entrepreneurs (SIH hackathon, Sept 4-5)
-- Stack: React+Vite+Tailwind frontend, FastAPI/Express backend, static JSON data, n8n for automation, Google Sheets for Leads/Partners logs
-- Core constraint: eligibility logic is deterministic rules, never ML — see Decisions.md D1
-- No auth, no database, no native app — see Rules.md
-- Full spec locations: PRD.md (scope), INSTRUCTIONS.md (build rules), PHASES.md (order), TECH_STACK.md (API contract), UI.md (screens), Design.md (visual tokens), Architecture.md (data flow)
+## Session History
+
+### [Date: YYYY-MM-DD] - [Agent Name]
+**Task Completed:** 
+- Generated core markdown documentation (PRD, Phases, UI, Architecture, etc.)
+**Current State of Project:** 
+- Planning phase complete. Documentation is set up.
+**Next Steps for next Agent:**
+- Begin Phase 1 (Frontend): Initialize Next.js project in `frontend/`, setup Tailwind, and build the Dashboard/Login components as per `UI.md` and `PHASES.md`.
 
 ---
+*(Append new sessions below this line)*
 
-## Current status (UPDATE THIS EVERY SESSION — overwrite, don't append forever)
-**Last updated by**: Antigravity session on 2026-09-11T16:00+05:30
-**Phase we're in** (per PHASES.md): Phase 4 COMPLETE — Workflows generated and deployed URLs verified. Frontend dashboard and email saving complete.
-
-### Live URLs
-- **Backend**: `https://aidrivenschemematchingformarginaliz.vercel.app`
-  - **POST /api/recommend** — ✅ updated and working (returns all ranked schemes with match_score)
-  - **POST /api/save-recommendation** — ✅ added and working
-  - **GET /api/dashboard** — ✅ added and working
-  - **PATCH /api/interest** — ✅ added and working
-  - **POST /api/calculate-emi** — ✅ tested, working
-  - **POST /api/nearest-partners** — ✅ tested, working
-  - **GET /api/health** — ✅ tested, working
-- **Frontend**: `https://frontend-six-alpha-92.vercel.app/` — ✅ tested, working
-
-### Done (this session — frontend)
-- Vite + React + Tailwind v4 scaffolded in `/frontend/` (separate from backend root)
-- **Screen 1 (IntakeForm)**: income, loan purpose (radio), cost, city dropdown, email input, "Find My Scheme" CTA → calls real backend `/api/recommend` and saves matches to `/api/save-recommendation`.
-- **Screen 2 (RecommendationResult)**: displays a ranked list of matched schemes (green/amber badges). Top match expanded. "View My Dashboard" link.
-- **Screen 3 (EmiCalculator)**: loan/contribution split, native range slider (6-60 months), live EMI recalculation via real `/api/calculate-emi`, visual bar, secondary info
-- **Screen 4 (PartnerLocator)**: Integrates `react-leaflet` to display map, lists nearest partners, incorporates non-negotiable simulated data tooltip, and navigates to confirmation.
-- **Screen 5 (ConfirmationScreen)**: Success state confirming scheme, EMI, and partner details, with "Start Over" reset flow.
-- **Shared components**: LanguageToggle, CurrencyDisplay, StepHeader, InfoTooltip (for simulated data).
-- **React Context** (`AppContext.jsx`): shared state working across all 5 screens.
-- **API client** (`api/client.js`): supports `/recommend`, `/calculate-emi`, and `/nearest-partners` toggling between real/mock via `VITE_USE_MOCK_API`.
-- **Mock fixtures** (`api/mocks.js`): completely mocked for offline dev matching all 3 endpoint shapes.
-- **i18n**: English + Hindi dictionaries covering all Screens 1-5 strings, using custom `useTranslation` hook.
-- **Design system** (`index.css`): all Design.md tokens. Map styles imported.
-- **Routing**: React Router fully operational (`/`, `/result`, `/emi`, `/partners`, `/confirmation`, `/dashboard`).
-- **Screen 6 (Dashboard)**: Fetches and displays saved recommendations for a given email. Users can mark "Interested" which pings the N8N webhook.
-
-### Done (this session — workflows & devops)
-- Verified Backend and Frontend Vercel deployments.
-- Generated `n8n_workflow_1_lead_notification.json` and `n8n_workflow_2_partner_risk_refresh.json` for manual import to self-hosted n8n.
-- Pre-demo testing completed successfully (checked `/api/health` and `/api/recommend` on production URLs).
-
-### Done (prior session — backend)
-- Supabase Postgres: `schemes` (3 rows) + `partners` (30 rows), RLS enabled, seeded
-- Vercel serverless deployment with CORS, Supabase integration
-- `scripts/test-endpoints.js` — 19 automated tests, all passing
-
-### Not started
-- Hindi translation pass review (strings present but need native review)
-- Mobile responsiveness polish (Phase 5)
-
-### Known bugs / issues
-- `SUPABASE_URL` env var in Vercel has a typo (`ttps://` instead of `https://`) — backend code works around it by preferring `NEXT_PUBLIC_SUPABASE_URL`
-- Browser automated testing unavailable (Playwright CDN issue) — manual testing via `npm run dev` recommended
-
----
-
-## Do NOT redo these (already decided/built — re-reading Decisions.md wastes tokens if it's already summarized here)
-- Data layer changed from static JSON to Supabase Postgres — see TECH_STACK.md "Deviations" section
-- Backend hosting changed from Render/Railway to Vercel Serverless Functions
-- Eligibility logic is deterministic rules engine (if/else + sort by max_amount), NOT ML — do not suggest replacing it
-- API contract matches TECH_STACK.md exactly (request/response shapes unchanged), endpoint paths have /api/ prefix per Vercel convention
-- Frontend uses native `<input type="range">` for tenure slider — no external library (see Decisions.md D7)
-- i18n uses custom `useTranslation` hook, not `react-i18next` — simpler for 2 languages (see Decisions.md D8)
-- Frontend `.env` has `VITE_USE_MOCK_API=false` pointing at real backend — mock layer kept as fallback
-
-## Open questions / blockers (things that need a human decision, not an agent decision)
-- N8n webhook URL needs to be configured in the frontend once the workflow JSON is imported and active. Currently pending URL from the self-hosted n8n instance.
-
----
-
-## Instructions for agents on updating this file
-- Overwrite the "Current status" section each time — it's a snapshot, not a log. Old status info belongs in git commit history, not here.
-- Only add to "Do NOT redo these" when something was genuinely tried/decided, not speculative.
-- Keep this file under ~1 page. If it's growing past that, move detail into Decisions.md (permanent rationale) and leave only a one-line pointer here.
+### [Date: 2026-09-11] - [Antigravity]
+**Task Completed:** 
+- Deleted old frontend/backend.
+- Scaffolded Vite + React frontend PWA.
+- Configured Tailwind CSS v4 and Supabase client.
+- Built Login, Signup, 3-step Onboarding, and Dashboard UIs.
+- All Phase 1 Frontend tasks completed.
+**Current State of Project:** 
+- Frontend Phase 1 complete. App builds successfully.
+**Next Steps for next Agent:**
+- Setup the Supabase database schema (`profiles` table) or move to Phase 2 (Backend AI logic).

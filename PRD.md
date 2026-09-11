@@ -1,61 +1,41 @@
-# PRD — AI-Driven Scheme Matching for Marginalized Entrepreneurs
-**SIH Problem Statement Track | 36-hour build**
+# Product Requirements Document (PRD)
+**Project Name:** AI-Driven Scheme Matching for Marginalized Entrepreneurs (SIH 2024)
 
-## 1. Problem (as given)
-SC-category citizens (income ≤ ₹5L/yr) are eligible for concessional loans (Micro Finance ≤₹1.4L, Term Loan ≤₹50L, Education Loan) routed through 100+ Channel Partners (SCA/PSB/RRB/NBFC-MFI). Citizens don't know which scheme fits them or which partner to approach. Result: misrouted applications, delayed disbursement.
+## 1. Background & Challenge
+To promote the socio-economic empowerment of the Scheduled Caste (SC) population, the government provides concessional financial assistance. Beneficiaries with annual family income up to ₹5.00 Lakhs are eligible for schemes covering up to 90% of costs at concessional interest rates (6.5% - 8%).
+**Challenge:** Funds are routed through a Channel Finance System (100+ partners like SCAs, PSBs, RRBs, NBFC-MFIs). Citizens lack awareness of specific credit schemes (Micro Finance up to ₹1.40L, Term Loan up to ₹50L, Education Loans) and struggle to find eligible Channel Partners.
 
-## 2. Reality check (read this before building anything)
-This section exists so the team doesn't waste hours chasing something unbuildable in 2 days.
+## 2. Objective
+Develop a mobile-first, multi-lingual Progressive Web App (PWA) that acts as an intelligent bridge between beneficiaries and channelizing agencies.
 
-| Component | Real or Mocked in this build | Why |
-|---|---|---|
-| Scheme eligibility logic | **Real** | Deterministic rules from income/cost/purpose — fully buildable, no external data needed |
-| EMI / financial calculator | **Real** | Pure math, no external dependency |
-| Channel partner directory (names, type, location) | **Real (static dataset we curate)** | We hand-build a JSON/CSV of ~30–50 real or realistic partner branches (enough for demo), not scraped live from 100+ orgs |
-| Geo-distance / nearest partner | **Real** | Haversine distance or Maps API against our static dataset |
-| Partner NPA / overdue / fund utilization status | **MOCKED, and we say so on stage** | No public API exposes this. We simulate a "risk score" field per partner in our static dataset and clearly label it "simulated — production version would pull from NBCFDC/SCA MIS" |
-| Multi-lingual UI | **Real, scoped** | i18n on 2–3 languages (English + Hindi minimum) using a translation library, not a chatbot |
-| "AI" scheme recommender | **Rule engine, optionally +NLP chat layer if time allows** | Core logic is a decision tree. If time permits, add a thin LLM layer on top for conversational input parsing. Do not build an ML classifier — no training data exists and it adds risk for zero benefit |
+## 3. Core Features
 
-**Do not present mocked data as live in the demo without disclosing it.** State it upfront in one slide: "Partner risk/NPA data is simulated for demo; production integration point identified."
+### 3.1. Dashboard & User Profiling (Phase 1 Priority)
+- **Auth:** Mobile Number OTP / Email signup.
+- **Profiling:** Name, Gender, Age, Annual Income, Caste, Locality, Education Status, Project Type, Estimated Cost.
+- **Dynamic Dashboard:** Showing 'Interested' (Saved) schemes, deadline alerts, and overall profile strength.
 
-## 3. MVP scope (what must work end-to-end by demo time)
-One critical path, fully working:
-1. User answers a short form (income, project type, cost estimate, education need, location).
-2. System recommends 1 best-fit scheme + 1–2 alternates, with plain-language explanation of *why*.
-3. User sees EMI table (principal, tenure, interest rate per scheme rules, moratorium).
-4. User sees nearest 3 eligible channel partners on a map, sorted by distance + simulated risk score, with contact info.
-5. UI available in English + Hindi toggle.
+### 3.2. AI Personalized Scheme Recommendation
+- **Smart Recommender:** AI/rule-based engine taking profile inputs and outputting multiple schemes.
+- **Match Score:** Displays percentage match (e.g., 95% match, 75% match, 25% match).
+- **Eligibility Gap Analysis:** Clear explanations: "Why Eligible" and "Why Not Eligible" (e.g., "Income exceeds limit for Scheme X").
+- **Document Checklist & Readiness:** Auto-generates required documents for recommended schemes.
+- **Deadline Tracking:** Tracks scheme deadlines with countdowns and push/email notifications.
 
-Everything else (accounts, application submission, admin dashboard, real chatbot, SMS notifications) is a "future scope" slide, not a build target.
+### 3.3. Natural Language / Chat-Based Search
+- AI Chatbot where users can type in natural language (e.g., "I need a loan of 5 lakhs for a dairy farm in UP") and get instant scheme matches.
 
-## 4. Explicit non-goals (do not build these — team will burn time otherwise)
-- No user authentication/login system — not needed for demo, adds hours for zero judging value.
-- No real backend integration with any bank/NBFC/government system.
-- No actual loan application submission workflow — this is a *recommender*, not a transaction system.
-- No ML model training. No dataset scraping of real citizens or real bank NPA figures.
-- No native mobile app — a responsive web app is sufficient and far faster to build/demo.
+### 3.4. Financial Calculator
+- Dynamic tool for projected EMIs based on scheme guidelines, max limits, interest rates (6.5% - 15%), and moratorium periods (3 - 12 months).
 
-## 5. Users
-- Primary: SC-category individual or family seeking a loan for a small business or education, low financial literacy, may not know English well.
-- Secondary (for future scope, not this build): channel partner staff verifying incoming leads.
+### 3.5. Geo-Spatial Partner Locator & Router
+- Maps integration to find the nearest eligible Channel Partner (SCA/Bank/NBFC-MFI).
+- Filters partners based on current fund utilization (hides partners with high NPAs/overdues).
 
-## 6. Scheme rules (source of truth for the engine)
-Use these as your initial rule table — verify against actual NBCFDC/NSFDC scheme documents if time allows, but for hackathon purposes this structure is sufficient:
+## 4. UI/UX Priorities
+- **Mobile-First:** 100% optimized for mobile screens first, scaling up to tablets and desktops.
+- **Multi-lingual:** Simple-language UI with one-tap translation (Hindi, English, regional languages).
 
-| Scheme | Eligibility | Max Amount | Interest Rate | Moratorium |
-|---|---|---|---|---|
-| Micro Finance Scheme | Income ≤ ₹5L, small project/micro-enterprise | ≤ ₹1.40 Lakh | ~6.5%–8% | 3–6 months |
-| Term Loan Scheme | Income ≤ ₹5L, larger project (manufacturing/trade/service) | ≤ ₹50.00 Lakh | ~8%–10% (scale with amount) | 6–12 months |
-| Education Loan Scheme | Income ≤ ₹5L, admission to recognized course (India/abroad) | Course-cost dependent, typically higher cap | ~6.5%–8% (lower for girls in some schemes) | Course duration + 6–12 months |
-
-Loan covers up to 90% of project/course cost — remaining 10% is applicant contribution; the calculator must reflect this, not just show full project cost as loan amount.
-
-## 7. Success metrics for the demo
-- Time from form submission to recommendation: <2 seconds (rule engine, no excuse for latency).
-- Recommendation correctness against the rule table: 100% on test cases (this is graded by common sense, verify manually).
-- Judges should be able to complete the full flow themselves in under 90 seconds without your help.
-
-## 8. Risks
-- Team over-scoping the geo/NPA module and running out of time for the core recommender — mitigate by building recommender + calculator FIRST (see PHASES.md), locator last.
-- Presenting mocked NPA data as real — will look dishonest in Q&A if a judge asks "where does this come from." Have the honest answer ready.
+## 5. System Notifications (via n8n)
+- Send emails to users for "Interested" schemes.
+- Send alerts for approaching scheme deadlines.

@@ -1,0 +1,93 @@
+{
+  "name": "Workflow 3: Deadline Tracking & Alerts",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Cron (8 AM Daily)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "url": "http://your-backend-api.com/api/schemes/expiring-soon",
+        "options": {}
+      },
+      "id": "2",
+      "name": "Fetch Expiring Schemes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "users"
+      },
+      "id": "3",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.schemeName }} Deadline Approaching!",
+        "message": "Hello ={{ $json.name }},<br><br>The deadline for <b>={{ $json.schemeName }}</b> is approaching on ={{ $json.deadline }}.<br><br>Log in to complete your application.",
+        "options": {}
+      },
+      "id": "4",
+      "name": "Send Email Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [600, 0]
+    }
+  ],
+  "connections": {
+    "Cron (8 AM Daily)": {
+      "main": [
+        [
+          {
+            "node": "Fetch Expiring Schemes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Expiring Schemes": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Send Email Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}
