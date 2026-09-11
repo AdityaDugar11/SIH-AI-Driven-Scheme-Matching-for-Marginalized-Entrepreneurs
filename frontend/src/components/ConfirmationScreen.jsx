@@ -12,7 +12,7 @@ export default function ConfirmationScreen() {
   };
 
   const handleViewDashboard = () => {
-    navigate("/dashboard");
+    navigate(`/dashboard?email=${encodeURIComponent(state.intake.email || "")}`);
   };
 
   const email = state.intake.email || "applicant@example.com";
