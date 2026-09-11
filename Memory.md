@@ -22,7 +22,10 @@ Rule for agents: read this file FIRST, before PRD.md/INSTRUCTIONS.md/PHASES.md, 
 
 ### Live URLs
 - **Backend**: `https://aidrivenschemematchingformarginaliz.vercel.app`
-  - **POST /api/recommend** — ✅ tested, working
+  - **POST /api/recommend** — ✅ updated and working (returns all ranked schemes with match_score)
+  - **POST /api/save-recommendation** — ✅ added and working
+  - **GET /api/dashboard** — ✅ added and working
+  - **PATCH /api/interest** — ✅ added and working
   - **POST /api/calculate-emi** — ✅ tested, working
   - **POST /api/nearest-partners** — ✅ tested, working
   - **GET /api/health** — ✅ tested, working

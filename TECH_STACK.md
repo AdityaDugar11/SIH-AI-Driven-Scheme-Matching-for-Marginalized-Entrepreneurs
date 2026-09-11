@@ -57,10 +57,104 @@ Request:
 Response:
 ```json
 {
-  "recommended_scheme": "Micro Finance Scheme",
-  "reason": "Your project cost is within the ₹1.40 Lakh limit and your income qualifies for concessional lending.",
-  "alternates": ["Term Loan Scheme"],
-  "eligible": true
+  "matches": [
+    {
+      "scheme": "Micro Finance Scheme",
+      "match_score": 100,
+      "eligible": true,
+      "reason": "Your project cost (₹1,20,000) is within the ₹1.40 Lakh limit and your income qualifies for concessional lending under the Micro Finance Scheme.",
+      "required_documents": ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Project Proposal", "Bank Passbook"]
+    },
+    {
+      "scheme": "Term Loan Scheme",
+      "match_score": 67,
+      "eligible": false,
+      "reason": "Your project cost (₹1,20,000) exceeds the maximum allowed for this scheme.",
+      "required_documents": ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Detailed Project Report", "Bank Passbook"]
+    }
+  ]
+}
+```
+
+### `POST /save-recommendation`
+Request:
+```json
+{
+  "email": "test@example.com",
+  "scheme_name": "Micro Finance Scheme",
+  "match_score": 100,
+  "eligible": true,
+  "reason": "Meets criteria",
+  "state": "Delhi",
+  "city": "New Delhi",
+  "deadline_date": "2026-10-01"
+}
+```
+Response:
+```json
+{
+  "success": true,
+  "saved_recommendation": {
+    "id": "uuid",
+    "email": "test@example.com",
+    "scheme_name": "Micro Finance Scheme",
+    "match_score": 100,
+    "eligible": true,
+    "reason": "Meets criteria",
+    "state": "Delhi",
+    "city": "New Delhi",
+    "interested": null,
+    "deadline_date": "2026-10-01",
+    "reminder_sent": false,
+    "created_at": "2026-09-11T12:00:00Z"
+  }
+}
+```
+
+### `GET /dashboard`
+Request (Query Params):
+```
+?email=test@example.com
+```
+Response:
+```json
+{
+  "recommendations": [
+    {
+      "id": "uuid",
+      "email": "test@example.com",
+      "scheme_name": "Micro Finance Scheme",
+      "match_score": 100,
+      "eligible": true,
+      "reason": "Meets criteria",
+      "state": "Delhi",
+      "city": "New Delhi",
+      "interested": null,
+      "deadline_date": "2026-10-01",
+      "reminder_sent": false,
+      "created_at": "2026-09-11T12:00:00Z"
+    }
+  ]
+}
+```
+
+### `PATCH /interest`
+Request:
+```json
+{
+  "id": "uuid",
+  "interested": true
+}
+```
+Response:
+```json
+{
+  "success": true,
+  "updated_recommendation": {
+    "id": "uuid",
+    "interested": true
+    // ... other fields
+  }
 }
 ```
 

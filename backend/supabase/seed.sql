@@ -5,14 +5,17 @@
 -- ============================================================
 -- Schemes — from PRD.md section 6
 -- ============================================================
-INSERT INTO schemes (id, name, max_amount, interest_rate_min, interest_rate_max, moratorium_months_min, moratorium_months_max, eligibility_criteria)
+INSERT INTO schemes (id, name, max_amount, interest_rate_min, interest_rate_max, moratorium_months_min, moratorium_months_max, eligibility_criteria, required_documents)
 VALUES
   (1, 'Micro Finance Scheme', 140000, 6.5, 8.0, 3, 6,
-   '{"max_income": 500000, "project_types": ["small_business"], "education_need": false}'),
+   '{"max_income": 500000, "project_types": ["small_business"], "education_need": false}',
+   '{"Aadhaar Card", "Income Certificate", "Caste Certificate", "Project Proposal", "Bank Passbook"}'),
   (2, 'Term Loan Scheme', 5000000, 8.0, 10.0, 6, 12,
-   '{"max_income": 500000, "project_types": ["small_business", "larger_project", "manufacturing", "trade", "service"], "education_need": false}'),
+   '{"max_income": 500000, "project_types": ["small_business", "larger_project", "manufacturing", "trade", "service"], "education_need": false}',
+   '{"Aadhaar Card", "Income Certificate", "Caste Certificate", "Detailed Project Report", "Bank Passbook"}'),
   (3, 'Education Loan Scheme', 2000000, 6.5, 8.0, 6, 12,
-   '{"max_income": 500000, "project_types": ["education"], "education_need": true}')
+   '{"max_income": 500000, "project_types": ["education"], "education_need": true}',
+   '{"Aadhaar Card", "Income Certificate", "Caste Certificate", "Admission Letter", "Fee Structure", "Bank Passbook"}')
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================

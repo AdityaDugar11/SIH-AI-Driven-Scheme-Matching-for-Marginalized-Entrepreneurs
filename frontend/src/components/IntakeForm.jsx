@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext.jsx";
 import { useTranslation } from "../hooks/useTranslation.js";
 import { recommendScheme } from "../api/client.js";
-import StepHeader from "./StepHeader.jsx";
+import { Building2, Store, GraduationCap, Globe } from "lucide-react";
 
 /**
  * City list with lat/lng for partner locator (Screen 4).
@@ -38,13 +38,13 @@ const CITIES = [
 
 /** Maps UI radio value to API project_type + education_need */
 const PURPOSE_MAP = {
-  small_business: { project_type: "small_business", education_need: false },
-  larger_project: { project_type: "larger_project", education_need: false },
-  education: { project_type: "education", education_need: true },
+  small_business: { project_type: "small_business", education_need: false, icon: Store },
+  larger_project: { project_type: "larger_project", education_need: false, icon: Building2 },
+  education: { project_type: "education", education_need: true, icon: GraduationCap },
 };
 
 export default function IntakeForm() {
-  const { setIntake, setRecommendation } = useApp();
+  const { setIntake, setRecommendation, language, setLanguage } = useApp();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -113,16 +113,16 @@ export default function IntakeForm() {
   }
 
   return (
-    <div>
-      <StepHeader currentStep={1} />
+    <div className="card max-w-lg mx-auto w-full mt-4 sm:mt-8 p-6 sm:p-8">
+      <div className="flex items-center mb-6">
+        <div className="p-2 bg-blue-100 text-[#1D4ED8] rounded-full">
+          <Building2 size={24} />
+        </div>
+      </div>
 
-      <h1 className="text-heading mb-2">{t("screen1_title")}</h1>
-      <p
-        className="mb-6 text-base"
-        style={{ color: "var(--color-text-secondary)" }}
-      >
-        {t("screen1_subtitle")}
-      </p>
+      <h1 className="text-[28px] font-bold text-slate-900 leading-tight mb-6">
+        {t("screen1_title")}
+      </h1>
 
       <form onSubmit={handleSubmit} noValidate>
         {/* ── Annual Family Income ──────────────────────────── */}
@@ -140,8 +140,8 @@ export default function IntakeForm() {
             <input
               id="income"
               type="number"
-              className="form-input"
-              style={{ paddingLeft: "1.75rem" }}
+              className="form-input text-lg font-medium border-2"
+              style={{ paddingLeft: "2rem" }}
               placeholder={t("income_placeholder")}
               value={income}
               onChange={(e) => setIncome(e.target.value)}
@@ -160,31 +160,41 @@ export default function IntakeForm() {
         {/* ── Loan Purpose ─────────────────────────────────── */}
         <div className="mb-5">
           <label className="form-label">{t("purpose_label")}</label>
-          <div className="flex flex-col gap-2.5 mt-1">
-            {Object.entries(PURPOSE_MAP).map(([key]) => (
-              <label
-                key={key}
-                className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors"
-                style={{
-                  borderColor:
-                    purpose === key ? "var(--color-primary)" : "#d1d5db",
-                  backgroundColor:
-                    purpose === key
-                      ? "var(--color-primary-light)"
-                      : "var(--color-surface)",
-                }}
-              >
-                <input
-                  type="radio"
-                  name="purpose"
-                  value={key}
-                  checked={purpose === key}
-                  onChange={(e) => setPurpose(e.target.value)}
-                  className="w-4 h-4 accent-[var(--color-primary)]"
-                />
-                <span className="font-medium">{t(`purpose_${key}`)}</span>
-              </label>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-3 mt-1">
+            {Object.entries(PURPOSE_MAP).map(([key, config]) => {
+              const Icon = config.icon;
+              return (
+                <label
+                  key={key}
+                  className="flex-1 flex flex-col items-center justify-center gap-2 p-4 rounded-[8px] border-2 cursor-pointer transition-colors text-center"
+                  style={{
+                    borderColor:
+                      purpose === key ? "var(--color-primary)" : "#E2E8F0",
+                    backgroundColor:
+                      purpose === key
+                        ? "var(--color-primary-light)"
+                        : "var(--color-surface)",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="purpose"
+                    value={key}
+                    checked={purpose === key}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    className="hidden"
+                  />
+                  <Icon 
+                    size={28} 
+                    color={purpose === key ? "var(--color-primary)" : "var(--color-text-muted)"} 
+                    strokeWidth={1.5}
+                  />
+                  <span className={`text-sm font-bold ${purpose === key ? 'text-slate-900' : 'text-slate-600'}`}>
+                    {t(`purpose_${key}`)}
+                  </span>
+                </label>
+              );
+            })}
           </div>
           {errors.purpose && (
             <p className="text-sm mt-1" style={{ color: "#d32f2f" }}>
@@ -208,8 +218,8 @@ export default function IntakeForm() {
             <input
               id="cost"
               type="number"
-              className="form-input"
-              style={{ paddingLeft: "1.75rem" }}
+              className="form-input text-lg font-medium border-2"
+              style={{ paddingLeft: "2rem" }}
               placeholder={t("cost_placeholder")}
               value={cost}
               onChange={(e) => setCost(e.target.value)}
@@ -231,7 +241,7 @@ export default function IntakeForm() {
           </label>
           <select
             id="city"
-            className="form-input"
+            className="form-input border-2 text-lg font-medium bg-white"
             value={cityIdx}
             onChange={(e) => setCityIdx(e.target.value)}
           >
@@ -268,7 +278,7 @@ export default function IntakeForm() {
         <button
           id="cta-find-scheme"
           type="submit"
-          className="btn-primary"
+          className="btn-primary w-full text-lg mt-4"
           disabled={loading}
         >
           {loading ? t("finding_scheme") : t("cta_find_scheme")}

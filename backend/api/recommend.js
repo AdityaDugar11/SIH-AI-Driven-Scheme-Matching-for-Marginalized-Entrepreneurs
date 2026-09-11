@@ -64,65 +64,88 @@ module.exports = async function handler(req, res) {
 
     // ── Deterministic eligibility matching ─────────────────────
     // This is a rules engine, NOT an ML model — see Rules.md rule 1
-    const eligible = [];
+    const matches = [];
 
     for (const scheme of schemes) {
-      const criteria = scheme.eligibility_criteria;
+      const criteria = scheme.eligibility_criteria || {};
+      let score = 0;
+      let totalCriteria = 3; // Income, project type, max amount
 
-      // Education need match
-      if (isEducation && !criteria.education_need) continue;
-      if (!isEducation && criteria.education_need) continue;
-
-      // Project type match
-      const validTypes = criteria.project_types || [];
-      if (!validTypes.includes(project_type) && !isEducation) continue;
-      if (isEducation && !validTypes.includes('education') && !validTypes.includes(project_type)) continue;
-
-      // Project cost within scheme cap
-      if (project_cost > Number(scheme.max_amount)) continue;
-
-      eligible.push(scheme);
-    }
-
-    // ── No eligible scheme ────────────────────────────────────
-    if (eligible.length === 0) {
-      let reason = '';
-      if (isEducation) {
-        reason = `Your education cost (₹${project_cost.toLocaleString('en-IN')}) exceeds the available Education Loan Scheme cap, or no matching scheme was found.`;
-      } else {
-        reason = `Your project cost (₹${project_cost.toLocaleString('en-IN')}) exceeds the maximum for available ${project_type.replace(/_/g, ' ')} schemes.`;
+      // 1. Income check
+      // Assuming all schemes have a max_income of 500000 for now per PRD
+      const maxIncome = criteria.max_income || 500000;
+      if (income <= maxIncome) {
+        score++;
       }
-      return res.status(200).json({
-        recommended_scheme: null,
+
+      // 2. Project type check
+      let typeMatch = false;
+      const validTypes = criteria.project_types || [];
+      if (isEducation) {
+        if (criteria.education_need || validTypes.includes('education') || validTypes.includes(project_type)) {
+          typeMatch = true;
+        }
+      } else {
+        if (!criteria.education_need && (validTypes.includes(project_type) || validTypes.length === 0)) {
+          typeMatch = true;
+        }
+      }
+      if (typeMatch) score++;
+
+      // 3. Project cost check
+      let costMatch = false;
+      if (project_cost <= Number(scheme.max_amount)) {
+        costMatch = true;
+        score++;
+      }
+      
+      const match_score = Math.round((score / totalCriteria) * 100);
+      const eligible = (match_score === 100);
+
+      let reason = '';
+      if (eligible) {
+        if (scheme.name === 'Micro Finance Scheme') {
+          reason = `Your project cost (₹${project_cost.toLocaleString('en-IN')}) is within the ₹1.40 Lakh limit and your income qualifies for concessional lending under the Micro Finance Scheme.`;
+        } else if (scheme.name === 'Term Loan Scheme') {
+          reason = `Your project cost (₹${project_cost.toLocaleString('en-IN')}) qualifies for the Term Loan Scheme (up to ₹50 Lakh) for ${project_type.replace(/_/g, ' ')} projects at concessional rates.`;
+        } else if (scheme.name === 'Education Loan Scheme') {
+          reason = `Your course cost (₹${project_cost.toLocaleString('en-IN')}) qualifies for the Education Loan Scheme at concessional interest rates of 6.5%–8%.`;
+        } else {
+          reason = `You meet all criteria for this scheme.`;
+        }
+      } else {
+        if (income > maxIncome) {
+          reason = `Your annual income (₹${income.toLocaleString('en-IN')}) exceeds the ₹5,00,000 threshold.`;
+        } else if (!typeMatch) {
+          reason = `This scheme is not suitable for your project type.`;
+        } else if (!costMatch) {
+          reason = `Your project cost (₹${project_cost.toLocaleString('en-IN')}) exceeds the maximum allowed for this scheme.`;
+        } else {
+          reason = `You do not meet all criteria for this scheme.`;
+        }
+      }
+
+      matches.push({
+        scheme: scheme.name,
+        match_score,
+        eligible,
         reason,
-        alternates: [],
-        eligible: false
+        required_documents: scheme.required_documents || []
       });
     }
 
-    // ── Rank: most constrained (lowest max_amount) first ──────
-    // This ensures Micro Finance is preferred over Term Loan for
-    // small amounts, matching test cases 5 & 6 in Testing.md
-    eligible.sort((a, b) => Number(a.max_amount) - Number(b.max_amount));
-
-    const primary = eligible[0];
-    const alternates = eligible.slice(1).map(s => s.name);
-
-    // ── Build human-readable reason ───────────────────────────
-    let reason = '';
-    if (primary.name === 'Micro Finance Scheme') {
-      reason = `Your project cost (₹${project_cost.toLocaleString('en-IN')}) is within the ₹1.40 Lakh limit and your income qualifies for concessional lending under the Micro Finance Scheme.`;
-    } else if (primary.name === 'Term Loan Scheme') {
-      reason = `Your project cost (₹${project_cost.toLocaleString('en-IN')}) qualifies for the Term Loan Scheme (up to ₹50 Lakh) for ${project_type.replace(/_/g, ' ')} projects at concessional rates.`;
-    } else if (primary.name === 'Education Loan Scheme') {
-      reason = `Your course cost (₹${project_cost.toLocaleString('en-IN')}) qualifies for the Education Loan Scheme at concessional interest rates of 6.5%–8%.`;
-    }
+    // Sort by match_score descending. If scores are equal, sort by max_amount ascending (most constrained first).
+    matches.sort((a, b) => {
+      if (b.match_score !== a.match_score) {
+        return b.match_score - a.match_score;
+      }
+      const aScheme = schemes.find(s => s.name === a.scheme);
+      const bScheme = schemes.find(s => s.name === b.scheme);
+      return Number(aScheme.max_amount) - Number(bScheme.max_amount);
+    });
 
     return res.status(200).json({
-      recommended_scheme: primary.name,
-      reason,
-      alternates,
-      eligible: true
+      matches
     });
   } catch (err) {
     console.error('Unexpected error in /recommend:', err);
