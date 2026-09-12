@@ -1,0 +1,1159 @@
+[
+    {
+        "name": "AP Jagananna Vidya Deevena Scheme",
+        "type": "State",
+        "loanType": "Education Loan",
+        "rules": {
+            "max_income": 250000,
+            "caste_required": [
+                "SC",
+                "ST",
+                "OBC",
+                "Minorities",
+                "Kapu",
+                "EBC",
+                "Differently-abled"
+            ],
+            "project_type": "Education"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Application Form"
+        ],
+        "source_file": "state_andhra-pradesh_doc_1.txt"
+    },
+    {
+        "name": "Jagananna Vasati Deevena Scheme",
+        "type": "State",
+        "loanType": "Education Loan",
+        "rules": {
+            "project_type": "Education"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Account details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_10.txt"
+    },
+    {
+        "name": "AP YSR Kapu Nestam Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b915,000 per annum",
+        "rules": {
+            "caste_required": [
+                "Kapu",
+                "Balija",
+                "Telaga",
+                "Ontari"
+            ],
+            "gender_required": "Female",
+            "project_type": "Livelihood"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Caste Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_11.txt"
+    },
+    {
+        "name": "AP Vahana Mitra Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b910,000 per annum",
+        "rules": {
+            "project_type": "Transportation"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Vehicle Registration"
+        ],
+        "source_file": "state_andhra-pradesh_doc_12.txt"
+    },
+    {
+        "name": "AP YSR Adarsham Scheme",
+        "type": "State",
+        "loanType": "Self-Employment Loan",
+        "rules": {
+            "project_type": "Transportation"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Unemployment Certificate",
+            "Bank Account details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_13.txt"
+    },
+    {
+        "name": "AP YSR Netanna Nestham Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b924,000 per annum",
+        "interest": "",
+        "rules": {
+            "project_type": "Handloom Weaving"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Passbook",
+            "Weaver Identity Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_14.txt"
+    },
+    {
+        "name": "Fishermen Allowance",
+        "type": "State",
+        "loanType": "Allowance",
+        "maxLimit": "\u20b910,000",
+        "interest": "",
+        "rules": {
+            "project_type": "Fishing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Passbook",
+            "Fishermen Identity Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_15.txt"
+    },
+    {
+        "name": "AP Dr. YSR Kanti Velugu Scheme",
+        "type": "State",
+        "loanType": "Healthcare Scheme",
+        "maxLimit": "",
+        "interest": "",
+        "rules": {
+            "project_type": "Health"
+        },
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_16.txt"
+    },
+    {
+        "name": "AP YSR Sports Incentive Scheme",
+        "type": "State",
+        "loanType": "Incentive",
+        "maxLimit": "\u20b95,00,000",
+        "interest": "",
+        "rules": {
+            "project_type": "Sports"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Passbook",
+            "Medal Certificate/Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_17.txt"
+    },
+    {
+        "name": "AP YSR Pelli Kanuka Scheme",
+        "type": "State",
+        "loanType": "Marriage Assistance",
+        "maxLimit": "\u20b91,50,000",
+        "interest": "",
+        "rules": {
+            "caste_required": [
+                "SC",
+                "ST",
+                "BC",
+                "Minorities"
+            ],
+            "project_type": "Marriage"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Caste Certificate",
+            "Marriage Certificate",
+            "Bank Passbook",
+            "Disability Certificate (if applicable)"
+        ],
+        "source_file": "state_andhra-pradesh_doc_18.txt"
+    },
+    {
+        "name": "AP YSR Rythu Bharosa Scheme",
+        "type": "State",
+        "loanType": "Investment Support",
+        "maxLimit": "\u20b912,500 per annum",
+        "interest": "",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Passbook",
+            "Land Records (for landowners)",
+            "Tenant Farmer Agreement (for tenant farmers)"
+        ],
+        "source_file": "state_andhra-pradesh_doc_17.txt"
+    },
+    {
+        "name": "AP YSR Vahana Mitra Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b910,000",
+        "interest": "",
+        "rules": {
+            "project_type": "Transport"
+        },
+        "base_documents": [
+            "Aadhaar Card",
+            "White Ration Card",
+            "Vehicle Registration Certificate",
+            "Driving Licence",
+            "First Page of Bank Passbook"
+        ],
+        "source_file": "state_andhra-pradesh_doc_18.txt"
+    },
+    {
+        "name": "AP YSR Rythu Bharosa Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b912,500",
+        "rules": {
+            "caste_required": [
+                "SC",
+                "ST",
+                "OBC",
+                "Minority"
+            ],
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Land Records"
+        ],
+        "source_file": "state_andhra-pradesh_doc_19.txt"
+    },
+    {
+        "name": "AP YSR Pelli Kanuka Scheme",
+        "type": "State",
+        "loanType": "Marriage Assistance",
+        "maxLimit": "\u20b91,50,000",
+        "rules": {
+            "caste_required": [
+                "SC",
+                "ST",
+                "OBC",
+                "Minority"
+            ],
+            "gender_required": "Female",
+            "project_type": "Marriage"
+        },
+        "base_documents": [
+            "Birth Certificate",
+            "Caste Certificate",
+            "Wedding Card",
+            "Aadhaar",
+            "Passport Size photograph",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_2.txt"
+    },
+    {
+        "name": "YSR Sports Incentive Scheme",
+        "type": "State",
+        "loanType": "Incentive",
+        "maxLimit": "\u20b95,00,000",
+        "rules": {
+            "project_type": "Sports"
+        },
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_20.txt"
+    },
+    {
+        "name": "AP YSR Free Crop Insurance Scheme",
+        "type": "State",
+        "loanType": "Crop Insurance",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Records"
+        ],
+        "source_file": "state_andhra-pradesh_doc_21.txt"
+    },
+    {
+        "name": "AP YSR Navodayam Scheme",
+        "type": "State",
+        "loanType": "Business Support",
+        "rules": {
+            "project_type": "MSME Support"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Business Registration Documents"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "Free Electricity to SCs in Andhra Pradesh",
+        "type": "State",
+        "loanType": "Utility Subsidy",
+        "rules": {
+            "caste_required": [
+                "SC"
+            ],
+            "project_type": "Utility"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Caste Certificate",
+            "Electricity Bill"
+        ],
+        "source_file": "state_andhra-pradesh_doc_21.txt"
+    },
+    {
+        "name": "Financial Aid to Weavers, Barbers and Tailors",
+        "type": "State",
+        "loanType": "Vocational Support",
+        "maxLimit": "\u20b910,000",
+        "rules": {
+            "project_type": "Vocational Support"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Occupation Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_21.txt"
+    },
+    {
+        "name": "YSR Urban Housing Scheme",
+        "type": "State",
+        "loanType": "Housing",
+        "rules": {
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Proof of Residence",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "PMAY-YSR Weaker Sections Housing Scheme",
+        "type": "State",
+        "loanType": "Housing",
+        "rules": {
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Proof of Residence",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "Pradhan Mantri Awas Yojana (PMAY Urban)",
+        "type": "Central",
+        "loanType": "Housing",
+        "rules": {
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Proof of Residence",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "Jagan Anna Amma Vodi Scheme",
+        "type": "State",
+        "loanType": "Education Support",
+        "rules": {
+            "project_type": "Education"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Student ID/Admission Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "YSR-PM Fasal Bima Yojana",
+        "type": "Central",
+        "loanType": "Crop Insurance",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Records"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "YSR Nine Hours Free Power Supply",
+        "type": "State",
+        "loanType": "Utility Subsidy",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Records",
+            "Electricity Bill"
+        ],
+        "source_file": "state_andhra-pradesh_doc_22.txt"
+    },
+    {
+        "name": "YSR Pension Kanuka Scheme",
+        "type": "State",
+        "loanType": "Pension",
+        "maxLimit": "\u20b910,000 per month",
+        "rules": {},
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_23.txt"
+    },
+    {
+        "name": "AP Grama / Ward Volunteer Scheme",
+        "type": "State",
+        "loanType": "Stipend/Honorarium",
+        "maxLimit": "\u20b95,000 per month",
+        "rules": {
+            "project_type": "Public Service/Welfare Delivery"
+        },
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_24.txt"
+    },
+    {
+        "name": "AP Surya Shakti Scheme",
+        "type": "State",
+        "loanType": "Subsidy",
+        "maxLimit": "\u20b960,000",
+        "rules": {
+            "project_type": "Solar Energy"
+        },
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_25.txt"
+    },
+    {
+        "name": "YSR Cheyutha Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b975,000",
+        "rules": {
+            "caste_required": [
+                "SC",
+                "ST",
+                "BC",
+                "Minority"
+            ],
+            "gender_required": "Female",
+            "project_type": "Entrepreneurship Support"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Caste Certificate",
+            "Income Certificate",
+            "Domicile Certificate",
+            "Bank Account Details",
+            "Age Proof",
+            "Mobile Number",
+            "Passport-sized Photograph"
+        ],
+        "source_file": "state_andhra-pradesh_doc_26.txt"
+    },
+    {
+        "name": "Andhra Pradesh Voter List and ID Card",
+        "type": "State",
+        "loanType": "Public Service/Voter Registration",
+        "rules": {},
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_27.txt"
+    },
+    {
+        "name": "AP Annadatha Sukhibhava Scheme",
+        "type": "State",
+        "maxLimit": "\u20b99,000 - \u20b910,000",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Records",
+            "Bank Account Details",
+            "Proof of Residency"
+        ],
+        "source_file": "state_andhra-pradesh_doc_28.txt"
+    },
+    {
+        "name": "AP Youth For Andhra Program",
+        "type": "State",
+        "rules": {
+            "project_type": "Youth Empowerment"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Proof of Residency (Andhra Pradesh)",
+            "Age Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_29.txt"
+    },
+    {
+        "name": "AP Dr. YSR Aarogyasri Scheme",
+        "type": "State",
+        "maxLimit": "\u20b92,50,000",
+        "rules": {
+            "max_income": 500000,
+            "project_type": "Healthcare"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "BPL Ration Card",
+            "Health Card",
+            "Income Certificate",
+            "Proof of Residency (Andhra Pradesh)"
+        ],
+        "source_file": "state_andhra-pradesh_doc_3.txt"
+    },
+    {
+        "name": "AP Mukhyamantri Yuva Nestam Scheme",
+        "type": "State",
+        "maxLimit": "\u20b92,000",
+        "rules": {
+            "project_type": "Skill Development"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Proof of Unemployment",
+            "Educational Qualifications",
+            "Bank Account Details",
+            "Proof of Residency (Andhra Pradesh)"
+        ],
+        "source_file": "state_andhra-pradesh_doc_30.txt"
+    },
+    {
+        "name": "AP Annadata Sukhibhava Scheme",
+        "type": "State",
+        "maxLimit": "Input subsidies up to \u20b915,000",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Records",
+            "Proof of Cultivation",
+            "Bank Account Details",
+            "Proof of Residency (Andhra Pradesh)"
+        ],
+        "source_file": "state_andhra-pradesh_doc_31.txt"
+    },
+    {
+        "name": "AP Pasupu Kumkuma Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b910,000",
+        "rules": {
+            "gender_required": "Female"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "SHG Membership Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_32.txt"
+    },
+    {
+        "name": "AP Rythu Raksha Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b910,000 per acre per year",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Ownership Documents",
+            "Tenancy Agreement"
+        ],
+        "source_file": "state_andhra-pradesh_doc_33.txt"
+    },
+    {
+        "name": "NTR Bharosa Scheme",
+        "type": "State",
+        "loanType": "Pension",
+        "maxLimit": "\u20b92,000 per month",
+        "rules": {
+            "project_type": "Social Security"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Age Proof",
+            "Widow Certificate",
+            "Disability Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_34.txt"
+    },
+    {
+        "name": "AP Mukhyamantri Yuvanestham Scheme",
+        "type": "State",
+        "loanType": "Unemployment Allowance",
+        "maxLimit": "\u20b91,000 per month",
+        "rules": {
+            "project_type": "Skill Development"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Mobile Linked with Aadhaar",
+            "White Ration Card",
+            "SSC / Graduation / P.G. certificates"
+        ],
+        "source_file": "state_andhra-pradesh_doc_35.txt"
+    },
+    {
+        "name": "AP Jala Dhara Yojana",
+        "type": "State",
+        "loanType": "Public Utility",
+        "rules": {
+            "project_type": "Drinking Water Supply"
+        },
+        "source_file": "state_andhra-pradesh_doc_36.txt"
+    },
+    {
+        "name": "AP Subhash Palekar Training Program for Farmers",
+        "type": "State",
+        "loanType": "Training Program",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [],
+        "source_file": "state_andhra-pradesh_doc_37.txt"
+    },
+    {
+        "name": "AP Mukhyamantri Yuvanestham Skill Development Training Programme",
+        "type": "State",
+        "loanType": "Training Program",
+        "rules": {
+            "project_type": "Skill Development"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_38.txt"
+    },
+    {
+        "name": "Make in AP Program",
+        "type": "State",
+        "loanType": "Startup Support Program",
+        "rules": {
+            "project_type": "Startup Support"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Startup Registration Documents"
+        ],
+        "source_file": "state_andhra-pradesh_doc_39.txt"
+    },
+    {
+        "name": "YSR Kapu Nestam Scheme",
+        "type": "State",
+        "loanType": "Financial Assistance",
+        "maxLimit": "\u20b975,000",
+        "rules": {
+            "max_income": 12000,
+            "caste_required": [
+                "Kapu",
+                "Balija",
+                "Telaga",
+                "Ontari"
+            ],
+            "gender_required": "Female",
+            "project_type": "Livelihood Enhancement"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Caste Certificate",
+            "Age Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_4.txt"
+    },
+    {
+        "name": "AP Bhuseva Project",
+        "type": "State",
+        "loanType": "Land Record Management",
+        "rules": {
+            "project_type": "Land Administration"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Ownership Documents"
+        ],
+        "source_file": "state_andhra-pradesh_doc_40.txt"
+    },
+    {
+        "name": "AP Adarana 2 Scheme",
+        "type": "State",
+        "loanType": "Term Loan",
+        "maxLimit": "\u20b930,000",
+        "rules": {
+            "caste_required": [
+                "BC"
+            ],
+            "project_type": "Artisan Equipment"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Ration Card"
+        ],
+        "source_file": "state_andhra-pradesh_doc_41.txt"
+    },
+    {
+        "name": "AP Amaravati Happy Nest Housing Project",
+        "type": "State",
+        "rules": {
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Proof of Residence"
+        ],
+        "source_file": "state_andhra-pradesh_doc_42.txt"
+    },
+    {
+        "name": "Andhra Pradesh Chief Minister\u2019s Relief Fund (CMRF)",
+        "type": "State",
+        "rules": {
+            "project_type": "Disaster Relief"
+        },
+        "source_file": "state_andhra-pradesh_doc_43.txt"
+    },
+    {
+        "name": "NTR Rural Housing Scheme",
+        "type": "State",
+        "maxLimit": "\u20b92,00,000",
+        "rules": {
+            "caste_required": [
+                "SC",
+                "ST",
+                "General"
+            ],
+            "project_type": "Rural Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Caste Certificate",
+            "Proof of Residence"
+        ],
+        "source_file": "state_andhra-pradesh_doc_44.txt"
+    },
+    {
+        "name": "AP Mukhyamantri Yuvanestham Scheme",
+        "type": "State",
+        "maxLimit": "\u20b91,000 per month",
+        "rules": {
+            "project_type": "Unemployment Support"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Educational Certificates"
+        ],
+        "source_file": "state_andhra-pradesh_doc_45.txt"
+    },
+    {
+        "name": "Pradhan Mantri Awas Yojana (PMAY) \u2013 NTR Nagar Urban Housing Scheme",
+        "type": "Central",
+        "loanType": "Housing Subsidy",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_46.txt"
+    },
+    {
+        "name": "NTR Rural Housing Scheme",
+        "type": "State",
+        "loanType": "Housing Subsidy",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_47.txt"
+    },
+    {
+        "name": "AP Unemployment Allowance Scheme",
+        "type": "State",
+        "loanType": "Allowance",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {},
+        "base_documents": [
+            "Aadhaar",
+            "Bank Account Details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_48.txt"
+    },
+    {
+        "name": "Arya Vysya Community Loans",
+        "type": "State",
+        "loanType": "Multiple Loan Types (Self-Employment, Financial Aid, Education)",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "caste_required": [
+                "Vysya"
+            ],
+            "project_type": "Self-Employment, Education"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Account Details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_49.txt"
+    },
+    {
+        "name": "AP Basavatarakam Mother Kits Scheme",
+        "type": "State",
+        "loanType": "Direct Benefit (Kits)",
+        "maxLimit": "\u20b91,038",
+        "interest": null,
+        "rules": {
+            "gender_required": "Female"
+        },
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_5.txt"
+    },
+    {
+        "name": "NTR Baby Kits Scheme",
+        "type": "State",
+        "loanType": "Direct Benefit (Kits)",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {},
+        "base_documents": [
+            "Aadhaar"
+        ],
+        "source_file": "state_andhra-pradesh_doc_47.txt"
+    },
+    {
+        "name": "AP Pre Matric Scholarship Scheme",
+        "type": "Central",
+        "loanType": "Education Grant",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "max_income": 200000,
+            "caste_required": [
+                "SC",
+                "ST",
+                "OBC",
+                "Disabled"
+            ],
+            "project_type": "Education"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Caste Certificate",
+            "Bonafide Certificate",
+            "Bank Pass Book"
+        ],
+        "source_file": "state_andhra-pradesh_doc_48.txt"
+    },
+    {
+        "name": "AP Mukhyamantri Yuva Nestam \u2013 Unemployment Pension Scheme",
+        "type": "State",
+        "loanType": "Unemployment Allowance",
+        "maxLimit": "\u20b92,000/month",
+        "interest": null,
+        "rules": {
+            "project_type": "Unemployment Assistance, Skill Development"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Account Details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_49.txt"
+    },
+    {
+        "name": "AP YSR Law Nestham Scheme",
+        "type": "State",
+        "loanType": "Professional Stipend",
+        "maxLimit": "\u20b95,000/month",
+        "interest": null,
+        "rules": {
+            "project_type": "Legal Profession Support"
+        },
+        "base_documents": [
+            "Birth Certificate",
+            "Law Degree",
+            "Affidavit registered with Bar council",
+            "Aadhaar",
+            "Bank Account Details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_5.txt"
+    },
+    {
+        "name": "Bala Sanjeevani Scheme 2018",
+        "type": "State",
+        "loanType": "Welfare Program",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "gender_required": "Female",
+            "project_type": "Health & Nutrition"
+        },
+        "base_documents": [
+            "Aadhaar Card",
+            "Proof of Residency"
+        ],
+        "source_file": "state_andhra-pradesh_doc_50.txt"
+    },
+    {
+        "name": "Anna Canteens",
+        "type": "State",
+        "loanType": "Food Subsidy Program",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "project_type": "Food Security"
+        },
+        "base_documents": [
+            "Aadhaar Card"
+        ],
+        "source_file": "state_andhra-pradesh_doc_51.txt"
+    },
+    {
+        "name": "Smart Meters Installation Scheme",
+        "type": "State",
+        "loanType": "Utility Service Improvement",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "project_type": "Energy Efficiency"
+        },
+        "base_documents": [],
+        "source_file": "state_andhra-pradesh_doc_52.txt"
+    },
+    {
+        "name": "Grid Connected Solar BLDC Pump Sets Scheme",
+        "type": "State",
+        "loanType": "Agricultural Equipment Subsidy",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar Card",
+            "Land Ownership Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_53.txt"
+    },
+    {
+        "name": "Health Scheme for Bar Council Advocates",
+        "type": "State",
+        "loanType": "Professional Welfare Scheme",
+        "maxLimit": "\u20b94,00,000",
+        "interest": null,
+        "rules": {
+            "caste_required": [
+                "SC",
+                "ST",
+                "OBC"
+            ],
+            "project_type": "Professional Welfare"
+        },
+        "base_documents": [
+            "Aadhaar Card",
+            "Bar Council Registration Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_54.txt"
+    },
+    {
+        "name": "Andhra Pradesh Ration Card",
+        "type": "State",
+        "loanType": "Social Welfare Benefit",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {},
+        "base_documents": [
+            "Residential Proof",
+            "Age Certificate",
+            "Caste Certificate",
+            "Identity Proof",
+            "Income Proof",
+            "Passport Size Photograph",
+            "Mobile Number",
+            "Previous Electricity Bills",
+            "Bank Passbook",
+            "Gas Connection Details",
+            "Self Declaration",
+            "Certificate from Ward Councillor/Pradhan",
+            "Tenancy Agreement (if applicable)",
+            "Aadhaar Card"
+        ],
+        "source_file": "state_andhra-pradesh_doc_55.txt"
+    },
+    {
+        "name": "AP Transport Learner\u2019s Licence (LLR) and Driving Licence (DL)",
+        "type": "State",
+        "loanType": "Licence / Permit",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {},
+        "base_documents": [
+            "Aadhaar Card",
+            "Identity Proof",
+            "Address Proof",
+            "Age Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_56.txt"
+    },
+    {
+        "name": "Badiki Vastha Scheme (Free Bicycles Distribution)",
+        "type": "State",
+        "loanType": "In-kind Benefit",
+        "maxLimit": null,
+        "interest": null,
+        "rules": {
+            "gender_required": "Female",
+            "project_type": "Education"
+        },
+        "base_documents": [
+            "Aadhaar Card",
+            "School Enrollment Proof",
+            "Identity Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_57.txt"
+    },
+    {
+        "name": "AP Nirudyoga Bruthi Scheme (Unemployment Allowance)",
+        "type": "State",
+        "loanType": "Financial Aid / Pension",
+        "maxLimit": "\u20b92,000 per month",
+        "interest": null,
+        "rules": {
+            "project_type": "Skill Development / Employment"
+        },
+        "base_documents": [
+            "12th Class Passing Certificate",
+            "Age Proof",
+            "Residence Certificate",
+            "Unemployment Declaration",
+            "Aadhaar Card"
+        ],
+        "source_file": "state_andhra-pradesh_doc_58.txt"
+    },
+    {
+        "name": "AP YSR Arogya Asara Scheme",
+        "type": "State",
+        "loanType": "Financial Aid",
+        "maxLimit": "\u20b95,000 per month",
+        "rules": {
+            "project_type": "Healthcare"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Bank Account Details"
+        ],
+        "source_file": "state_andhra-pradesh_doc_6.txt"
+    },
+    {
+        "name": "Free Energy Efficient Pump Sets Scheme (Phase I)",
+        "type": "State",
+        "loanType": "Grant",
+        "maxLimit": "\u20b940,000",
+        "rules": {
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Ownership Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_60.txt"
+    },
+    {
+        "name": "AP Solar Pump Sets Subsidy Scheme",
+        "type": "State",
+        "loanType": "Agricultural Equipment Subsidy",
+        "maxLimit": "\u20b92,57,000",
+        "rules": {
+            "max_project_cost": 312000,
+            "project_type": "Agriculture"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Land Ownership Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_61.txt"
+    },
+    {
+        "name": "NTR Housing Scheme",
+        "type": "State",
+        "loanType": "Housing Loan & Subsidy",
+        "maxLimit": "\u20b975,000",
+        "rules": {
+            "max_project_cost": 350000,
+            "project_type": "Housing"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Income Certificate",
+            "Residence Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_62.txt"
+    },
+    {
+        "name": "AP Fiber Grid Scheme",
+        "type": "State",
+        "loanType": "Utility Service",
+        "rules": {
+            "project_type": "Digital Connectivity"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Address Proof"
+        ],
+        "source_file": "state_andhra-pradesh_doc_63.txt"
+    },
+    {
+        "name": "AP Yuva Sadhikarika Nirudyoga Bhruthi Unemployment Allowance Scheme",
+        "type": "State",
+        "loanType": "Unemployment Allowance",
+        "maxLimit": "\u20b91,500 per month",
+        "rules": {
+            "project_type": "Employment & Skill Development"
+        },
+        "base_documents": [
+            "Aadhaar",
+            "Residence Proof",
+            "Educational Qualification Proof",
+            "Unemployment Certificate"
+        ],
+        "source_file": "state_andhra-pradesh_doc_63.txt"
+    }
+]

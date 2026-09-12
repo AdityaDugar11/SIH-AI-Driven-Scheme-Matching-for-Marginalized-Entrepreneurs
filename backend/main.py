@@ -37,6 +37,7 @@ class ChatRequest(BaseModel):
     
 class RecommendRequest(BaseModel):
     profile: dict
+    lang: str = "en"
 
 # IMPORTANT: Replace with your actual n8n Webhook URL once n8n is running
 N8N_WEBHOOK_URL = "http://localhost:5678/webhook/lead-intake-12345"
@@ -44,6 +45,7 @@ N8N_WEBHOOK_URL = "http://localhost:5678/webhook/lead-intake-12345"
 @app.post("/api/recommend")
 async def recommend_schemes(req: RecommendRequest):
     user_profile = req.profile
+    lang = req.lang
     evaluated_schemes = []
     
     for scheme in SCHEMES:
@@ -66,6 +68,36 @@ async def recommend_schemes(req: RecommendRequest):
         
     # Sort by highest match first
     evaluated_schemes.sort(key=lambda x: x["match"], reverse=True)
+    
+    # Translate if not English
+    if lang != "en":
+        try:
+            API_KEY = os.environ.get("GEMINI_API_KEY")
+            client = genai.Client(api_key=API_KEY)
+            
+            prompt = f"""
+            You are a JSON translation API. Translate the following array of scheme objects into the language code '{lang}' (e.g. 'hi' = Hindi).
+            Translate ONLY the 'name', 'type', 'loanType', and all 'reasons[].text' fields. Do not change any structure, keys, or numbers.
+            Return ONLY raw valid JSON, no markdown blocks, no other text.
+            JSON payload:
+            {json.dumps(evaluated_schemes)}
+            """
+            
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt
+            )
+            reply = response.text.strip()
+            if reply.startswith("```json"):
+                reply = reply[7:]
+            if reply.endswith("```"):
+                reply = reply[:-3]
+                
+            evaluated_schemes = json.loads(reply.strip())
+        except Exception as e:
+            print(f"Translation failed: {e}")
+            # Silently fallback to English if translation fails to prevent breaking the UI
+    
     return {"schemes": evaluated_schemes}
 
 @app.post("/api/interest")

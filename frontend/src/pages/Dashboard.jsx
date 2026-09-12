@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Filter, CheckCircle2, XCircle, ChevronRight, Download, Search, Sparkles, Globe } from 'lucide-react';
+import { LogOut, Filter, CheckCircle2, XCircle, AlertTriangle, ChevronRight, Download, Search, Sparkles, Globe, UserCog, Save, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import ChatWidget from '../components/ChatWidget';
@@ -19,6 +19,8 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [visibleSchemeIds, setVisibleSchemeIds] = useState(null); // null means show all
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [settingsFormData, setSettingsFormData] = useState({});
 
   const handleInterest = async (schemeId, schemeName) => {
     if (!interestedSchemes.includes(schemeId)) {
@@ -107,7 +109,7 @@ export default function Dashboard() {
       const response = await fetch('http://localhost:8000/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profile: userProfile })
+        body: JSON.stringify({ profile: userProfile, lang: i18n.language })
       });
       const result = await response.json();
       setSchemes(result.schemes || []);
@@ -120,6 +122,46 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
+  };
+
+  const handleOpenSettings = () => {
+    setSettingsFormData(profile);
+    setIsSettingsOpen(true);
+  };
+
+  const handleSaveSettings = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Ensure numbers are correct type
+    const updatedData = {
+      ...settingsFormData,
+      income: Number(settingsFormData.income),
+      projectCost: Number(settingsFormData.projectCost)
+    };
+
+    const { error } = await supabase
+      .from('profiles')
+      .update(updatedData)
+      .eq('id', profile.id);
+
+    if (error) {
+      alert("Error saving profile: " + error.message);
+    } else {
+      setProfile(updatedData);
+      setIsSettingsOpen(false);
+      await fetchSchemes(updatedData);
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteProfile = async () => {
+    if (window.confirm("Are you sure you want to delete your profile data? This will log you out.")) {
+      setLoading(true);
+      await supabase.from('profiles').delete().eq('id', profile.id);
+      await supabase.auth.signOut();
+      navigate('/login');
+    }
   };
 
 
@@ -157,8 +199,13 @@ export default function Dashboard() {
                 <option value="mr" className="text-gray-900">मराठी</option>
               </select>
             </div>
-            <button onClick={handleLogout} className="text-white hover:text-gray-200 p-1">
+            <button onClick={handleOpenSettings} className="flex items-center text-white hover:text-gray-200 p-1">
+              <UserCog className="h-5 w-5 sm:h-6 sm:w-6" />
+              <span className="hidden sm:inline ml-1 text-sm font-medium">Settings</span>
+            </button>
+            <button onClick={handleLogout} className="flex items-center text-white hover:text-gray-200 p-1">
               <LogOut className="h-5 w-5 sm:h-6 sm:w-6" />
+              <span className="hidden sm:inline ml-1 text-sm font-medium">Log out</span>
             </button>
           </div>
         </div>
@@ -277,12 +324,16 @@ export default function Dashboard() {
                   <ul className="space-y-2">
                     {scheme.reasons.map((reason, i) => (
                       <li key={i} className="flex items-start text-sm">
-                        {scheme.isEligible ? (
+                        {reason.type === 'success' && (
                           <CheckCircle2 className="h-4 w-4 text-secondary mt-0.5 mr-2 flex-shrink-0" />
-                        ) : (
+                        )}
+                        {reason.type === 'error' && (
                           <XCircle className="h-4 w-4 text-warning mt-0.5 mr-2 flex-shrink-0" />
                         )}
-                        <span className={scheme.isEligible ? 'text-gray-700' : 'text-gray-900 font-medium'}>{reason}</span>
+                        {reason.type === 'warning' && (
+                          <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5 mr-2 flex-shrink-0" />
+                        )}
+                        <span className={reason.type === 'error' ? 'text-gray-900 font-medium' : 'text-gray-700'}>{reason.text}</span>
                       </li>
                     ))}
                   </ul>
@@ -336,6 +387,95 @@ export default function Dashboard() {
         </section>
       </main>
       <ChatWidget />
+
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+          >
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                <UserCog className="h-5 w-5 mr-2 text-primary" /> Profile Settings
+              </h3>
+              <button onClick={() => setIsSettingsOpen(false)} className="text-gray-400 hover:text-gray-600">
+                <XCircle className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="p-6">
+              <form onSubmit={handleSaveSettings} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Annual Income (₹)</label>
+                  <input
+                    type="number"
+                    value={settingsFormData.income || ''}
+                    onChange={(e) => setSettingsFormData({...settingsFormData, income: e.target.value})}
+                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Caste Category</label>
+                  <select
+                    value={settingsFormData.caste || ''}
+                    onChange={(e) => setSettingsFormData({...settingsFormData, caste: e.target.value})}
+                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    required
+                  >
+                    <option value="General">General</option>
+                    <option value="SC">SC</option>
+                    <option value="ST">ST</option>
+                    <option value="OBC">OBC</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Project Cost (₹)</label>
+                  <input
+                    type="number"
+                    value={settingsFormData.projectCost || ''}
+                    onChange={(e) => setSettingsFormData({...settingsFormData, projectCost: e.target.value})}
+                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Project Type</label>
+                  <select
+                    value={settingsFormData.projectType || ''}
+                    onChange={(e) => setSettingsFormData({...settingsFormData, projectType: e.target.value})}
+                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary p-2 border"
+                    required
+                  >
+                    <option value="Agriculture">Agriculture</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Services">Services</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Education">Education</option>
+                  </select>
+                </div>
+                
+                <div className="pt-4 flex flex-col space-y-3">
+                  <button
+                    type="submit"
+                    className="w-full flex justify-center items-center bg-primary text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors"
+                  >
+                    <Save className="h-4 w-4 mr-2" /> Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteProfile}
+                    className="w-full flex justify-center items-center bg-red-50 text-red-600 border border-red-200 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" /> Delete Profile Data
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
