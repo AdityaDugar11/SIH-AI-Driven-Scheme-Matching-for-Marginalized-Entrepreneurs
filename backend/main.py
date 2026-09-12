@@ -10,6 +10,12 @@ load_dotenv()
 from schemes_db import SCHEMES, evaluate_scheme
 from google import genai
 from google.genai import types
+from supabase import create_client, Client
+
+# Initialize Supabase client
+SUPABASE_URL = "https://givyetklwfexhjwhlqew.supabase.co"
+SUPABASE_KEY = "sb_publishable_YSkDTDa2Oafn-nqocXoNVA_YiPbnFCW"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = FastAPI(title="SchemeMatcher API")
 
@@ -40,7 +46,7 @@ class RecommendRequest(BaseModel):
     lang: str = "en"
 
 # IMPORTANT: Replace with your actual n8n Webhook URL once n8n is running
-N8N_WEBHOOK_URL = "http://localhost:5678/webhook/lead-intake-12345"
+N8N_WEBHOOK_URL = "https://scheme-matcher-n8n.onrender.com/webhook/lead-intake"
 
 @app.post("/api/recommend")
 async def recommend_schemes(req: RecommendRequest):
@@ -48,21 +54,21 @@ async def recommend_schemes(req: RecommendRequest):
     lang = req.lang
     evaluated_schemes = []
     
-    for scheme in SCHEMES:
+    for i, scheme in enumerate(SCHEMES):
         match_percentage, reasons, is_eligible = evaluate_scheme(user_profile, scheme)
         
         # Build the scheme object for the frontend
         evaluated_scheme = {
-            "id": scheme["id"],
-            "name": scheme["name"],
-            "type": scheme["type"],
-            "loanType": scheme["loanType"],
-            "maxLimit": scheme["maxLimit"],
-            "interest": scheme["interest"],
+            "id": scheme.get("id", i), # fallback to loop index if no ID
+            "name": scheme.get("name", "Unknown Scheme"),
+            "type": scheme.get("type", "Unknown"),
+            "loanType": scheme.get("loanType", "Unknown"),
+            "maxLimit": scheme.get("maxLimit", "N/A"),
+            "interest": scheme.get("interest", "N/A"),
             "match": match_percentage,
             "reasons": reasons,
             "isEligible": is_eligible,
-            "documents": scheme["base_documents"] if is_eligible else []
+            "documents": scheme.get("base_documents", []) if is_eligible else []
         }
         evaluated_schemes.append(evaluated_scheme)
         
@@ -104,22 +110,33 @@ async def recommend_schemes(req: RecommendRequest):
 async def register_interest(req: InterestRequest):
     print(f"User {req.user_name} ({req.user_email}) is interested in {req.scheme_name}")
     
-    # Forward to n8n Webhook (Commented out until n8n is running to prevent errors)
-    """
     try:
+        # Fetch actual partner email from Supabase
+        # For this hackathon demo, we just get the first safe partner (or you can add location logic later)
+        partner_email = "partner@mockbank.com" # default fallback
+        try:
+            response = supabase.table("partners").select("contact_email").eq("simulated", True).limit(1).execute()
+            if response.data and len(response.data) > 0:
+                partner_email = response.data[0]["contact_email"]
+        except Exception as db_err:
+            print("Failed to fetch partner from DB:", db_err)
+
         payload = {
             "name": req.user_name,
             "email": req.user_email,
+            "phone": "Not Provided",
+            "scheme": req.scheme_name,
+            "income": 250000,
             "scheme_recommended": req.scheme_name,
-            "project_cost": 500000, # Mock data
-            "emi": 5500 # Mock data
+            "project_cost": 500000,
+            "emi": 10258,
+            "nearest_partner_email": partner_email
         }
-        response = requests.post(N8N_WEBHOOK_URL, json=payload)
-        response.raise_for_status()
+        resp = requests.post(N8N_WEBHOOK_URL, json=payload)
+        resp.raise_for_status()
     except Exception as e:
         print("Failed to send to n8n:", e)
         # We don't raise an exception here so the frontend still succeeds
-    """
 
     return {"status": "success", "message": "Interest registered successfully. Email pending n8n activation."}
 
@@ -186,3 +203,45 @@ async def chat_with_ai(req: ChatRequest):
             reply = "I am an AI Scheme Assistant. I can help you understand which schemes you are eligible for based on your income, caste, and project type. What kind of business are you planning?"
         
     return {"reply": reply}
+
+# Mock endpoint for n8n Workflow 2: Deadline Tracking & Alerts
+@app.get("/api/schemes/expiring-soon")
+async def get_expiring_schemes():
+    # Return mock users who have deadlines approaching
+    return {
+        "users": [
+            {
+                "email": "user1@example.com",
+                "name": "Rajesh Kumar",
+                "scheme": "NSFDC Micro Credit Finance",
+                "days_left": 5
+            },
+            {
+                "email": "user2@example.com",
+                "name": "Anita Singh",
+                "scheme": "State Education Loan Concession",
+                "days_left": 2
+            }
+        ]
+    }
+
+# Mock endpoint for n8n Workflow 3: Partner NPA Risk Refresh
+@app.get("/api/partners/risk-refresh")
+async def get_partner_risk_refresh():
+    # Return mock partner data updates
+    return {
+        "updates": [
+            {
+                "partner_id": "P-001",
+                "name": "SBI Branch A",
+                "npa_status": "Safe",
+                "contact_email": "branch_a@sbi.mock"
+            },
+            {
+                "partner_id": "P-002",
+                "name": "Bank of Baroda Branch B",
+                "npa_status": "High Risk",
+                "contact_email": "branch_b@bob.mock"
+            }
+        ]
+    }
