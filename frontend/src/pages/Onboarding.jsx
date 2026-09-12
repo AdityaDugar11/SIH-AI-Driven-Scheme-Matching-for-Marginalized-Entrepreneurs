@@ -51,12 +51,12 @@ export default function Onboarding() {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (user) {
-      // Clean up empty strings for numeric fields to prevent Supabase type errors
+      // Bulletproof cleanup for numeric fields
       const payload = { ...formData };
-      if (payload.parent_income === '') payload.parent_income = null;
-      if (payload.income === '') payload.income = null;
-      if (payload.age === '') payload.age = null;
-      if (payload.estimatedCost === '') payload.estimatedCost = null;
+      payload.parent_income = payload.parent_income ? Number(payload.parent_income) : null;
+      payload.income = payload.income ? Number(payload.income) : null;
+      payload.age = payload.age ? Number(payload.age) : null;
+      payload.estimatedCost = payload.estimatedCost ? Number(payload.estimatedCost) : null;
 
       const { error } = await supabase
         .from('profiles')
@@ -69,8 +69,8 @@ export default function Onboarding() {
       if (!error) {
         navigate('/dashboard');
       } else {
-        console.error(error);
-        alert('Error saving profile. Please check if you added the new columns in Supabase SQL editor.');
+        console.error("Supabase Error:", error);
+        alert(`Error: ${error.message}\n\nHint: ${error.hint || error.details || 'Check if you ran the latest SQL script in Supabase.'}`);
       }
     }
     setLoading(false);
