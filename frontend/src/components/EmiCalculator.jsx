@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Calculator } from 'lucide-react';
 
-export default function EmiCalculator() {
-  const [loanAmount, setLoanAmount] = useState(500000);
-  const [interestRate, setInterestRate] = useState(8.5);
+export default function EmiCalculator({ initialLoanAmount = 500000, initialInterest = 8.5 }) {
+  const [loanAmount, setLoanAmount] = useState(initialLoanAmount);
+  const [interestRate, setInterestRate] = useState(initialInterest);
   const [tenureYears, setTenureYears] = useState(5);
   
   const [emi, setEmi] = useState(0);
@@ -31,7 +31,7 @@ export default function EmiCalculator() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div className="bg-white w-full">
       <div className="flex items-center space-x-3 mb-6">
         <div className="bg-blue-50 p-2 rounded-lg">
           <Calculator className="h-6 w-6 text-primary" />

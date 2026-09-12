@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [visibleSchemeIds, setVisibleSchemeIds] = useState(null); // null means show all
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [settingsFormData, setSettingsFormData] = useState({});
+  const [selectedScheme, setSelectedScheme] = useState(null);
 
   const handleInterest = async (schemeId, schemeName) => {
     if (!interestedSchemes.includes(schemeId)) {
@@ -176,7 +177,7 @@ export default function Dashboard() {
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
       <header className="bg-primary text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
@@ -214,7 +215,7 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {/* Profile Strength & Summary */}
-        <section className="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row items-center justify-between border border-gray-100">
+        <section className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm p-6 flex flex-col md:flex-row items-center justify-between border border-gray-100">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">{t('profile_overview')}</h2>
             <p className="text-sm text-gray-500 mt-1">Income: ₹{profile?.income} • {profile?.caste} • {profile?.projectType}</p>
@@ -278,10 +279,7 @@ export default function Dashboard() {
           </form>
         </section>
 
-        {/* EMI Calculator */}
-        <section className="mb-8">
-          <EmiCalculator />
-        </section>
+        {/* EMI Calculator removed from main view */}
 
         {/* Scheme Cards */}
         <section className="space-y-4">
@@ -301,7 +299,7 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+              className="bg-white/90 backdrop-blur rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
             >
               <div className="p-5 sm:p-6">
                 <div className="flex justify-between items-start">
@@ -360,20 +358,13 @@ export default function Dashboard() {
                 )}
                 
                 <div className="mt-6">
-                  {interestedSchemes.includes(scheme.id) ? (
-                    <button disabled className="w-full bg-green-50 text-secondary border border-green-200 py-2.5 rounded-lg text-sm font-medium flex justify-center items-center">
-                      Interest Registered
-                      <CheckCircle2 className="h-4 w-4 ml-2" />
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => handleInterest(scheme.id, scheme.name)}
-                      className="w-full bg-primary text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors flex justify-center items-center"
-                    >
-                      I am Interested
-                      <ChevronRight className="h-4 w-4 ml-1" />
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => setSelectedScheme(scheme)}
+                    className="w-full bg-primary text-white py-2.5 rounded-lg text-sm font-bold hover:bg-blue-800 transition-colors flex justify-center items-center shadow-sm"
+                  >
+                    View More
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </button>
                 </div>
               </div>
             </motion.div>
@@ -387,6 +378,111 @@ export default function Dashboard() {
         </section>
       </main>
       <ChatWidget />
+
+      {/* Scheme Details Modal */}
+      {selectedScheme && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto pt-10 pb-10">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-full flex flex-col overflow-hidden my-auto border border-white/20"
+          >
+            {/* Modal Header */}
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 backdrop-blur">
+              <div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 mb-1 uppercase tracking-wide">
+                  {selectedScheme.type}
+                </span>
+                <h3 className="text-2xl font-bold text-gray-900 leading-tight">{selectedScheme.name}</h3>
+              </div>
+              <button onClick={() => setSelectedScheme(null)} className="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 rounded-full p-2 transition-all">
+                <XCircle className="h-6 w-6" />
+              </button>
+            </div>
+            
+            {/* Modal Body */}
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 space-y-8 bg-white">
+              {/* Scheme Highlights */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 rounded-2xl p-5 border border-blue-100/50 shadow-sm">
+                  <p className="text-sm text-gray-500 font-medium mb-1">Maximum Loan Limit</p>
+                  <p className="text-xl font-bold text-gray-900">{selectedScheme.maxLimit}</p>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 rounded-2xl p-5 border border-blue-100/50 shadow-sm">
+                  <p className="text-sm text-gray-500 font-medium mb-1">Interest Rate</p>
+                  <p className="text-xl font-bold text-gray-900">{selectedScheme.interest}</p>
+                </div>
+              </div>
+
+              {/* Eligibility & Documents (from Card) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50/50 rounded-2xl p-5 border border-gray-100">
+                  <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center uppercase tracking-wide">
+                    <CheckCircle2 className="h-4 w-4 mr-2 text-secondary" /> Eligibility Analysis
+                  </h4>
+                  <ul className="space-y-3">
+                    {selectedScheme.reasons.map((reason, i) => (
+                      <li key={i} className="flex items-start text-sm">
+                        {reason.type === 'success' && <CheckCircle2 className="h-5 w-5 text-secondary mt-0.5 mr-2 flex-shrink-0" />}
+                        {reason.type === 'error' && <XCircle className="h-5 w-5 text-warning mt-0.5 mr-2 flex-shrink-0" />}
+                        {reason.type === 'warning' && <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 mr-2 flex-shrink-0" />}
+                        <span className={reason.type === 'error' ? 'text-gray-900 font-medium leading-relaxed' : 'text-gray-600 leading-relaxed'}>{reason.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {selectedScheme.isEligible && (
+                  <div className="bg-gray-50/50 rounded-2xl p-5 border border-gray-100">
+                    <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center uppercase tracking-wide">
+                      <Download className="h-4 w-4 mr-2 text-gray-400" /> Required Documents
+                    </h4>
+                    <div className="flex flex-col gap-3">
+                      {selectedScheme.documents.map((doc, i) => (
+                        <button 
+                          key={i} 
+                          onClick={() => handleDownload(doc)}
+                          className="inline-flex justify-between items-center px-4 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 bg-white hover:bg-blue-50 hover:border-blue-200 transition-all shadow-sm group"
+                        >
+                          <span className="truncate pr-4 group-hover:text-primary transition-colors">{doc}</span>
+                          <Download className="h-4 w-4 flex-shrink-0 text-gray-400 group-hover:text-primary transition-colors" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Embedded EMI Calculator */}
+              <div className="pt-8 mt-8 border-t border-gray-100">
+                <EmiCalculator 
+                  initialLoanAmount={profile?.projectCost || 500000} 
+                  initialInterest={parseFloat(selectedScheme.interest) || 8.5} 
+                />
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 md:px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end items-center">
+              {interestedSchemes.includes(selectedScheme.id) ? (
+                <button disabled className="w-full sm:w-auto px-8 bg-green-50 text-secondary border border-green-200 py-3.5 rounded-xl text-sm font-bold flex justify-center items-center shadow-sm">
+                  Interest Registered <CheckCircle2 className="h-5 w-5 ml-2" />
+                </button>
+              ) : (
+                <button 
+                  onClick={() => {
+                    handleInterest(selectedScheme.id, selectedScheme.name);
+                  }}
+                  className="w-full sm:w-auto px-10 bg-primary text-white py-3.5 rounded-xl text-sm font-bold hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex justify-center items-center"
+                >
+                  I am Interested & Apply
+                  <ChevronRight className="h-5 w-5 ml-1" />
+                </button>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Settings Modal */}
       {isSettingsOpen && (
@@ -431,7 +527,7 @@ export default function Dashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Project Cost (₹)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Loan Amount (₹)</label>
                   <input
                     type="number"
                     value={settingsFormData.projectCost || ''}
