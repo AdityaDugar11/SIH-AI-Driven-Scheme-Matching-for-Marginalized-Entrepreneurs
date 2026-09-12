@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Calculator } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function EmiCalculator({ initialLoanAmount = 500000, initialInterest = 8.5 }) {
+  const { t } = useTranslation();
   const [loanAmount, setLoanAmount] = useState(initialLoanAmount);
   const [interestRate, setInterestRate] = useState(initialInterest);
   const [tenureYears, setTenureYears] = useState(5);
@@ -44,7 +46,7 @@ export default function EmiCalculator({ initialLoanAmount = 500000, initialInter
         <div className="space-y-6">
           <div>
             <div className="flex justify-between mb-1">
-              <label className="text-sm font-medium text-gray-700">Loan Amount</label>
+              <label className="text-sm font-medium text-gray-700">{t('loan_amount')}</label>
               <span className="text-sm font-bold text-primary">₹ {loanAmount.toLocaleString('en-IN')}</span>
             </div>
             <input 
@@ -60,7 +62,7 @@ export default function EmiCalculator({ initialLoanAmount = 500000, initialInter
 
           <div>
             <div className="flex justify-between mb-1">
-              <label className="text-sm font-medium text-gray-700">Interest Rate (p.a)</label>
+              <label className="text-sm font-medium text-gray-700">{t('interest_rate')} (p.a)</label>
               <span className="text-sm font-bold text-primary">{interestRate}%</span>
             </div>
             <input 
@@ -76,8 +78,8 @@ export default function EmiCalculator({ initialLoanAmount = 500000, initialInter
 
           <div>
             <div className="flex justify-between mb-1">
-              <label className="text-sm font-medium text-gray-700">Loan Tenure</label>
-              <span className="text-sm font-bold text-primary">{tenureYears} Years</span>
+              <label className="text-sm font-medium text-gray-700">{t('tenure')}</label>
+              <span className="text-sm font-bold text-primary">{tenureYears} {t('years')}</span>
             </div>
             <input 
               type="range" 
@@ -94,7 +96,7 @@ export default function EmiCalculator({ initialLoanAmount = 500000, initialInter
         {/* Results */}
         <div className="bg-gray-50 rounded-xl p-6 flex flex-col justify-center border border-gray-100">
           <div className="text-center mb-6">
-            <p className="text-sm text-gray-500 mb-1">Monthly EMI</p>
+            <p className="text-sm text-gray-500 mb-1">{t('monthly_emi')}</p>
             <h3 className="text-3xl font-bold text-gray-900">₹ {emi.toLocaleString('en-IN')}</h3>
           </div>
           

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Onboarding from './pages/Onboarding';
@@ -33,12 +34,13 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to={session ? "/dashboard" : "/login"} replace />} />
+        <Route path="/" element={session ? <Navigate to="/dashboard" replace /> : <Home />} />
         <Route path="/login" element={!session ? <Login /> : <Navigate to="/dashboard" />} />
         <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/onboarding" />} />
         <Route path="/onboarding" element={session ? <Onboarding /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={session ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/partner-locator" element={session ? <PartnerLocator /> : <Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

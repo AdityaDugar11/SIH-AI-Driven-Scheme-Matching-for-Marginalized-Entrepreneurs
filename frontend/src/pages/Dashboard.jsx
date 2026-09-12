@@ -1,20 +1,25 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { useNavigate } from 'react-router-dom';
-import { LogOut, Filter, CheckCircle2, XCircle, AlertTriangle, ChevronRight, Download, Search, Sparkles, Globe, UserCog, Save, Trash2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { LogOut, Filter, CheckCircle2, XCircle, AlertTriangle, ChevronRight, Download, Search, Sparkles, Globe, UserCog, Save, Trash2, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import ChatWidget from '../components/ChatWidget';
 import EmiCalculator from '../components/EmiCalculator';
-import { MapPin } from 'lucide-react';
+import Header from '../components/Header';
+import SchemeCard from '../components/SchemeCard';
+import SchemeModal from '../components/SchemeModal';
+import { MapPin, FileText, Bookmark, ArrowRight, ExternalLink } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [interestedSchemes, setInterestedSchemes] = useState([]);
+  const [interestedSchemes, setInterestedSchemes] = useState([]); // Kept for backwards compatibility
+  const [applications, setApplications] = useState([]);
   const [schemes, setSchemes] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -25,9 +30,33 @@ export default function Dashboard() {
 
   const handleInterest = async (schemeId, schemeName) => {
     if (!interestedSchemes.includes(schemeId)) {
-      setInterestedSchemes([...interestedSchemes, schemeId]);
-      
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        
+        // Optimistic UI update
+        setInterestedSchemes([...interestedSchemes, schemeId]);
+        
+        // 1. Save to Supabase `applications` table
+        const newApp = {
+          user_id: user.id,
+          scheme_id: schemeId,
+          scheme_name: schemeName,
+          status: 'APPLIED',
+          requested_amount: 500000 // default or from state
+        };
+        const { data: insertedApp, error: dbError } = await supabase
+          .from('applications')
+          .insert([newApp])
+          .select()
+          .single();
+          
+        if (dbError) throw dbError;
+        
+        // Update local state to reflect new application immediately
+        setApplications(prev => [insertedApp, ...prev]);
+
+        // 2. Call backend webhook for email
         await fetch('http://localhost:8000/api/interest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -39,10 +68,13 @@ export default function Dashboard() {
             scheme_name: schemeName
           })
         });
-        alert("Interest registered! Backend notified for email processing.");
+        
+        alert("Application submitted successfully.");
       } catch (err) {
-        console.error("Backend error, but recorded locally:", err);
-        alert("Interest registered locally (backend unreachable).");
+        console.error("Application failed:", err);
+        alert("Unable to submit application. Please try again.");
+        // Rollback optimistic update
+        setInterestedSchemes(interestedSchemes.filter(id => id !== schemeId));
       }
     }
   };
@@ -83,7 +115,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchProfile();
+    fetchApplications();
   }, []);
+
+  const fetchApplications = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      
+      if (data) {
+        setApplications(data);
+        // Sync with legacy state
+        setInterestedSchemes(data.map(app => app.scheme_id));
+      }
+    }
+  };
 
   const fetchProfile = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -95,8 +145,9 @@ export default function Dashboard() {
         .single();
         
       if (data) {
-        setProfile(data);
-        await fetchSchemes(data);
+        const enrichedProfile = { ...data, email: user.email };
+        setProfile(enrichedProfile);
+        await fetchSchemes(enrichedProfile);
       } else {
         // If no profile, they haven't onboarded
         navigate('/onboarding');
@@ -176,69 +227,131 @@ export default function Dashboard() {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 
+  const currentView = location.hash.split('=')[0] || '';
+  const currentFilter = location.hash.includes('=') ? location.hash.split('=')[1] : 'ALL';
+
+  const displayedApplications = currentFilter === 'ALL' 
+    ? applications 
+    : applications.filter(app => app.status === currentFilter);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <header className="bg-primary text-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex flex-col truncate pr-2">
-            <h1 className="text-lg sm:text-xl font-bold truncate">SchemeMatcher</h1>
-            <p className="text-xs text-blue-200 truncate">Hi, {profile?.name}</p>
-          </div>
-          <div className="flex items-center space-x-2 sm:space-x-6 flex-shrink-0">
-            <div className="flex items-center space-x-1 sm:space-x-2 bg-blue-800/50 rounded-lg px-2 py-1">
-              <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-blue-200" />
-              <select 
-                className="bg-transparent border-none text-xs sm:text-sm text-white focus:ring-0 cursor-pointer p-0 pr-6"
-                value={i18n.language}
-                onChange={(e) => i18n.changeLanguage(e.target.value)}
-              >
-                <option value="en" className="text-gray-900">EN</option>
-                <option value="hi" className="text-gray-900">हिंदी</option>
-                <option value="bn" className="text-gray-900">বাংলা</option>
-                <option value="te" className="text-gray-900">తెలుగు</option>
-                <option value="mr" className="text-gray-900">मराठी</option>
-              </select>
-            </div>
-            <button onClick={handleOpenSettings} className="flex items-center text-white hover:text-gray-200 p-1">
-              <UserCog className="h-5 w-5 sm:h-6 sm:w-6" />
-              <span className="hidden sm:inline ml-1 text-sm font-medium">Settings</span>
-            </button>
-            <button onClick={handleLogout} className="flex items-center text-white hover:text-gray-200 p-1">
-              <LogOut className="h-5 w-5 sm:h-6 sm:w-6" />
-              <span className="hidden sm:inline ml-1 text-sm font-medium">Log out</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header profile={profile} onOpenSettings={handleOpenSettings} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        {/* Profile Strength & Summary */}
-        <section className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm p-6 flex flex-col md:flex-row items-center justify-between border border-gray-100">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">{t('profile_overview')}</h2>
-            <p className="text-sm text-gray-500 mt-1">Income: ₹{profile?.income} • {profile?.caste} • {profile?.projectType}</p>
+        {/* Hero Section */}
+        <section className="bg-gradient-to-r from-blue-900 to-primary rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between">
+          <div className="relative z-10 w-full lg:w-3/5 lg:pr-8 mb-10 lg:mb-0">
+            <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 leading-tight">
+              {t('find_schemes_title')}
+            </h1>
+            <p className="text-lg text-blue-100 mb-8 leading-relaxed">
+              {t('find_schemes_desc')}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <button 
+                onClick={() => document.getElementById('ai-search').focus()}
+                className="bg-white text-primary px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                Find My Schemes
+              </button>
+              <button 
+                onClick={handleOpenSettings}
+                className="bg-blue-800/50 text-white border border-blue-400/30 px-6 py-3 rounded-xl font-bold hover:bg-blue-700/50 transition-colors backdrop-blur-sm"
+              >
+                Edit My Profile
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm font-medium text-blue-100">
+              <div className="flex items-center"><CheckCircle2 className="h-4 w-4 mr-2 text-green-400" /> {t('hero_personalized')}</div>
+              <div className="flex items-center"><CheckCircle2 className="h-4 w-4 mr-2 text-green-400" /> {t('hero_eligibility')}</div>
+              <div className="flex items-center"><CheckCircle2 className="h-4 w-4 mr-2 text-green-400" /> {t('hero_docs')}</div>
+              <div className="flex items-center"><CheckCircle2 className="h-4 w-4 mr-2 text-green-400" /> {t('hero_assistance')}</div>
+            </div>
           </div>
-          <div className="mt-4 md:mt-0 flex items-center">
-            <div className="relative h-16 w-16">
-              <svg className="h-full w-full" viewBox="0 0 36 36">
-                <path className="text-gray-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" />
-                <path className="text-secondary" strokeDasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-sm font-bold text-gray-900">100%</span>
+          
+          {/* User Profile Card Inside Hero */}
+          <div className="relative z-10 w-full lg:w-2/5 flex justify-center lg:justify-end">
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 w-full max-w-sm shadow-lg">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <UserCog className="h-5 w-5 text-blue-200 mr-2" />
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">{t('your_profile')}</h3>
+                </div>
+                <button onClick={handleOpenSettings} className="text-xs font-bold text-blue-300 hover:text-white transition-colors">{t('edit')} →</button>
+              </div>
+
+              <div className="flex items-center mb-6">
+                <div className="relative h-16 w-16 mr-4 flex-shrink-0">
+                  <svg className="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+                    <path className="text-white/20" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" />
+                    <path className="text-green-400" strokeDasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-sm font-bold text-white">100%</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-white">{profile?.name || 'User'}</p>
+                  <p className="text-xs text-blue-200">{t('profile_complete')}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                  <span className="text-xs text-blue-200">{t('income_range')}</span>
+                  <span className="text-sm font-medium text-white">₹{profile?.income || '0'}</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                  <span className="text-xs text-blue-200">{t('category')}</span>
+                  <span className="text-sm font-medium text-white">{profile?.caste || 'General'}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-blue-200">{t('business_type')}</span>
+                  <span className="text-sm font-medium text-white">{profile?.projectType || 'Service'}</span>
+                </div>
               </div>
             </div>
-            <span className="ml-3 text-sm font-medium text-gray-700">{t('profile_complete')}</span>
+          </div>
+          
+          {/* Decorative shapes */}
+          <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute bottom-0 right-1/4 translate-y-1/2 w-64 h-64 bg-blue-400/20 rounded-full blur-2xl pointer-events-none"></div>
+        </section>
+
+        {/* Dashboard Summary Stats */}
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center">
+            <div className="bg-blue-50 p-3 rounded-xl mr-4"><Sparkles className="h-6 w-6 text-primary" /></div>
+            <div><p className="text-2xl font-bold text-gray-900">{schemes.length}</p><p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{t('matching_schemes')}</p></div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center">
+            <div className="bg-green-50 p-3 rounded-xl mr-4"><CheckCircle2 className="h-6 w-6 text-green-600" /></div>
+            <div><p className="text-2xl font-bold text-gray-900">{schemes.filter(s => s.match >= 80).length}</p><p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{t('highly_eligible')}</p></div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center">
+            <div className="bg-amber-50 p-3 rounded-xl mr-4"><Bookmark className="h-6 w-6 text-amber-500" /></div>
+            <div><p className="text-2xl font-bold text-gray-900">{interestedSchemes.length}</p><p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{t('saved_schemes')}</p></div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center">
+            <div className="bg-purple-50 p-3 rounded-xl mr-4"><FileText className="h-6 w-6 text-purple-600" /></div>
+            <div><p className="text-2xl font-bold text-gray-900">{applications.length}</p><p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{t('active_applications')}</p></div>
           </div>
         </section>
 
+
+
+        {/* Conditionally render Schemes or Applications */}
+        {currentView !== '#applications' && (
+          <>
         {/* Filters */}
         <section>
           <div className="flex items-center space-x-2 mb-4 overflow-x-auto pb-2">
             <Filter className="h-5 w-5 text-gray-400 mr-2" />
-            {['All', 'Central', 'State', 'Micro Finance', 'Term Loan'].map((filter) => (
+            {['All', 'Central', 'State', 'Agriculture', 'MSME', 'Business Loans', 'Education', 'Employment', 'Healthcare', 'Housing', 'Women', 'Social Welfare'].map((filter) => (
               <button
                 key={filter}
                 onClick={() => { setActiveFilter(filter); setVisibleSchemeIds(null); setSearchQuery(''); }}
@@ -255,25 +368,26 @@ export default function Dashboard() {
         </section>
 
         {/* AI Natural Language Search */}
-        <section className="mb-8">
-          <form onSubmit={handleSearch} className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Sparkles className="h-5 w-5 text-secondary" />
+        <section className="mb-8 relative z-20">
+          <form onSubmit={handleSearch} className="relative max-w-4xl mx-auto">
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <Sparkles className="h-6 w-6 text-primary animate-pulse" />
             </div>
             <input
+              id="ai-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('search_placeholder')}
-              className="w-full pl-11 pr-32 py-4 border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary text-gray-900"
+              placeholder="Tell us what you need... Example: I need a ₹5 lakh loan to start a dairy business"
+              className="w-full pl-14 pr-36 py-5 border-2 border-gray-100 rounded-2xl shadow-lg focus:ring-4 focus:ring-blue-100 focus:border-primary text-gray-900 text-lg transition-all"
             />
             <div className="absolute inset-y-0 right-2 flex items-center">
               <button 
                 type="submit"
                 disabled={isSearching}
-                className="bg-primary hover:bg-blue-800 text-white px-6 py-2 rounded-xl text-sm font-medium transition-colors"
+                className="bg-primary hover:bg-blue-800 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg flex items-center"
               >
-                {isSearching ? t('searching') : t('ai_search')}
+                {isSearching ? 'Searching...' : '✨ Ask AI'}
               </button>
             </div>
           </form>
@@ -294,80 +408,12 @@ export default function Dashboard() {
             </button>
           </div>
           {filteredSchemes.map((scheme, idx) => (
-            <motion.div
-              key={scheme.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="bg-white/90 backdrop-blur rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
-            >
-              <div className="p-5 sm:p-6">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-2">
-                      {scheme.type}
-                    </span>
-                    <h3 className="text-xl font-bold text-gray-900">{scheme.name}</h3>
-                    <p className="text-sm text-gray-500 mt-1">Max Limit: {scheme.maxLimit} • Interest: {scheme.interest}</p>
-                  </div>
-                  <div className={`flex flex-col items-center justify-center h-14 w-14 rounded-full ${scheme.match >= 75 ? 'bg-green-100 text-secondary' : scheme.match >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-warning'}`}>
-                    <span className="text-lg font-bold">{scheme.match}%</span>
-                    <span className="text-[10px] uppercase font-semibold leading-none">Match</span>
-                  </div>
-                </div>
-
-                {/* Gap Analysis */}
-                <div className="mt-4 bg-gray-50 rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Eligibility Analysis</h4>
-                  <ul className="space-y-2">
-                    {scheme.reasons.map((reason, i) => (
-                      <li key={i} className="flex items-start text-sm">
-                        {reason.type === 'success' && (
-                          <CheckCircle2 className="h-4 w-4 text-secondary mt-0.5 mr-2 flex-shrink-0" />
-                        )}
-                        {reason.type === 'error' && (
-                          <XCircle className="h-4 w-4 text-warning mt-0.5 mr-2 flex-shrink-0" />
-                        )}
-                        {reason.type === 'warning' && (
-                          <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5 mr-2 flex-shrink-0" />
-                        )}
-                        <span className={reason.type === 'error' ? 'text-gray-900 font-medium' : 'text-gray-700'}>{reason.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Document Checklist */}
-                {scheme.isEligible && (
-                  <div className="mt-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
-                      <Download className="h-4 w-4 mr-2 text-gray-400" /> Required Documents
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {scheme.documents.map((doc, i) => (
-                        <button 
-                          key={i} 
-                          onClick={() => handleDownload(doc)}
-                          className="inline-flex items-center px-2.5 py-1 rounded border border-gray-200 text-xs font-medium text-gray-600 bg-white hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
-                        >
-                          <Download className="h-3 w-3 mr-1" /> {doc}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                <div className="mt-6">
-                  <button 
-                    onClick={() => setSelectedScheme(scheme)}
-                    className="w-full bg-primary text-white py-2.5 rounded-lg text-sm font-bold hover:bg-blue-800 transition-colors flex justify-center items-center shadow-sm"
-                  >
-                    View More
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+            <SchemeCard 
+              key={scheme.id} 
+              scheme={scheme} 
+              idx={idx} 
+              onViewMore={setSelectedScheme} 
+            />
           ))}
 
           {filteredSchemes.length === 0 && (
@@ -376,112 +422,119 @@ export default function Dashboard() {
             </div>
           )}
         </section>
+
+        {/* Saved Schemes Section */}
+        <section id="saved" className="pt-10 border-t border-gray-100">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              <Bookmark className="h-6 w-6 mr-2 text-amber-500" /> Saved Schemes
+            </h2>
+          </div>
+          {interestedSchemes.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-gray-100 border-dashed p-8 text-center">
+              <Bookmark className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-medium">You haven't saved any schemes yet.</p>
+              <p className="text-sm text-gray-400 mt-1">Click "Save" on a scheme to easily find it later.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {interestedSchemes.map((scheme, idx) => (
+                <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
+                  <div>
+                    <h3 className="font-bold text-gray-900">{scheme.name}</h3>
+                    <p className="text-sm text-gray-500">Match: {scheme.match}%</p>
+                  </div>
+                  <button 
+                    onClick={() => setSelectedScheme(scheme)}
+                    className="text-primary font-bold text-sm hover:text-blue-800"
+                  >
+                    View
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+        </>
+        )}
+
+        {/* Applications Tracker Section */}
+        {(currentView === '#applications' || currentView === '') && (
+        <section id="applications" className="pt-10 border-t border-gray-100">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              <FileText className="h-6 w-6 mr-2 text-purple-500" /> Application Tracker {currentFilter !== 'ALL' && `- ${currentFilter}`}
+            </h2>
+          </div>
+          {displayedApplications.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-gray-100 border-dashed p-8 text-center">
+              <FileText className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-medium">No active applications found.</p>
+              <p className="text-sm text-gray-400 mt-1">Apply for a scheme to track its status here.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {displayedApplications.map((app) => (
+                <div key={app.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-lg">{app.scheme_name}</h3>
+                      <p className="text-sm text-gray-500">Application ID: {app.id.substring(0,8).toUpperCase()}</p>
+                    </div>
+                    <span className={`px-3 py-1 text-xs font-bold rounded-full border ${app.status === 'APPLIED' ? 'bg-blue-50 text-primary border-blue-100' : app.status === 'APPROVED' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                      {app.status}
+                    </span>
+                  </div>
+                  
+                  {/* Status Timeline */}
+                  <div className="relative pt-2">
+                    <div className="absolute top-4 left-4 right-4 h-0.5 bg-gray-100 z-0"></div>
+                    <div className="relative z-10 flex justify-between">
+                      <div className="flex flex-col items-center">
+                        <div className="h-4 w-4 bg-primary rounded-full mb-2 ring-4 ring-white"></div>
+                        <span className="text-xs font-bold text-gray-900">Submitted</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className={`h-4 w-4 rounded-full mb-2 ring-4 ring-white ${['UNDER_REVIEW', 'APPROVED', 'REJECTED'].includes(app.status) ? 'bg-primary' : 'bg-gray-200 animate-pulse'}`}></div>
+                        <span className={`text-xs font-bold ${['UNDER_REVIEW', 'APPROVED', 'REJECTED'].includes(app.status) ? 'text-gray-900' : 'text-primary'}`}>Partner Review</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className={`h-4 w-4 rounded-full mb-2 ring-4 ring-white ${['APPROVED'].includes(app.status) ? 'bg-green-500' : app.status === 'REJECTED' ? 'bg-red-500' : 'bg-gray-200'}`}></div>
+                        <span className={`text-xs font-medium ${['APPROVED'].includes(app.status) ? 'text-green-600' : app.status === 'REJECTED' ? 'text-red-600' : 'text-gray-400'}`}>Decision</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="h-4 w-4 bg-gray-200 rounded-full mb-2 ring-4 ring-white"></div>
+                        <span className="text-xs font-medium text-gray-400">Disbursed</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+        )}
+
       </main>
       <ChatWidget />
 
-      {/* Scheme Details Modal */}
       {selectedScheme && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto pt-10 pb-10">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-full flex flex-col overflow-hidden my-auto border border-white/20"
-          >
-            {/* Modal Header */}
-            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/80 backdrop-blur">
-              <div>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 mb-1 uppercase tracking-wide">
-                  {selectedScheme.type}
-                </span>
-                <h3 className="text-2xl font-bold text-gray-900 leading-tight">{selectedScheme.name}</h3>
-              </div>
-              <button onClick={() => setSelectedScheme(null)} className="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 rounded-full p-2 transition-all">
-                <XCircle className="h-6 w-6" />
-              </button>
-            </div>
-            
-            {/* Modal Body */}
-            <div className="p-6 md:p-8 overflow-y-auto flex-1 space-y-8 bg-white">
-              {/* Scheme Highlights */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 rounded-2xl p-5 border border-blue-100/50 shadow-sm">
-                  <p className="text-sm text-gray-500 font-medium mb-1">Maximum Loan Limit</p>
-                  <p className="text-xl font-bold text-gray-900">{selectedScheme.maxLimit}</p>
-                </div>
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 rounded-2xl p-5 border border-blue-100/50 shadow-sm">
-                  <p className="text-sm text-gray-500 font-medium mb-1">Interest Rate</p>
-                  <p className="text-xl font-bold text-gray-900">{selectedScheme.interest}</p>
-                </div>
-              </div>
-
-              {/* Eligibility & Documents (from Card) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-50/50 rounded-2xl p-5 border border-gray-100">
-                  <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center uppercase tracking-wide">
-                    <CheckCircle2 className="h-4 w-4 mr-2 text-secondary" /> Eligibility Analysis
-                  </h4>
-                  <ul className="space-y-3">
-                    {selectedScheme.reasons.map((reason, i) => (
-                      <li key={i} className="flex items-start text-sm">
-                        {reason.type === 'success' && <CheckCircle2 className="h-5 w-5 text-secondary mt-0.5 mr-2 flex-shrink-0" />}
-                        {reason.type === 'error' && <XCircle className="h-5 w-5 text-warning mt-0.5 mr-2 flex-shrink-0" />}
-                        {reason.type === 'warning' && <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 mr-2 flex-shrink-0" />}
-                        <span className={reason.type === 'error' ? 'text-gray-900 font-medium leading-relaxed' : 'text-gray-600 leading-relaxed'}>{reason.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {selectedScheme.isEligible && (
-                  <div className="bg-gray-50/50 rounded-2xl p-5 border border-gray-100">
-                    <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center uppercase tracking-wide">
-                      <Download className="h-4 w-4 mr-2 text-gray-400" /> Required Documents
-                    </h4>
-                    <div className="flex flex-col gap-3">
-                      {selectedScheme.documents.map((doc, i) => (
-                        <button 
-                          key={i} 
-                          onClick={() => handleDownload(doc)}
-                          className="inline-flex justify-between items-center px-4 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 bg-white hover:bg-blue-50 hover:border-blue-200 transition-all shadow-sm group"
-                        >
-                          <span className="truncate pr-4 group-hover:text-primary transition-colors">{doc}</span>
-                          <Download className="h-4 w-4 flex-shrink-0 text-gray-400 group-hover:text-primary transition-colors" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Embedded EMI Calculator */}
-              <div className="pt-8 mt-8 border-t border-gray-100">
-                <EmiCalculator 
-                  initialLoanAmount={profile?.projectCost || 500000} 
-                  initialInterest={parseFloat(selectedScheme.interest) || 8.5} 
-                />
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-6 md:px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end items-center">
-              {interestedSchemes.includes(selectedScheme.id) ? (
-                <button disabled className="w-full sm:w-auto px-8 bg-green-50 text-secondary border border-green-200 py-3.5 rounded-xl text-sm font-bold flex justify-center items-center shadow-sm">
-                  Interest Registered <CheckCircle2 className="h-5 w-5 ml-2" />
-                </button>
-              ) : (
-                <button 
-                  onClick={() => {
-                    handleInterest(selectedScheme.id, selectedScheme.name);
-                  }}
-                  className="w-full sm:w-auto px-10 bg-primary text-white py-3.5 rounded-xl text-sm font-bold hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex justify-center items-center"
-                >
-                  I am Interested & Apply
-                  <ChevronRight className="h-5 w-5 ml-1" />
-                </button>
-              )}
-            </div>
-          </motion.div>
-        </div>
+        <SchemeModal 
+          scheme={selectedScheme}
+          profile={profile}
+          onClose={() => setSelectedScheme(null)}
+          isSaved={interestedSchemes.includes(selectedScheme.id)}
+          isApplied={applications.some(app => app.scheme_id === selectedScheme.id)}
+          onSave={() => handleInterest(selectedScheme.id, selectedScheme.name)}
+          onApply={async () => {
+            await handleInterest(selectedScheme.id, selectedScheme.name);
+            setSelectedScheme(null);
+            navigate('/dashboard#applications');
+            setTimeout(() => {
+              document.getElementById('applications')?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          }}
+        />
       )}
 
       {/* Settings Modal */}
