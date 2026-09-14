@@ -101,10 +101,10 @@ export default function Header({ profile, onOpenSettings }) {
               <div>
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-2">{t('menu_main')}</h3>
                 <div className="space-y-1">
-                  <button onClick={() => { setIsDrawerOpen(false); navigate('/'); }} className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${location.pathname === '/' ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-blue-50 hover:text-primary'}`}>
+                  <button onClick={() => { setIsDrawerOpen(false); navigate('/'); window.scrollTo(0, 0); }} className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${location.pathname === '/' ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-blue-50 hover:text-primary'}`}>
                     <Home className={`h-5 w-5 mr-3 ${location.pathname === '/' ? 'text-primary' : 'text-gray-400'}`} /> {t('menu_home')}
                   </button>
-                  <button onClick={() => { setIsDrawerOpen(false); navigate('/dashboard'); }} className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${location.pathname === '/dashboard' && !location.hash ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-blue-50 hover:text-primary'}`}>
+                  <button onClick={() => { setIsDrawerOpen(false); navigate('/dashboard'); window.scrollTo(0, 0); }} className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${location.pathname === '/dashboard' && !location.hash ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-blue-50 hover:text-primary'}`}>
                     <LayoutDashboard className={`h-5 w-5 mr-3 ${location.pathname === '/dashboard' && !location.hash ? 'text-primary' : 'text-gray-400'}`} /> {t('menu_schemes')}
                   </button>
                   <button onClick={() => { setIsDrawerOpen(false); navigate('/dashboard#saved'); }} className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${location.hash === '#saved' ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-blue-50 hover:text-primary'}`}>

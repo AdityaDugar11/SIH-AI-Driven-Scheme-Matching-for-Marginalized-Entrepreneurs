@@ -11,6 +11,7 @@ from schemes_db import SCHEMES, evaluate_scheme
 from google import genai
 from google.genai import types
 from supabase import create_client, Client
+import db_store
 
 # Initialize Supabase client
 SUPABASE_URL = "https://givyetklwfexhjwhlqew.supabase.co"
@@ -45,8 +46,51 @@ class RecommendRequest(BaseModel):
     profile: dict
     lang: str = "en"
 
+class ApplicationRequest(BaseModel):
+    user_id: str
+    scheme_id: int
+    scheme_name: str
+    requested_amount: float = 500000.0
+
+class SaveSchemeRequest(BaseModel):
+    user_id: str
+    scheme_id: int
+
 # IMPORTANT: Replace with your actual n8n Webhook URL once n8n is running
 N8N_WEBHOOK_URL = "https://scheme-matcher-n8n.onrender.com/webhook/lead-intake"
+
+@app.post("/api/applications")
+async def create_application(req: ApplicationRequest):
+    try:
+        new_app = db_store.apply_for_scheme(
+            user_id=req.user_id,
+            scheme_id=req.scheme_id,
+            scheme_name=req.scheme_name,
+            requested_amount=req.requested_amount
+        )
+        return {"status": "success", "application": new_app}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/applications/{user_id}")
+async def get_applications(user_id: str):
+    apps = db_store.get_user_applications(user_id)
+    return {"applications": apps}
+
+@app.post("/api/saved-schemes")
+async def save_scheme(req: SaveSchemeRequest):
+    db_store.save_scheme(req.user_id, req.scheme_id)
+    return {"status": "success"}
+
+@app.delete("/api/saved-schemes/{user_id}/{scheme_id}")
+async def delete_saved_scheme(user_id: str, scheme_id: int):
+    db_store.unsave_scheme(user_id, scheme_id)
+    return {"status": "success"}
+
+@app.get("/api/saved-schemes/{user_id}")
+async def fetch_saved_schemes(user_id: str):
+    schemes = db_store.get_saved_schemes(user_id)
+    return {"saved_schemes": schemes}
 
 @app.post("/api/recommend")
 async def recommend_schemes(req: RecommendRequest):

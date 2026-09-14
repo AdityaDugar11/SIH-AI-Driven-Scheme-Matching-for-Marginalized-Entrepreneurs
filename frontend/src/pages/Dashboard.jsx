@@ -18,7 +18,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [interestedSchemes, setInterestedSchemes] = useState([]); // Kept for backwards compatibility
+  const [savedSchemes, setSavedSchemes] = useState([]);
   const [applications, setApplications] = useState([]);
   const [schemes, setSchemes] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,53 +29,64 @@ export default function Dashboard() {
   const [selectedScheme, setSelectedScheme] = useState(null);
 
   const handleInterest = async (schemeId, schemeName) => {
-    if (!interestedSchemes.includes(schemeId)) {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-        
-        // Optimistic UI update
-        setInterestedSchemes([...interestedSchemes, schemeId]);
-        
-        // 1. Save to Supabase `applications` table
-        const newApp = {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const response = await fetch('http://localhost:8000/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           user_id: user.id,
           scheme_id: schemeId,
           scheme_name: schemeName,
-          status: 'APPLIED',
-          requested_amount: 500000 // default or from state
-        };
-        const { data: insertedApp, error: dbError } = await supabase
-          .from('applications')
-          .insert([newApp])
-          .select()
-          .single();
-          
-        if (dbError) throw dbError;
-        
-        // Update local state to reflect new application immediately
-        setApplications(prev => [insertedApp, ...prev]);
+          requested_amount: 500000
+        })
+      });
+      
+      if (!response.ok) throw new Error("API failed");
+      const data = await response.json();
+      
+      setApplications(prev => [data.application, ...prev]);
 
-        // 2. Call backend webhook for email
-        await fetch('http://localhost:8000/api/interest', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: profile.id,
-            scheme_id: schemeId,
-            user_email: profile.email || 'user@example.com',
-            user_name: profile.name,
-            scheme_name: schemeName
-          })
-        });
-        
-        alert("Application submitted successfully.");
-      } catch (err) {
-        console.error("Application failed:", err);
-        alert("Unable to submit application. Please try again.");
-        // Rollback optimistic update
-        setInterestedSchemes(interestedSchemes.filter(id => id !== schemeId));
-      }
+      // Trigger email webhook
+      await fetch('http://localhost:8000/api/interest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          scheme_id: schemeId,
+          user_email: profile?.email || 'user@example.com',
+          user_name: profile?.name || 'User',
+          scheme_name: schemeName
+        })
+      });
+    } catch (err) {
+      console.error("Application failed:", err);
+      alert("Unable to submit application. Please try again.");
+    }
+  };
+
+  const handleSaveScheme = async (schemeId) => {
+    if (savedSchemes.includes(schemeId)) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const response = await fetch('http://localhost:8000/api/saved-schemes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          scheme_id: schemeId
+        })
+      });
+      
+      if (!response.ok) throw new Error("Save API failed");
+      
+      setSavedSchemes(prev => [...prev, schemeId]);
+    } catch (err) {
+      console.error("Save scheme failed:", err);
     }
   };
 
@@ -121,16 +132,23 @@ export default function Dashboard() {
   const fetchApplications = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data, error } = await supabase
-        .from('applications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (data) {
-        setApplications(data);
-        // Sync with legacy state
-        setInterestedSchemes(data.map(app => app.scheme_id));
+      try {
+        const [appRes, savedRes] = await Promise.all([
+          fetch(`http://localhost:8000/api/applications/${user.id}`),
+          fetch(`http://localhost:8000/api/saved-schemes/${user.id}`)
+        ]);
+        
+        if (appRes.ok) {
+          const appData = await appRes.json();
+          setApplications(appData.applications || []);
+        }
+        
+        if (savedRes.ok) {
+          const savedData = await savedRes.json();
+          setSavedSchemes(savedData.saved_schemes || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user data from API:", err);
       }
     }
   };
@@ -189,12 +207,14 @@ export default function Dashboard() {
     const updatedData = {
       ...settingsFormData,
       income: Number(settingsFormData.income),
-      projectCost: Number(settingsFormData.projectCost)
+      estimatedCost: Number(settingsFormData.estimatedCost)
     };
+
+    const { email, ...updatePayload } = updatedData;
 
     const { error } = await supabase
       .from('profiles')
-      .update(updatedData)
+      .update(updatePayload)
       .eq('id', profile.id);
 
     if (error) {
@@ -334,7 +354,7 @@ export default function Dashboard() {
           </div>
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center">
             <div className="bg-amber-50 p-3 rounded-xl mr-4"><Bookmark className="h-6 w-6 text-amber-500" /></div>
-            <div><p className="text-2xl font-bold text-gray-900">{interestedSchemes.length}</p><p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{t('saved_schemes')}</p></div>
+            <div><p className="text-2xl font-bold text-gray-900">{savedSchemes.length}</p><p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{t('saved_schemes')}</p></div>
           </div>
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center">
             <div className="bg-purple-50 p-3 rounded-xl mr-4"><FileText className="h-6 w-6 text-purple-600" /></div>
@@ -430,7 +450,7 @@ export default function Dashboard() {
               <Bookmark className="h-6 w-6 mr-2 text-amber-500" /> Saved Schemes
             </h2>
           </div>
-          {interestedSchemes.length === 0 ? (
+          {savedSchemes.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-100 border-dashed p-8 text-center">
               <Bookmark className="h-10 w-10 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500 font-medium">You haven't saved any schemes yet.</p>
@@ -438,7 +458,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {interestedSchemes.map((scheme, idx) => (
+              {schemes.filter(s => savedSchemes.includes(s.id)).map((scheme, idx) => (
                 <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
                   <div>
                     <h3 className="font-bold text-gray-900">{scheme.name}</h3>
@@ -479,7 +499,7 @@ export default function Dashboard() {
                   <div className="flex justify-between items-start mb-6">
                     <div>
                       <h3 className="font-bold text-gray-900 text-lg">{app.scheme_name}</h3>
-                      <p className="text-sm text-gray-500">Application ID: {app.id.substring(0,8).toUpperCase()}</p>
+                      <p className="text-sm text-gray-500">Application ID: APP-{String(app.id).padStart(5, '0')}</p>
                     </div>
                     <span className={`px-3 py-1 text-xs font-bold rounded-full border ${app.status === 'APPLIED' ? 'bg-blue-50 text-primary border-blue-100' : app.status === 'APPROVED' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                       {app.status}
@@ -523,9 +543,9 @@ export default function Dashboard() {
           scheme={selectedScheme}
           profile={profile}
           onClose={() => setSelectedScheme(null)}
-          isSaved={interestedSchemes.includes(selectedScheme.id)}
+          isSaved={savedSchemes.includes(selectedScheme.id)}
           isApplied={applications.some(app => app.scheme_id === selectedScheme.id)}
-          onSave={() => handleInterest(selectedScheme.id, selectedScheme.name)}
+          onSave={() => handleSaveScheme(selectedScheme.id)}
           onApply={async () => {
             await handleInterest(selectedScheme.id, selectedScheme.name);
             setSelectedScheme(null);
@@ -583,8 +603,8 @@ export default function Dashboard() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Loan Amount (₹)</label>
                   <input
                     type="number"
-                    value={settingsFormData.projectCost || ''}
-                    onChange={(e) => setSettingsFormData({...settingsFormData, projectCost: e.target.value})}
+                    value={settingsFormData.estimatedCost || ''}
+                    onChange={(e) => setSettingsFormData({...settingsFormData, estimatedCost: e.target.value})}
                     className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary p-2 border"
                     required
                   />
