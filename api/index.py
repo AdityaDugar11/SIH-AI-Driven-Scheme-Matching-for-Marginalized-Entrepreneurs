@@ -7,11 +7,11 @@ import json
 from dotenv import load_dotenv
 load_dotenv()
 
-from schemes_db import SCHEMES, evaluate_scheme
+from .schemes_db import SCHEMES, evaluate_scheme
 from google import genai
 from google.genai import types
 from supabase import create_client, Client
-import db_store
+from . import db_store
 
 # Initialize Supabase client
 SUPABASE_URL = "https://givyetklwfexhjwhlqew.supabase.co"
