@@ -33,7 +33,7 @@ export default function Dashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      const response = await fetch('http://localhost:8000/api/applications', {
+      const response = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -50,7 +50,7 @@ export default function Dashboard() {
       setApplications(prev => [data.application, ...prev]);
 
       // Trigger email webhook
-      await fetch('http://localhost:8000/api/interest', {
+      await fetch('/api/interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -73,7 +73,7 @@ export default function Dashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      const response = await fetch('http://localhost:8000/api/saved-schemes', {
+      const response = await fetch('/api/saved-schemes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +99,7 @@ export default function Dashboard() {
     
     setIsSearching(true);
     try {
-      const response = await fetch('http://localhost:8000/api/search', {
+      const response = await fetch('/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchQuery })
@@ -134,8 +134,8 @@ export default function Dashboard() {
     if (user) {
       try {
         const [appRes, savedRes] = await Promise.all([
-          fetch(`http://localhost:8000/api/applications/${user.id}`),
-          fetch(`http://localhost:8000/api/saved-schemes/${user.id}`)
+          fetch(`/api/applications/${user.id}`),
+          fetch(`/api/saved-schemes/${user.id}`)
         ]);
         
         if (appRes.ok) {
@@ -176,7 +176,7 @@ export default function Dashboard() {
 
   const fetchSchemes = async (userProfile) => {
     try {
-      const response = await fetch('http://localhost:8000/api/recommend', {
+      const response = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile: userProfile, lang: i18n.language })
