@@ -82,4 +82,4 @@ Open your browser and navigate to `http://localhost:5173`. Create an account, co
 4. **UI Updates:** The React frontend updates instantly using optimistic rendering, fetching the latest state from the backend.
 
 ## 🤝 Contributing
-This project is built for the Smart India Hackathon. If you wish to contribute, please fork the repository and submit a pull request.
+This project is built for the Smart India Hackathon.
